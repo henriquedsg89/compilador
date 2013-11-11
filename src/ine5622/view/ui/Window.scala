@@ -16,7 +16,7 @@ class Window extends JFrame {
   val sin = new JMenu("An. Sintático")
   val sem = new JMenu("An. Semântico")
 
-  def createMenu {
+  def createMenu() {
     menu.add(file)
     menu.add(lex)
     menu.add(sin)
@@ -25,7 +25,7 @@ class Window extends JFrame {
   }
 
   def init() = {
-    createMenu
+    createMenu()
 
     setTitle("Compilador INE5622")
     setSize(450, 350)
