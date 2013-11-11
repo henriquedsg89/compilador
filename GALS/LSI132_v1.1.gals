@@ -1,0 +1,51 @@
+#Options
+GenerateScanner = true
+GenerateParser = false
+Language = Java
+ScannerName = Lexico
+Package = ine5622
+ScannerCaseSensitive = true
+ScannerTable = Full
+Input = Stream
+#RegularDefinitions
+L:[a-zA-Z]
+D:[0-9]
+#Tokens
+ID : @?{L}+((@|_|#){L}+)*
+INT : {D}+((E|e)(\+|\-)?{D}+)?
+REAL : ({D}+|.{D}+|{D}+.{D}*)((E|e)(\+|\-)?{D}+)?
+BLOCK_COMMENT: "/*" [^"*"]* "*" "/"
+LINE_COMMENT: "/" "/" [^\n] \n
+
+programa = ID : "programa"
+var = ID : "var"
+caracter = ID : "caracter"
+cadeia = ID : "cadeia"
+procedimento = ID : "procedimento"
+inicio = ID : "inicio"
+fim = ID : "fim"
+inteiro = ID : "inteiro"
+booleano = ID : "booleano"
+funcao = ID : "funcao"
+se = ID : "se"
+entao = ID : "entao"
+senao = ID : "senao"
+leia = ID : "leia"
+escreva = ID : "escreva"
+ou = ID : "ou"
+e = ID : "e"
+nao = ID : "nao"
+falso = ID : "falso"
+verdadeiro = ID : "verdadeiro"
+de = ID : "de"
+faca = ID : "faca"
+real = ID : "real"
+vetor = ID : "vetor"
+enquanto = ID : "enquanto"
+
+"+"
+"-"
+"*"
+"/"
+"("
+")"
