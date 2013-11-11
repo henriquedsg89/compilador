@@ -18,20 +18,25 @@ class Window extends JFrame {
   val sem = new JMenu("An. Semântico")
   val mainPane = new MainPane()
 
-  menu.add(file)
-  menu.add(lex)
-  menu.add(sin)
-  menu.add(sem)
+  def createMenu() {
+    menu.add(file)
+    menu.add(lex)
+    menu.add(sin)
+    menu.add(sem)
+    setJMenuBar(menu)
+  }
 
-  setJMenuBar(menu)
+  def init() = {
+    createMenu()
 
-  setTitle("Compilador INE5622")
-  setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-  setLocationRelativeTo(null)
+    setTitle("Compilador INE5622")
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
+    setLocationRelativeTo(null)
 
-  setLayout(new BorderLayout())
+    setLayout(new BorderLayout())
 
-  getContentPane().add(mainPane)
+    getContentPane().add(mainPane)
 
-  pack()
+    pack()
+  }
 }
