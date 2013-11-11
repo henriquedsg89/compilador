@@ -10,6 +10,6 @@ import ine5622.view.ui.Window
  */
 object Main extends App {
 
-  val win = new Window
-  win.init()
+  val win = new Window()
+  win.setVisible(true)
 }

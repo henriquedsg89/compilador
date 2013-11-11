@@ -1,6 +1,7 @@
 package ine5622.view.ui
 
 import javax.swing.{JMenu, JMenuBar, JFrame}
+import java.awt.BorderLayout
 
 /**
  * User: henrique
@@ -15,24 +16,22 @@ class Window extends JFrame {
   val lex = new JMenu("An. Léxico")
   val sin = new JMenu("An. Sintático")
   val sem = new JMenu("An. Semântico")
+  val mainPane = new MainPane()
 
-  def createMenu {
-    menu.add(file)
-    menu.add(lex)
-    menu.add(sin)
-    menu.add(sem)
-    setJMenuBar(menu)
-  }
+  menu.add(file)
+  menu.add(lex)
+  menu.add(sin)
+  menu.add(sem)
 
-  def init() = {
-    createMenu
+  setJMenuBar(menu)
 
-    setTitle("Compilador INE5622")
-    setSize(450, 350)
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-    setLocationRelativeTo(null)
+  setTitle("Compilador INE5622")
+  setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
+  setLocationRelativeTo(null)
 
-    setVisible(true)
-  }
+  setLayout(new BorderLayout())
 
+  getContentPane().add(mainPane)
+
+  pack()
 }
