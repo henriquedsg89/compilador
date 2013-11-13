@@ -11,11 +11,11 @@ Input = Stream
 L:[a-zA-Z]
 D:[0-9]
 #Tokens
-ID : @?{L}+((@|_|#){L}+{D}+)*
-INT : {D}+((E|e)(\+|\-)?{D}+)?
-REAL : ({D}+|.{D}+|{D}+.{D}*)((E|e)(\+|\-)?{D}+)?
-BLOCK_COMMENT: "/*" [^"*"]* "*" "/"
-LINE_COMMENT: "/" "/" [^\n] \n
+ID : @?{L}+{D}*((@|_|#)?({L}+|{D}*))*|@{D}+((@|_|#)?({L}+|{D}*))*
+INT : {D}+(("E"|"e")(\+|\-)?{D}+)?
+REAL : ({D}+|.{D}+|{D}+.{D}*)(("E"|"e")(\+|\-)?{D}+)?
+ : "/*" [\000-\255]* "*/" //comentario de bloco
+ : / / [^\n]* //comentario de linha
 
 programa = ID : "programa"
 var = ID : "var"
@@ -49,3 +49,5 @@ enquanto = ID : "enquanto"
 "/"
 "("
 ")"
+
+ : [\s\t\n\r]*
