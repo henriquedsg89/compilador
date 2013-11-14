@@ -1,5 +1,3 @@
-package ine5622.view
-
 import ine5622.view.ui.Window
 
 /**
