@@ -1,7 +1,7 @@
 package UI
 
-import javax.swing.{JMenu, JMenuBar, JFrame}
-import java.awt.BorderLayout
+import javax.swing.{JPanel, JMenu, JMenuBar, JFrame}
+import java.awt.{Button, BorderLayout}
 
 class Window extends JFrame {
 
@@ -22,15 +22,14 @@ class Window extends JFrame {
 
   def init() = {
     createMenu()
-
     setTitle("Compilador INE5622")
+    setSize(800, 600)
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
     setLocationRelativeTo(null)
 
     setLayout(new BorderLayout())
+    add(new MainPane(), BorderLayout.CENTER)
 
-//    getContentPane().add(mainPane)
-
-    pack()
+    setVisible(true)
   }
 }

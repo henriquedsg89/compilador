@@ -1,5 +1,7 @@
 package UI
 
-class MainPane {
+import javax.swing.JPanel
+
+class MainPane extends JPanel {
 
 }
