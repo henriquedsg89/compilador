@@ -3,9 +3,9 @@ GenerateScanner = true
 GenerateParser = false
 Language = Java
 ScannerName = Lexico
-Package = ine5622
+Package = GALS
 ScannerCaseSensitive = true
-ScannerTable = Full
+ScannerTable = Compact
 Input = Stream
 #RegularDefinitions
 L:[a-zA-Z]
