@@ -15,6 +15,7 @@ class MainWindow(val name: String) extends JFrame {
 
   val file = new JMenu("Arquivo")
   val load = new JMenuItem("Carregar")
+  val save = new JMenuItem("Save")
 
   val anal = new JMenu("Analisador")
   val lex = new JMenuItem("Léxico")
@@ -48,8 +49,32 @@ class MainWindow(val name: String) extends JFrame {
         }
       }
     })
+    save.addActionListener(new ActionListener {
+      def actionPerformed(e: ActionEvent) {
+        val ret = fc.showSaveDialog(MainWindow.this)
+
+        ret match {
+          case JFileChooser.APPROVE_OPTION  => {
+            val file = fc.getSelectedFile
+            log.info("File selected " + file.getName)
+
+            val txt = mainPane.textArea.getText
+
+            FileUtil.writeToFile(file, txt)
+            log.info("Txt to file = " + txt)
+
+            mainPane.textArea.setText(txt)
+
+          }
+          case _ => {
+            log.info("FileC Cancel")
+          }
+        }
+      }
+    })
 
     file.add(load)
+    file.add(save)
 
     anal.add(lex)
     anal.add(sin)
