@@ -1,16 +1,15 @@
 package UI
 
-import javax.swing.{JPanel, JMenu, JMenuBar, JFrame}
-import java.awt.{Button, BorderLayout}
+import javax.swing._
+import java.awt.{Color, Dimension, BorderLayout}
 
-class Window extends JFrame {
-
+class MainWindow(val name: String) extends JFrame {
   val menu = new JMenuBar()
   val file = new JMenu("Arquivo")
   val lex = new JMenu("An. Léxico")
   val sin = new JMenu("An. Sintático")
   val sem = new JMenu("An. Semântico")
-  val mainPane = new MainPane()
+  val southPanel: JPanel = new JPanel()
 
   def createMenu() {
     menu.add(file)
@@ -22,14 +21,19 @@ class Window extends JFrame {
 
   def init() = {
     createMenu()
-    setTitle("Compilador INE5622")
+    setTitle(name)
     setSize(800, 600)
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
     setLocationRelativeTo(null)
 
     setLayout(new BorderLayout())
-    add(new MainPane(), BorderLayout.CENTER)
+    add(new JTextArea(), BorderLayout.CENTER)
+    add(southPanel, BorderLayout.SOUTH)
 
     setVisible(true)
+  }
+  def initSouthPanel() {
+    southPanel.setSize(100, 500)
+    southPanel.setBackground(Color.black)
   }
 }
