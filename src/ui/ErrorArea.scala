@@ -1,4 +1,4 @@
-package UI
+package ui
 
 import javax.swing.JTextArea
 import java.awt.Dimension

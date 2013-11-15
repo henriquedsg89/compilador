@@ -1,14 +1,13 @@
-package UI
+package ui
 
 import javax.swing.{JTextArea, JScrollPane, JPanel}
 import java.awt.{Dimension, BorderLayout}
 
-class MainPane extends JPanel {
+class MainPane(e : Editor) extends JPanel {
 
-  val textArea = new JTextArea()
-  val scroll = new JScrollPane(textArea)
+  val scroll = new JScrollPane(e)
 
-  textArea.setText("Coloque aqui seu código")
+  e.setText("Coloque aqui seu código")
 
   scroll.setPreferredSize(new Dimension(800,400))
   setPreferredSize(new Dimension(800,400))

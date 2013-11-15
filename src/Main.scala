@@ -1,5 +1,5 @@
 import javax.swing.SwingUtilities
-import UI.MainWindow
+import ui.MainWindow
 
 object Main extends App {
   SwingUtilities.invokeLater(new Runnable() {
