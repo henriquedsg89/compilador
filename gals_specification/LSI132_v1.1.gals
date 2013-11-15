@@ -14,38 +14,42 @@ Parser = LL
 L:[a-zA-Z]
 D:[0-9]
 #Tokens
-ID : @?{L}+{D}*((@|_|#)?({L}+|{D}*))*|@{D}+((@|_|#)?({L}+|{D}*))*
-INT : {D}+(("E"|"e")(\+|\-)?{D}+)?
-REAL : ({D}+|.{D}+|{D}+.{D}*)(("E"|"e")(\+|\-)?{D}+)?
-LITERAL : '[^']*' | \"[^\"]*\" //falta suportar ex: 'copo d''agua' = 1 literal
+id : @?{L}+{D}*((@|_|#)?({L}+|{D}*))*|@{D}+((@|_|#)?({L}+|{D}*))*
+num_int : {D}+(("E"|"e")(\+|\-)?{D}+)?
+num_real : ({D}+|.{D}+|{D}+.{D}*)(("E"|"e")(\+|\-)?{D}+)?
+literal : '[^']*' | \"[^\"]*\" //falta suportar ex: 'copo d''agua' = 1 literal
  : "/*" [\000-\255]* "*/" //comentario de bloco
  : / / [^\n]* //comentario de linha
 
-programa = ID : "programa"
-var = ID : "var"
-caracter = ID : "caracter"
-cadeia = ID : "cadeia"
-procedimento = ID : "procedimento"
-inicio = ID : "inicio"
-fim = ID : "fim"
-inteiro = ID : "inteiro"
-booleano = ID : "booleano"
-funcao = ID : "funcao"
-se = ID : "se"
-entao = ID : "entao"
-senao = ID : "senao"
-leia = ID : "leia"
-escreva = ID : "escreva"
-ou = ID : "ou"
-e = ID : "e"
-nao = ID : "nao"
-falso = ID : "falso"
-verdadeiro = ID : "verdadeiro"
-de = ID : "de"
-faca = ID : "faca"
-real = ID : "real"
-vetor = ID : "vetor"
-enquanto = ID : "enquanto"
+programa = id : "programa"
+var = id : "var"
+caracter = id : "caracter"
+cadeia = id : "cadeia"
+procedimento = id : "procedimento"
+inicio = id : "inicio"
+fim = id : "fim"
+inteiro = id : "inteiro"
+booleano = id : "booleano"
+funcao = id : "funcao"
+se = id : "se"
+entao = id : "entao"
+senao = id : "senao"
+leia = id : "leia"
+escreva = id : "escreva"
+ou = id : "ou"
+e = id : "e"
+nao = id : "nao"
+falso = id : "falso"
+verdadeiro = id : "verdadeiro"
+de = id : "de"
+faca = id : "faca"
+real = id : "real"
+vetor = id : "vetor"
+enquanto = id : "enquanto"
+const = id : "const"
+proc = id : "proc"
+ref = id : "ref"
+val = id : "val"
 
 "+"
 "-"
@@ -53,6 +57,16 @@ enquanto = ID : "enquanto"
 "/"
 "("
 ")"
+";"
+":"
+"."
+"="
+","
+"{"
+"}"
+"["
+"]"
+".."
 
  : [\s\t\n\r]*
 #NonTerminals
@@ -126,7 +140,7 @@ enquanto = ID : "enquanto"
 <tipo_pre_definido> ::=  inteiro | real | booleano | caracter ;
 
 <listacomando> ::= "{"   <comando>  <replistacomando>  "}"                                
-<replistacomando> ::=   ";"  <comando>  <replistacomando>  |  î ;
+<replistacomando> ::= ";"  <comando>  <replistacomando>  |  î ;
 
 <comando> ::= id <rcomid>
              |  <listacomando>                                 
