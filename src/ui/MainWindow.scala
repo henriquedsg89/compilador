@@ -6,6 +6,7 @@ import java.awt.event.{ActionEvent, ActionListener}
 
 import java.util.logging.Logger
 import utils.FileUtil
+import gals._
 
 class MainWindow(val name: String) extends JFrame {
 
@@ -25,13 +26,12 @@ class MainWindow(val name: String) extends JFrame {
   val editor = new Editor
   val errorArea = new ErrorArea()
 
-
-
   val fc = new JFileChooser()
 
   def createMenu() {
     load.addActionListener(loadAction)
     save.addActionListener(saveAction)
+    lex.addActionListener(lexAction)
 
     file.add(load)
     file.add(save)
@@ -63,6 +63,21 @@ class MainWindow(val name: String) extends JFrame {
     add(new JScrollPane(errorArea), BorderLayout.SOUTH)
 
     setVisible(true)
+  }
+
+  val lexAction = new ActionListener {
+    def actionPerformed(e: ActionEvent) {
+      val lexico = new Lexico
+      lexico.setInput(editor.getText)
+
+      var token: Token = lexico.nextToken()
+
+      do {
+        log.info("Read token = " + token)
+        token = lexico.nextToken()
+      } while (token != null)
+
+    }
   }
 
   val loadAction = new ActionListener {
