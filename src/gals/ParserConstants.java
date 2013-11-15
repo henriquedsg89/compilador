@@ -192,7 +192,7 @@ public interface ParserConstants
         "Era esperado \"<>\"",
         "Era esperado \"<=\"",
         "Era esperado \">=\"",
-        "<programa> inválido",
+        "Era esperado a palavra reservada 'programa'",
         "<bloco> inválido",
         "<dcl_const> inválido",
         "<dcl_var> inválido",

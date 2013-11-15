@@ -33,7 +33,9 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
   def createMenu() {
     load.addActionListener(loadAction)
     save.addActionListener(saveAction)
+
     lex.addActionListener(lexAction)
+    sin.addActionListener(sinAction)
 
     file.add(load)
     file.add(save)
@@ -69,7 +71,15 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
 
   val lexAction = new ActionListener {
     def actionPerformed(e: ActionEvent) {
-      val error = controller.validate(editor.getText)
+      val error = controller.validateLexical(editor.getText)
+      errorArea.setText(error)
+
+    }
+  }
+
+  val sinAction = new ActionListener {
+    def actionPerformed(e: ActionEvent) {
+      val error = controller.validateSyntatic(editor.getText)
       errorArea.setText(error)
 
     }

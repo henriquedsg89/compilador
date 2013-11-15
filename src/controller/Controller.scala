@@ -1,6 +1,6 @@
 package controller
 
-import gals.{LexicalError, Token, Lexico}
+import gals._
 import java.util.logging.Logger
 /**
  * User: henrique
@@ -12,23 +12,49 @@ class Controller {
 
   val log = Logger.getLogger("Controller")
 
-  def validate(codigo: String): String = {
-    val lexico = new Lexico
+  val lexico = new Lexico
+  val semantico = new Semantico
+  val sintatico = new Sintatico
+
+
+  def validateLexical(codigo: String): String = {
     lexico.setInput(codigo)
 
     var token: Token = null
     try {
       do {
         token = lexico.nextToken()
-        log.info("Read token = " + token)
+        log.info("Token lido = " + token)
       } while (token != null)
 
-      "O código está correto"
+      "O código está correto lexicamente"
     } catch {
       case e: LexicalError => {
-
         log.warning(e.getMessage)
-        MsgUtil.fmtToUser(e.getPosition, e.getMessage)
+        e.getMessage
+      }
+    }
+  }
+
+  def validateSyntatic(codigo: String): String = {
+    lexico.setInput(codigo)
+
+    try {
+      sintatico.parse(lexico, semantico)
+
+      "O código está correto sintaticamente"
+    } catch {
+      case e: LexicalError => {
+        log.warning(e.getMessage)
+        e.getMessage
+      }
+      case e: SyntaticError => {
+        log.warning(e.getMessage)
+        e.getMessage
+      }
+      case e: SemanticError => {
+        log.warning(e.getMessage)
+        e.getMessage
       }
     }
   }
