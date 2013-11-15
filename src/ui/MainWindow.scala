@@ -7,8 +7,10 @@ import java.awt.event.{ActionEvent, ActionListener}
 import java.util.logging.Logger
 import utils.FileUtil
 import gals._
+import controller.Controller
 
-class MainWindow(val name: String) extends JFrame {
+
+class MainWindow(name: String, controller: Controller) extends JFrame {
 
   val log = Logger.getLogger("MainWindow")
 
@@ -67,15 +69,8 @@ class MainWindow(val name: String) extends JFrame {
 
   val lexAction = new ActionListener {
     def actionPerformed(e: ActionEvent) {
-      val lexico = new Lexico
-      lexico.setInput(editor.getText)
-
-      var token: Token = lexico.nextToken()
-
-      do {
-        log.info("Read token = " + token)
-        token = lexico.nextToken()
-      } while (token != null)
+      val error = controller.validate(editor.getText)
+      errorArea.setText(error)
 
     }
   }

@@ -7,8 +7,8 @@ ParserName = Sintatico
 SemanticName = Semantico
 Package = gals
 ScannerCaseSensitive = true
-ScannerTable = Compact
-Input = Stream
+ScannerTable = Hardcode
+Input = String
 Parser = LL
 #RegularDefinitions
 L:[a-zA-Z]
@@ -17,7 +17,7 @@ D:[0-9]
 id : @?{L}+{D}*((@|_|#)?({L}+|{D}*))*|@{D}+((@|_|#)?({L}+|{D}*))*
 num_int : {D}+(("E"|"e")(\+|\-)?{D}+)?
 num_real : ({D}+|.{D}+|{D}+.{D}*)(("E"|"e")(\+|\-)?{D}+)?
-literal : '[^']*' | \"[^\"]*\" //falta suportar ex: 'copo d''agua' = 1 literal
+literal : '[^']*('')?[^']*' | \"[^\"]*(\"\")?[^\"]*\" //FEITO A DO PATODAGUA
  : "/*" [\000-\255]* "*/" //comentario de bloco
  : / / [^\n]* //comentario de linha
 
