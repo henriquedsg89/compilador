@@ -3,10 +3,9 @@ package ui
 import javax.swing._
 import java.awt.{Color, Dimension, BorderLayout}
 import java.awt.event.{ActionEvent, ActionListener}
-import java.io.File
+
 import java.util.logging.Logger
 import utils.FileUtil
-import editor.Editor
 
 class MainWindow(val name: String) extends JFrame {
 
@@ -25,7 +24,8 @@ class MainWindow(val name: String) extends JFrame {
 
   val editor = new Editor
   val errorArea = new ErrorArea()
-  val mainPane = new MainPane(editor)
+
+
 
   val fc = new JFileChooser()
 
@@ -54,8 +54,12 @@ class MainWindow(val name: String) extends JFrame {
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
     setLocationRelativeTo(null)
 
+    val scroll = new JScrollPane(editor)
+    scroll.setPreferredSize(new Dimension(800,400))
+    setPreferredSize(new Dimension(800,400))
+
     setLayout(new BorderLayout())
-    add(mainPane, BorderLayout.CENTER)
+    add(scroll, BorderLayout.CENTER)
     add(new JScrollPane(errorArea), BorderLayout.SOUTH)
 
     setVisible(true)
