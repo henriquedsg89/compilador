@@ -16,7 +16,7 @@ class Controller {
   val sintatico = new Sintatico
 
 
-  def validateLexical(codigo: String): String = {
+  def validateLexical(codigo: String): (String, Int) = {
     lexico.setInput(codigo)
 
     var token: Token = null
@@ -26,34 +26,34 @@ class Controller {
         log.info("Token lido = " + token)
       } while (token != null)
 
-      "O código está correto lexicamente"
+      ("O código está correto lexicamente", 0)
     } catch {
       case e: LexicalError => {
         log.warning(e.getMessage)
-        e.getMessage
+        (e.getMessage, e.getPosition)
       }
     }
   }
 
-  def validateSyntatic(codigo: String): String = {
+  def validateSyntatic(codigo: String): (String, Int) = {
     lexico.setInput(codigo)
 
     try {
       sintatico.parse(lexico, semantico)
 
-      "O código está correto sintaticamente"
+      ("O código está correto sintaticamente", 0)
     } catch {
       case e: LexicalError => {
         log.warning(e.getMessage)
-        e.getMessage
+        (e.getMessage, e.getPosition)
       }
       case e: SyntaticError => {
         log.warning(e.getMessage)
-        e.getMessage
+        (e.getMessage, e.getPosition)
       }
       case e: SemanticError => {
         log.warning(e.getMessage)
-        e.getMessage
+        (e.getMessage, e.getPosition)
       }
     }
   }

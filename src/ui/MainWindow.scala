@@ -75,15 +75,18 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
   val lexAction = new ActionListener {
     def actionPerformed(e: ActionEvent) {
       val error = controller.validateLexical(editor.getText)
-      errorArea.setText(error)
+      errorArea.setText(error._1)
+      editor.requestFocus()
+      editor.setCaretPosition(error._2)
     }
   }
 
   val sinAction = new ActionListener {
     def actionPerformed(e: ActionEvent) {
       val error = controller.validateSyntatic(editor.getText)
-      errorArea.setText(error)
-
+      errorArea.setText(error._1)
+      editor.requestFocus()
+      editor.setCaretPosition(error._2)
     }
   }
 
