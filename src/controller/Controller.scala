@@ -1,13 +1,12 @@
+/**
+ * Authors: Henrique & Octávio
+ * Date: Nov 2013
+ */
 package controller
 
 import gals._
 import java.util.logging.Logger
-/**
- * User: henrique
- * Date: 11/15/13
- * Time: 3:52 PM
- *
- */
+
 class Controller {
 
   val log = Logger.getLogger("Controller")

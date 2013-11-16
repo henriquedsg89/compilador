@@ -1,14 +1,12 @@
+/**
+ * Authors: Henrique & Octávio
+ * Date: Nov 2013
+ */
 package utils
 
 import java.io.{PrintWriter, File}
 import scala.io.Source
 
-/**
- * User: henrique
- * Date: 15/11/13
- * Time: 11:45
- *
- */
 object FileUtil {
 
   def writeToFile(file: File, s: String) {

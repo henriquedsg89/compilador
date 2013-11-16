@@ -1,12 +1,15 @@
+/**
+ * Authors: Henrique & Octávio
+ * Date: Nov 2013
+ */
 package ui
 
 import javax.swing._
-import java.awt.{Color, Dimension, BorderLayout}
+import java.awt.{Dimension, BorderLayout}
 import java.awt.event.{ActionEvent, ActionListener}
 
 import java.util.logging.Logger
 import utils.FileUtil
-import gals._
 import controller.Controller
 
 
@@ -25,7 +28,7 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
   val sin = new JMenuItem("Sintático")
   val sem = new JMenuItem("Semântico")
 
-  val editor = new Editor
+  val editor = new Editor()
   val errorArea = new ErrorArea()
 
   val fc = new JFileChooser()
@@ -73,7 +76,6 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
     def actionPerformed(e: ActionEvent) {
       val error = controller.validateLexical(editor.getText)
       errorArea.setText(error)
-
     }
   }
 
