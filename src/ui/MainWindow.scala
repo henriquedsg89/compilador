@@ -12,7 +12,7 @@ import java.util.logging.Logger
 import utils.FileUtil
 import controller.Controller
 
-
+/** Classes responsável por criar e interagir com a interface */
 class MainWindow(name: String, controller: Controller) extends JFrame {
 
   val log = Logger.getLogger("MainWindow")
@@ -33,6 +33,7 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
 
   val fc = new JFileChooser()
 
+  /* criando os menus */
   def createMenu() {
     load.addActionListener(loadAction)
     save.addActionListener(saveAction)
@@ -54,6 +55,7 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
     setJMenuBar(menu)
   }
 
+  /* iniciando, definindo tamanho etc*/
   def init() = {
     createMenu()
     setTitle(name)
@@ -72,11 +74,16 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
     setVisible(true)
   }
 
+  /* acao invocada pelo menu lexico */
   val lexAction = new ActionListener {
     def actionPerformed(e: ActionEvent) {
+      // chama o controller para validar
       val error = controller.validateLexical(editor.getText)
+
+      //coloca na area de erro a msg (primeira parte da tupla)
       errorArea.setText(error._1)
       editor.requestFocus()
+      //posiciona o cursor no token com error (segunda parte da tupla)
       editor.setCaretPosition(error._2)
     }
   }
