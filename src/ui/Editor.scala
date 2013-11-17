@@ -8,23 +8,25 @@ import javax.swing.text.Element
 import java.util.logging.Logger
 import java.awt.event.ActionEvent
 
-class Editor extends JPanel {
-  var scrollPane: JScrollPane = _
-  var textArea: JTextArea = _
-  var lineNumberBar: JTextArea = _
-  var cursorStatusBar: JTextField = _
-  var savedStatus: Boolean = _
-  var FileName: String = ""
-  var fileDir: String = ""
+class Editor(var scrollPane: JScrollPane,
+             var textArea: JTextArea,
+             var lineNumberBar: JTextArea,
+             var cursorStatusBar: JTextField,
+             var savedStatus: Boolean) extends JPanel {
   val undoManager: UndoManager = new UndoManager()
   val log = Logger.getLogger("MainWindow")
 
-  def Editor() {
-    textArea = new JTextArea()
+  //construtor sem parâmetros
+  def this() = this(scrollPane = new JScrollPane(),
+    textArea = new JTextArea(),
+    lineNumberBar = new JTextArea("1"),
+    cursorStatusBar = new JTextField(),
+    savedStatus = false)
+
+  def init() {
     textArea.setFont(new Font("MONOSPACED", Font.PLAIN, 14))
     textArea.setLineWrap(false)
     textArea.setWrapStyleWord(true)
-    lineNumberBar = new JTextArea("1")
     lineNumberBar.setFont(textArea.getFont)
     lineNumberBar.setBackground(Color.LIGHT_GRAY)
     lineNumberBar.setEditable(false)
