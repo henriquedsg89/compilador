@@ -29,7 +29,7 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
   val sin = new JMenuItem("Sintático")
   val sem = new JMenuItem("Semântico")
 
-  val editor: TextArea = new TextArea()
+  val editor: Editor = new Editor()
   val errorArea = new ErrorArea()
 
   val fc = new JFileChooser()
