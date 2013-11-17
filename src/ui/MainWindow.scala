@@ -7,12 +7,9 @@ package ui
 import javax.swing._
 import java.awt.{Dimension, BorderLayout}
 import java.awt.event.{InputEvent, KeyEvent, ActionEvent, ActionListener}
-
 import java.util.logging.Logger
 import utils.FileUtil
 import controller.Controller
-import javax.swing.event.{MenuKeyEvent, MenuKeyListener}
-import java.util
 
 /** Classes responsável por criar e interagir com a interface */
 class MainWindow(name: String, controller: Controller) extends JFrame {
@@ -21,16 +18,18 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
 
   val menu = new JMenuBar()
 
-  val file = new JMenu("Arquivo")
-  val load = new JMenuItem("Carregar")
+  val file = new JMenu("File")
+  val load = new JMenuItem("Open")
   val save = new JMenuItem("Save")
+  val undo = new JMenuItem("Undo")
+  val redo = new JMenuItem("Redo")
 
   val anal = new JMenu("Analisador")
   val lex = new JMenuItem("Léxico")
   val sin = new JMenuItem("Sintático")
   val sem = new JMenuItem("Semântico")
 
-  val editor = new Editor()
+  val editor: TextArea = new TextArea()
   val errorArea = new ErrorArea()
 
   val fc = new JFileChooser()
@@ -45,11 +44,22 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
     save.setActionCommand("save")
     save.addActionListener(saveAction)
 
+    undo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK))
+    undo.setActionCommand("undo")
+    undo.addActionListener(undoAction)
+
+    redo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_MASK))
+    redo.setActionCommand("redo")
+    redo.addActionListener(redoAction)
+
     lex.addActionListener(lexAction)
     sin.addActionListener(sinAction)
 
     file.add(load)
     file.add(save)
+    file.addSeparator()
+    file.add(undo)
+    file.add(redo)
 
     anal.add(lex)
     anal.add(sin)
@@ -70,12 +80,10 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
     setLocationRelativeTo(null)
 
-    val scroll = new JScrollPane(editor)
-    scroll.setPreferredSize(new Dimension(800,400))
     setPreferredSize(new Dimension(800,400))
 
     setLayout(new BorderLayout())
-    add(scroll, BorderLayout.CENTER)
+    add(editor, BorderLayout.CENTER)
     add(new JScrollPane(errorArea), BorderLayout.SOUTH)
 
     setVisible(true)
@@ -85,22 +93,22 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
   val lexAction = new ActionListener {
     def actionPerformed(e: ActionEvent) {
       // chama o controller para validar
-      val error = controller.validateLexical(editor.getText)
+      val error = controller.validateLexical(editor.getTextArea.getText)
 
       //coloca na area de erro a msg (primeira parte da tupla)
       errorArea.setText(error._1)
-      editor.requestFocus()
+      editor.getTextArea.requestFocus()
       //posiciona o cursor no token com error (segunda parte da tupla)
-      editor.setCaretPosition(error._2)
+      editor.getTextArea.setCaretPosition(error._2)
     }
   }
 
   val sinAction = new ActionListener {
     def actionPerformed(e: ActionEvent) {
-      val error = controller.validateSyntatic(editor.getText)
+      val error = controller.validateSyntatic(editor.getTextArea.getText)
       errorArea.setText(error._1)
-      editor.requestFocus()
-      editor.setCaretPosition(error._2)
+      editor.getTextArea.requestFocus()
+      editor.getTextArea.setCaretPosition(error._2)
     }
   }
 
@@ -116,7 +124,7 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
           val fileTxt = FileUtil.readAllFile(file)
           log.info("File txt = " + fileTxt)
 
-          editor.setText(fileTxt)
+          editor.getTextArea.setText(fileTxt)
 
         }
         case _ => {
@@ -135,18 +143,30 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
           val file = fc.getSelectedFile
           log.info("File selected " + file.getName)
 
-          val txt = editor.getText
+          val txt = editor.getTextArea.getText
 
           FileUtil.writeToFile(file, txt)
           log.info("Txt to file = " + txt)
 
-          editor.setText(txt)
+          editor.getTextArea.setText(txt)
 
         }
         case _ => {
           log.info("FileC Cancel")
         }
       }
+    }
+  }
+
+  val undoAction = new ActionListener {
+    def actionPerformed(e: ActionEvent) {
+      editor.undo()
+    }
+  }
+
+  val redoAction = new ActionListener {
+    def actionPerformed(e: ActionEvent) {
+      editor.redo()
     }
   }
 }
