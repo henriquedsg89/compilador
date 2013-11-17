@@ -8,7 +8,7 @@ import javax.swing.text.Element;
 import javax.swing.undo.*;
 
 //TODO: Simplificar código e portar p/ Scala
-public class Editor extends JPanel {
+public class EditorJava extends JPanel {
     private static final long serialVersionUID = 5342961201711426309L;
     private JScrollPane scrollPane = null;
     private JTextArea textArea = null;
@@ -51,7 +51,7 @@ public class Editor extends JPanel {
         return (lineNumberBar);
     }
 
-    public Editor() {
+    public EditorJava() {
         textArea = new JTextArea();
         textArea.setFont(new Font("MONOSPACED", Font.PLAIN, 14));
         textArea.setLineWrap(true);

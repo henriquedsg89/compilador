@@ -93,22 +93,22 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
   val lexAction = new ActionListener {
     def actionPerformed(e: ActionEvent) {
       // chama o controller para validar
-      val error = controller.validateLexical(editor.getTextArea.getText)
+      val error = controller.validateLexical(editor.textArea.getText)
 
       //coloca na area de erro a msg (primeira parte da tupla)
       errorArea.setText(error._1)
-      editor.getTextArea.requestFocus()
+      editor.textArea.requestFocus()
       //posiciona o cursor no token com error (segunda parte da tupla)
-      editor.getTextArea.setCaretPosition(error._2)
+      editor.textArea.setCaretPosition(error._2)
     }
   }
 
   val sinAction = new ActionListener {
     def actionPerformed(e: ActionEvent) {
-      val error = controller.validateSyntatic(editor.getTextArea.getText)
+      val error = controller.validateSyntatic(editor.textArea.getText)
       errorArea.setText(error._1)
-      editor.getTextArea.requestFocus()
-      editor.getTextArea.setCaretPosition(error._2)
+      editor.textArea.requestFocus()
+      editor.textArea.setCaretPosition(error._2)
     }
   }
 
@@ -124,7 +124,7 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
           val fileTxt = FileUtil.readAllFile(file)
           log.info("File txt = " + fileTxt)
 
-          editor.getTextArea.setText(fileTxt)
+          editor.textArea.setText(fileTxt)
 
         }
         case _ => {
@@ -143,12 +143,12 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
           val file = fc.getSelectedFile
           log.info("File selected " + file.getName)
 
-          val txt = editor.getTextArea.getText
+          val txt = editor.textArea.getText
 
           FileUtil.writeToFile(file, txt)
           log.info("Txt to file = " + txt)
 
-          editor.getTextArea.setText(txt)
+          editor.textArea.setText(txt)
 
         }
         case _ => {
