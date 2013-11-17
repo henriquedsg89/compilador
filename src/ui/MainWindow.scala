@@ -6,11 +6,13 @@ package ui
 
 import javax.swing._
 import java.awt.{Dimension, BorderLayout}
-import java.awt.event.{ActionEvent, ActionListener}
+import java.awt.event.{InputEvent, KeyEvent, ActionEvent, ActionListener}
 
 import java.util.logging.Logger
 import utils.FileUtil
 import controller.Controller
+import javax.swing.event.{MenuKeyEvent, MenuKeyListener}
+import java.util
 
 /** Classes responsável por criar e interagir com a interface */
 class MainWindow(name: String, controller: Controller) extends JFrame {
@@ -35,7 +37,12 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
 
   /* criando os menus */
   def createMenu() {
+    load.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK))
+    load.setActionCommand("open")
     load.addActionListener(loadAction)
+
+    save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK))
+    save.setActionCommand("save")
     save.addActionListener(saveAction)
 
     lex.addActionListener(lexAction)

@@ -1,6 +1,5 @@
 /**
  * Authors: Henrique & Octávio
- * 
  * Date: Nov 2013
  */
 package controller
