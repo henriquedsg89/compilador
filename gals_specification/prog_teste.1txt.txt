@@ -1,0 +1,6 @@
+programa @PROG;
+const @CONST = 20;
+var   @ID   :  inteiro;
+proc @ID2;  { };
+{ }
+.
