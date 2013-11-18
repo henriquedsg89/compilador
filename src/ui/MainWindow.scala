@@ -11,7 +11,7 @@ import java.util.logging.Logger
 import utils.FileUtil
 import controller.Controller
 
-/** Classes responsável por criar e interagir com a interface */
+/** Classe responsável por criar e interagir com a interface da janela principal */
 class MainWindow(name: String, controller: Controller) extends JFrame {
 
   val log = Logger.getLogger("MainWindow")

@@ -1,3 +1,7 @@
+/**
+ * Authors: Henrique & Octávio
+ * Date: Nov 2013
+ */
 package ui
 
 import javax.swing._
@@ -8,6 +12,7 @@ import javax.swing.text.Element
 import java.util.logging.Logger
 import java.awt.event.ActionEvent
 
+/** Classe responsável pela interface do editor de texto e operações de texto */
 class Editor extends JPanel {
   private var scrollPane: JScrollPane = new JScrollPane()
   var textArea: JTextArea = new JTextArea()
@@ -19,6 +24,7 @@ class Editor extends JPanel {
   val undoManager: UndoManager = new UndoManager()
   val log = Logger.getLogger("MainWindow")
 
+  //método para inicar todos os componentes de interface do Editor
   def init() {
     textArea.setFont(new Font("MONOSPACED", Font.PLAIN, 14))
     textArea.setLineWrap(false)
@@ -27,6 +33,7 @@ class Editor extends JPanel {
     lineNumberBar.setBackground(Color.LIGHT_GRAY)
     lineNumberBar.setEditable(false)
     textArea.getDocument.addDocumentListener(new DocumentListener {
+      //metodo utilizado para atualizar loneNumberBar
       def getText(): String = {
         val cursorLocation: Int = textArea.getDocument.getLength
         val rootElement: Element = textArea.getDocument.getDefaultRootElement
@@ -54,7 +61,6 @@ class Editor extends JPanel {
     scrollPane = new JScrollPane()
     scrollPane.getViewport.add(textArea)
     scrollPane.setRowHeaderView(lineNumberBar)
-//    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS)
     scrollPane.setBorder(
       BorderFactory.createCompoundBorder(
         BorderFactory.createCompoundBorder(
@@ -99,7 +105,7 @@ class Editor extends JPanel {
       }
     })
   }
-
+  //método que chama undo de java.swing.undo
   def undo() {
     try {
       if(undoManager.canUndo)
@@ -108,7 +114,7 @@ class Editor extends JPanel {
       case ex: CannotUndoException => log.warning(ex.getMessage)
     }
   }
-
+  //método que chama redo de java.swing.undo
   def redo() {
     try {
       if(undoManager.canRedo)
@@ -117,7 +123,7 @@ class Editor extends JPanel {
       case ex: CannotRedoException => log.warning(ex.getMessage)
     }
   }
-
+  //método que atualiza a barra inferior do editor
   def updatesBar(rowNum: Int, colNum: Int) {
     cursorStatusBar.setText("Line: " + rowNum +
                           "Column: " + colNum)
