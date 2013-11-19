@@ -1,0 +1,33 @@
+<bloco>: const, var, {
+<dcl_const>: const, î
+<dcl_var>: var, î
+<dcl_procs>: proc, funcao, î
+<dcl_proc>: proc, funcao
+<par_formais>: (
+<rep_par>: ;, î
+<lid>: id
+<rep_lid>: \, î
+<mp_par>: ref, val
+<tipo>: cadeia, vetor, inteiro, real, booleano, caracter
+<dimensao2>: \,, î 
+<constante>: id, num_int, num_real, falso, verdadeiro, literal
+<tipo_pre_definido>: inteiro, real, booleano, caracter
+<listacomando>: {
+<replistacomando>: ;, î
+<comando>: id, se, enquanto, leia, escreva, {, î
+<senaoparte>: senao, î
+<rcomid>: :=, [, (, nao, -, (, id, num_int, num_real, falso, verdadeiro, literal, î
+<expressao2>: \,, î
+<rep_lexpr>:  \,, î
+<expressao>: nao, -, (, id, num_int, num_real, falso, verdadeiro, literal
+<resto_expressao>: =, <, >, >=, <=, <>, î
+<oprel>: =, <, >, >=, <=, <>
+<expsimp>: nao, -, (, id, num_int, num_real, falso, verdadeiro, literal
+<rep_expsimp>: +, -, ou, î
+<op_add>: +, -, ou
+<termo>: nao, -, (, id, num_int, num_real, falso, verdadeiro, literal
+<rep_termo>: *, /, e, î
+<op_mult>: *, /, e
+<fator>: nao, -, (, id, num_int, num_real, falso, verdadeiro, literal
+<rvar>: (, [, î
+<constante_explicita>: num_int, num_real, falso, verdadeiro, literal

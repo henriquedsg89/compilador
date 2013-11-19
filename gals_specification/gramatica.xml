@@ -1,0 +1,89 @@
+<programa> ::= programa id  ";"  <bloco> "." ;
+
+<bloco> ::= <dcl_const>  <dcl_var> <dcl_procs>  <listacomando> ;
+ 
+<dcl_const> ::= const id "=" <constante>   ";"  <dcl_const> | î ;
+
+<dcl_var> ::= var   <lid>   ":"  <tipo> ";"   <dcl_var> | î ;
+ 
+<dcl_procs> ::= <dcl_proc> ";" <dcl_procs> | î ;
+
+<dcl_proc> ::= proc id   <par_formais>   ";" <bloco>
+            | funcao id   <par_formais>   ":"  <> ";"   <bloco>  ;                 
+
+<par_formais> ::= "(" <mp_par>  <lid> ":" <tipo_pre_definido>  <rep_par>  ")"  
+                           | î ;
+
+<rep_par> ::= ";" <mp_par>   <lid> ":"  <tipo_pre_definido> <rep_par> | î ;
+
+<lid> ::= id  <rep_lid>  ;
+
+<rep_lid> ::= ","  <lid> | î ;
+
+<mp_par>  ::= ref | val ;
+
+<tipo> ::=   <tipo_pre_definido> 
+             |  cadeia "[" <constante> "]"  
+             |   vetor  "[" <constante>  ".."  <constante> <dimensao2> "]" de <tipo_pre_definido> ;
+
+<dimensao2> ::= ","  <constante>  ".."  <constante>  |   î ;
+
+<constante> ::= id  |  <constante_explicita> ;
+       
+<tipo_pre_definido> ::=  inteiro | real | booleano | caracter ;
+
+<listacomando> ::= "{"   <comando>  <replistacomando>  "}" ;                             
+<replistacomando> ::= ";"  <comando>  <replistacomando>  |  î ;
+
+<comando> ::= id <rcomid>
+             |  <listacomando>                                 
+             | se <expressao> entao <comando> <senaoparte> 
+             | enquanto <expressao> faca <comando>                               
+             | leia "(" <lid> ")"                                    
+             | escreva "(" <expressao> <rep_lexpr> ")"  |  î ;
+
+<senaoparte> ::= senao  <comando>  | î ;
+
+<rcomid> ::= ":=" <expressao> 
+                   |   "[" <expressao> <expressao2> "]" ":=" <expressao> 
+                   |   "(" <expressao> <rep_lexpr> ")" 
+                   |   î ;
+
+<expressao2> ::= ","  <expressao>  |  î ;
+
+<rep_lexpr>  ::= "," <expressao> <rep_lexpr> | î ;
+
+<expressao>  ::= <expsimp> <resto_expressao> ;
+
+<resto_expressao> ::= <oprel> <expsimp> | î ;
+
+<oprel> ::= "=" | "<" | ">" | ">=" | "<=" | "<>" ;
+
+<expsimp> ::= <termo> <rep_expsimp> ;
+
+<rep_expsimp> ::= <op_add> <termo> <rep_expsimp> | î ;
+                      
+<op_add> ::= "+" | "-" | ou ;
+
+<termo> ::= <fator> <rep_termo> ;
+
+<rep_termo> ::= <op_mult> <fator> <rep_termo> | î ;
+
+<op_mult> ::= "*" | "/" | e ;
+
+<fator> ::= nao <fator> 
+          
+               | "-"  <fator>
+    
+               |  "("  <expressao> ")" 
+
+       | id <rvar>   
+
+       |  <constante_explicita> ;
+
+<rvar> ::= "(" <expressao> <rep_lexpr> ")"  
+              | "[" <expressao> <expressao2> "]"
+              | î ;
+  
+<constante_explicita>::=   num_int  |  num_real 
+                          |  falso  |  verdadeiro  |  literal ;
