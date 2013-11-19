@@ -1,3 +1,2 @@
 programa ProgramaTeste;
-{comandoUm := meuVal(“valor definido”)} 
-.
+{comandoUm := meuVal(“valor definido”)}.

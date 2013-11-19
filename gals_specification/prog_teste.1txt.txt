@@ -1,6 +1,17 @@
 programa @PROG;
+
 const @CONST = 20;
-var   @ID   :  inteiro;
-proc @ID2;  { };
-{ }
-.
+
+var @ID1, @ID2: inteiro;
+
+proc @preced1(val param1: inteiro; ref param2: inteiro);
+{
+	param1 := 20 + 30
+};
+
+{
+	se nao verdadeiro entao
+		leia( @X )
+	senao
+		escrXXXXeva( 20 ) //não está dando erro sintático!
+}.
