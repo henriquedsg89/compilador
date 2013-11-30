@@ -44,5 +44,4 @@ class ControllerTest extends FlatSpec with Matchers {
       con.validateLexical(id) should not be (con.LEX_OK_MSG, 0)
     }
   }
-
 }
