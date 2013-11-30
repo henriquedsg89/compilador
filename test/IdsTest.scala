@@ -1,5 +1,3 @@
-package controller
-
 import _root_.java.util
 import org.scalatest._
 import controller._
@@ -10,7 +8,7 @@ import controller._
  * Time: 19:52
  * To change this template use File | Settings | File Templates.
  */
-class ControllerTest extends FlatSpec with Matchers {
+class IdsTest extends FlatSpec with Matchers {
 
   val con = new Controller()
 
