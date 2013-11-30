@@ -11,6 +11,8 @@ class Controller {
 
   val log = Logger.getLogger("Controller")
 
+  val LEX_OK_MSG = "O código está correto lexicamente"
+
   val lexico = new Lexico
   val semantico = new Semantico
   val sintatico = new Sintatico
@@ -33,7 +35,7 @@ class Controller {
       } while (token != null)//enquanto houverem tokens
 
       //retorna a msg e a posicão
-      ("O código está correto lexicamente", 0)
+      (LEX_OK_MSG, 0)
     } catch {
       /* se lancar a excecao léxica, retorna
        a mensagem de erro e a posicao do erro */
@@ -57,7 +59,7 @@ class Controller {
       */
       sintatico.parse(lexico, semantico)
 
-      ("O código está correto sintaticamente", 0)
+      (LEX_OK_MSG, 0)
     } catch {
       case e: LexicalError => {
         log.warning(e.getMessage)

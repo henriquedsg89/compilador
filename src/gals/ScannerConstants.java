@@ -3,7 +3,7 @@ package gals;
 public interface ScannerConstants
 {
 
-    int[] TOKEN_STATE = { 0,  0,  0, -1, -1, -1, 39, 40, 37, 35, 45, 36, 43, 38,  3, 42, 41, 52, 44, 53, -1,  2, 48, 49, 46, 47,  4, -1,  5,  4, -1,  5,  4, 50, -1,  0,  4,  3,  4, 51, 55, 54, 56,  2,  2,  2,  2, -1, -1, -1, -1, -1, -1, -1,  3,  2,  2,  2,  2, -1,  4,  5, -1,  4, -1,  4,  0,  3,  2,  2 };
+    int[] TOKEN_STATE = { 0,  0,  0, -1, -1, -1, 39, 40, 37, 35, 45, 36, 43, 38,  3, 42, 41, 52, 44, 53, -1,  2, 48, 49, 46, 47,  4, -1,  5,  4, -1,  5,  4, 50, -1,  0,  4,  3,  4, 51, 55, 54, 56,  2,  2, -1,  2, -1, -1, -1, -1, -1, -1, -1,  3, -1,  2,  2,  2,  2,  2, -1,  4,  5, -1,  4, -1,  4,  0,  3,  2,  2 };
 
     int[] SPECIAL_CASES_INDEXES =
         { 0, 0, 0, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29 };
@@ -61,7 +61,7 @@ public interface ScannerConstants
         "",
         "",
         "",
-        "",
+        "Erro identificando id",
         "",
         "Erro identificando num_real",
         "Erro identificando literal",
@@ -70,6 +70,8 @@ public interface ScannerConstants
         "Erro identificando num_real ou literal",
         "Erro identificando <ignorar>",
         "Erro identificando num_int",
+        "",
+        "Erro identificando id",
         "",
         "",
         "",
