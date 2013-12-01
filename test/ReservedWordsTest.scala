@@ -15,11 +15,34 @@ class ReservedWordsTest extends FlatSpec with Matchers {
   val con = new Controller()
 
   "Lexico" should "work, reserved words" in {
-    val rws = "programa, var, caracter, cadeia, proc, inicio, fim, inteiro, booleano, " +
-      "funcao, se, entao, senao, leia, escreva, ou, e, nao, falso, verdadeiro, " +
-      "de, faca, real, vetor, enquanto"
+    val ids = Array(
+      "programa",
+      "const",
+      "var",
+      "proc",
+      "funcao",
+      "ref",
+      "val",
+      "cadeia",
+      "vetor",
+      "inteiro",
+      "real",
+      "booleano",
+      "caracter",
+      "de",
+      "se",
+      "entao",
+      "enquanto",
+      "faca",
+      "leia",
+      "escreva",
+      "senao",
+      "ou",
+      "e",
+      "nao",
+      "falso",
+      "verdadeiro")
 
-    val ids = rws.split(",")
     ids map { id =>
       con.validateLexical(id.trim) should be (con.LEX_OK_MSG, 0)
     }
