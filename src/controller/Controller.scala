@@ -5,11 +5,9 @@
 package controller
 
 import gals._
-import java.util.logging.Logger
+import _root_.java.util.logging.{Level, Logger}
 
 class Controller {
-
-  val log = Logger.getLogger("Controller")
 
   val LEX_OK_MSG = "O código está correto lexicamente"
 
@@ -31,7 +29,6 @@ class Controller {
          * o token lido está correto.
         */
         token = lexico.nextToken()
-        log.info("Token lido = " + token)
       } while (token != null)//enquanto houverem tokens
 
       //retorna a msg e a posicão
@@ -40,7 +37,6 @@ class Controller {
       /* se lancar a excecao léxica, retorna
        a mensagem de erro e a posicao do erro */
       case e: LexicalError => {
-        log.warning(e.getMessage)
         (e.getMessage, e.getPosition)
       }
     }
@@ -62,15 +58,12 @@ class Controller {
       (LEX_OK_MSG, 0)
     } catch {
       case e: LexicalError => {
-        log.warning(e.getMessage)
         (e.getMessage, e.getPosition)
       }
       case e: SyntaticError => {
-        log.warning(e.getMessage)
         (e.getMessage, e.getPosition)
       }
       case e: SemanticError => {
-        log.warning(e.getMessage)
         (e.getMessage, e.getPosition)
       }
     }

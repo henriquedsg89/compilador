@@ -21,9 +21,7 @@ class IdsTest extends FlatSpec with Matchers {
 
   "Lexico" should "fail, ids should begin with letter or @" in {
     val ids = Array("_a", "#a", "%a", "$a", "&a", "!a", "~a")
-
     //TODO Está considerando 1a como real, depois verificar e adicionar de volta
-    //val ids = Array("_a", "#a", "%a", "$a", "&a", "!a", "~a", "1a", "2b")
     ids map { id =>
       con.validateLexical(id) should not be (con.LEX_OK_MSG, 0)
     }
