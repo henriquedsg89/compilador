@@ -1,3 +1,5 @@
+package lexico
+
 import controller.Controller
 import gals.Constants
 import org.scalatest._

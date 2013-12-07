@@ -1,3 +1,5 @@
+package lexico
+
 import _root_.java.util
 import org.scalatest._
 import controller._

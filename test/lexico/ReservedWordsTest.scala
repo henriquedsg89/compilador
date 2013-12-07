@@ -1,3 +1,5 @@
+package lexico
+
 import controller.Controller
 import org.scalatest._
 
