@@ -10,6 +10,7 @@ import _root_.java.util.logging.{Level, Logger}
 class Controller {
 
   val LEX_OK_MSG = "O código está correto lexicamente"
+  val SIN_OK_MSG = "O código está correto sintaticamente"
 
   val lexico = new Lexico
   val semantico = new Semantico
@@ -55,7 +56,7 @@ class Controller {
       */
       sintatico.parse(lexico, semantico)
 
-      (LEX_OK_MSG, 0)
+      (SIN_OK_MSG, 0)
     } catch {
       case e: LexicalError => {
         (e.getMessage, e.getPosition)
