@@ -2,13 +2,13 @@ package lexico
 
 import org.scalatest._
 import controller.Controller
-import gals.Constants
+import gals.{LexicalError, Constants}
 
 /**
  * Authors: Henrique & Octávio
  * Date: Nov 2013
  */
-class LiteraisTests extends FlatSpec with Matchers {
+class LiteraisTest extends FlatSpec with Matchers {
 
   val lex = new Controller().lexico
 
@@ -35,4 +35,24 @@ class LiteraisTests extends FlatSpec with Matchers {
     val token = lex.nextToken()
     token.getId should be (Constants.t_literal)
   }
+
+  "Literais" should "aceitar continuacao em outra linha" in {
+    lex.setInput("'blabla da primeira linha\n blabla da segunda linha\nterceira\tlinha'")
+    val token = lex.nextToken()
+    token.getId should be (Constants.t_literal)
+  }
+
+  "Literal não fechado" should "gerar erro léxico" in {
+    lex.setInput("'deve_dar_erro lexico pq nao esta fechado")
+    a [LexicalError] should be thrownBy {
+      lex.nextToken()
+    }
+  }
+
+  "Literal" should "aceitar caracteres invalidos para outros fins" in {
+    lex.setInput("'+10 +.14 .41 10 7'")
+    lex.nextToken().getId should be (Constants.t_literal)
+    lex.nextToken() should be (null)
+  }
+
 }
