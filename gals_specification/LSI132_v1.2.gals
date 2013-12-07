@@ -7,8 +7,8 @@ ParserName = Sintatico
 SemanticName = Semantico
 Package = gals
 ScannerCaseSensitive = true
-ScannerTable = Hardcode
-Input = Stream
+ScannerTable = Compact
+Input = String
 Parser = LL
 #RegularDefinitions
 L:[a-zA-Z]
@@ -16,8 +16,8 @@ D:[0-9]
 #Tokens
 id : @?{L}+{D}*((@|_|#)?({L}|{D}))*|@{D}+((@|_|#)?({L}|{D}))*
 num_int : {D}+(("E"|"e")(\+|\-)?{D}+)?
-num_real : ({D}+|.{D}+|{D}+.{D}*)(("E"|"e")(\+|\-)?{D}+)?
-literal : '[^']*('')?[^']*' | \"[^\"]*(\"\")?[^\"]*\" //FEITO A DO PATODAGUA
+num_real : ({D}+|\.{D}+|{D}+\.{D}*)(("E"|"e")(\+|\-)?{D}+)?
+literal : '[^']*('')?[^']*'
  : "/*" [\000-\255]* "*/" //comentario de bloco
  : / / [^\n]* //comentario de linha
 
@@ -197,4 +197,3 @@ verdadeiro = id : "verdadeiro"
   
 <constante_explicita>::=   num_int  |  num_real 
                           |  falso  |  verdadeiro  |  literal ;
-
