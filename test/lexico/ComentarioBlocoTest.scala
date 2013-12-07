@@ -19,8 +19,7 @@ class ComentarioBlocoTest extends FlatSpec with Matchers {
 
   "Cometario de bloco nao fechado" should "gerar erro lexico" in {
     lex.setInput("/*asdf +10 -15 .5 10e15 comentario nao fechado.*asd***** /")
-    a [LexicalError] should be thrownBy {
-      lex.nextToken()
-    }
+    lex.nextToken().getLexeme should be ("/")
+    lex.nextToken().getLexeme should be ("*")
   }
 }
