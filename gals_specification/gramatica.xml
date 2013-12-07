@@ -9,7 +9,7 @@
 <dcl_procs> ::= <dcl_proc> ";" <dcl_procs> | î ;
 
 <dcl_proc> ::= proc id   <par_formais>   ";" <bloco>
-            | funcao id   <par_formais>   ":"  <> ";"   <bloco>  ;                 
+            | funcao id   <par_formais>   ":"  <tipo_pre_definido> ";"   <bloco>  ;
 
 <par_formais> ::= "(" <mp_par>  <lid> ":" <tipo_pre_definido>  <rep_par>  ")"  
                            | î ;
