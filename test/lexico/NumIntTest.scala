@@ -12,19 +12,19 @@ class NumIntTest extends FlatSpec with Matchers {
 
   val lexico = new Controller().lexico
 
-  "Numeros inteiros" should "podem aceitar sinal na frente" in {
+  "Numeros inteiros" should "não devem aceitar sinal na frente" in {
     lexico.setInput("+10")
     val token = lexico.nextToken()
-    token.getId() should be (Constants.t_num_int)
+    token.getId() should not be (Constants.t_num_int)
   }
 
-  "Numeros inteiros" should "podem não ter sinal" in {
+  "Numeros inteiros" should "devem não ter sinal" in {
     lexico.setInput("10")
     val token = lexico.nextToken()
     token.getId should be (Constants.t_num_int)
   }
 
-  "Numeros inteiros" should "podem ter exponencial" in {
+  "Numeros inteiros" should "devem aceitar parte exponencial" in {
     val ints = Array("10e7", "10E-1", "10E+712")
     ints map { i =>
       lexico.setInput(i)
