@@ -66,5 +66,8 @@ class NumRealTest extends FlatSpec with Matchers {
     }
   }
 
-
+  "Dado exemplo 1..2" should "nao gerar dois tokens real" in {
+    lexico.setInput("1..2")
+    lexico.nextToken().getId should not be (Constants.t_num_real)
+  }
 }
