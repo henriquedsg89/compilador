@@ -13,8 +13,8 @@ class Controller {
   val SIN_OK_MSG = "O código está correto sintaticamente"
 
   val lexico = new Lexico
-  val semantico = new Semantico
   val sintatico = new Sintatico
+  val semantico = new Semantico
 
 
   /** Valida lexicamente retornando uma tupla com
@@ -69,4 +69,5 @@ class Controller {
       }
     }
   }
+
 }
