@@ -39,11 +39,31 @@ class ReservedWordsTest extends FlatSpec with Matchers {
     53 -> "verdadeiro"
   )
 
-  "Lexico" should "work, reserved words" in {
+  "Dado todos os tokens de palavras reservadas validos" should "validar com apenas ids de palavras reservadas" in {
     reserved_words.values map { value =>
       lexico.setInput(value)
       val token = lexico.nextToken()
-      reserved_words.get(token.getId()).get should be (value)
+      reserved_words.get(token.getId).get should be (value)
+    }
+  }
+
+  "Dado tokens de identificadores" should "nao conter nenhum token id de palavra reservada nem gerar erro lexico" in {
+    val ids = Array("x", "@aux", "id_de_Teste")
+    ids map { id =>
+      lexico.setInput(id)
+      val token = lexico.nextToken()
+      val token_id = token.getId
+      reserved_words.contains(token_id) should be (false)
+    }
+  }
+
+  "Dado tokens de num_real ou num_int" should "nao conter nenhum token id de palavra reservada nem gerar erro lexico" in {
+    val ids = Array("20", "20e10", "3.5")
+    ids map { id =>
+      lexico.setInput(id)
+      val token = lexico.nextToken()
+      val token_id = token.getId
+      reserved_words.contains(token_id) should be (false)
     }
   }
 }
