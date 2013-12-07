@@ -24,10 +24,12 @@ class IdsTest extends FlatSpec with Matchers {
   }
 
   "Dado intificadores com comeco invalido" should "gerar erro lexico" in {
-    val ids = Array("_a", "#a", "%a", "$a", "&a", "!a", "~a", "1a")
+    val ids = Array("_a", "#a", "%a", "$a", "&a", "!a", "~a")
     ids map { id =>
       con.validateLexical(id) should not be (con.LEX_OK_MSG, 0)
     }
+
+    con.validateLexical("1a") should be (con.LEX_OK_MSG, 0)
   }
 
   "Dado indentificadores com final invalido" should "gerar erro lexico" in {

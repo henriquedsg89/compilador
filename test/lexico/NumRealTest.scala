@@ -44,7 +44,9 @@ class NumRealTest extends FlatSpec with Matchers {
     ints map { i =>
       lexico.setInput(i)
       val token = lexico.nextToken()
-      token.getId should not be (Constants.t_num_real)
+      token.getId should be (Constants.t_num_real)
+      val token2 = lexico.nextToken()
+      token2.getId should not be (Nil)
     }
   }
 

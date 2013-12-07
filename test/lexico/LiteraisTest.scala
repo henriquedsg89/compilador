@@ -21,12 +21,13 @@ class LiteraisTest extends FlatSpec with Matchers {
     }
   }
 
-  "Literais não" should "estar entre aspas" in {
-    val lits = Array("\"wololo\"", "\"dbz,.,!2as@dbz\"", "'10'", "'52.2'", "'74e14'")
+  "Literais entre aspas" should "gerar erro lexico" in {
+    val lits = Array("\"wololo\"", "\"dbz,.,!2as@dbz\"")
     lits map { l =>
       lex.setInput(l)
-      val token = lex.nextToken()
-      token.getId should not be (Constants.t_literal)
+      a [LexicalError] should be thrownBy {
+        lex.nextToken()
+      }
     }
   }
 
