@@ -2,11 +2,8 @@ import _root_.java.util
 import org.scalatest._
 import controller._
 /**
- * Created with IntelliJ IDEA.
- * User: henrique
- * Date: 30/11/13
- * Time: 19:52
- * To change this template use File | Settings | File Templates.
+ * Authors: Henrique & Octávio
+ * Date: Nov 2013
  */
 class IdsTest extends FlatSpec with Matchers {
 
