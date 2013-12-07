@@ -23,9 +23,21 @@ class NumIntTest extends FlatSpec with Matchers {
   }
 
   "Numeros inteiros" should "podem ter exponencial" in {
-    lexico.setInput("10e7 10E-1 10E+712")
-    val token = lexico.nextToken()
-    token.getId should be (Constants.t_num_int)
+    val ints = Array("10e7", "10E-1", "10E+712")
+    ints map { i =>
+      lexico.setInput(i)
+      val token = lexico.nextToken()
+      token.getId should be (Constants.t_num_int)
+    }
+  }
+
+  "Numeros inteiros" should "não podem ter exponencial sem valores" in {
+    val ints = Array("10e", "10E", "10E+")
+    ints map { i =>
+      lexico.setInput(i)
+      val token = lexico.nextToken()
+      token.getId should not be (Constants.t_num_int)
+    }
   }
 
   "Reais" should "não deveriam ser considerados inteiros" in {
