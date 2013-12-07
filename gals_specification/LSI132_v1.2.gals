@@ -18,7 +18,7 @@ id : @?{L}+{D}*((@|_|#)?({L}|{D}))*|@{D}+((@|_|#)?({L}|{D}))*
 num_int : {D}+(("E"|"e")(\+|\-)?{D}+)?
 num_real : ({D}+|\.{D}+|{D}+\.{D}*)(("E"|"e")(\+|\-)?{D}+)?
 literal : '[^']*('')?[^']*'
- : "/*" [\000-\255]* "*/" //comentario de bloco
+ :! "/*" [\000-\255]* "*/" //comentario de bloco
  : / / [^\n]* //comentario de linha
 
 "+"
