@@ -3,7 +3,6 @@ package controller
 import scala.collection.mutable.{ArrayBuffer, HashMap}
 import gals.{SemanticError, Constants, Token}
 import scala.collection.mutable
-import controller.ID_Constante
 import java.util.logging.Logger
 
 
@@ -215,8 +214,8 @@ class SemanticoScala extends Constants {
     if (jaDeclarado(token)) {
       throw new SemanticError("Id já declarado: " + token.getLexeme)
     } else {
-      val tabSim = pegaTabSim(token.getLexeme)
-      val func = new ID_Funcao(token.getLexeme, na, 0, 0, 0, null, null)
+      val tabSim = listTabSim(na)
+      val func = new ID_Funcao(token.getLexeme, na, 0, 0, null, null)
       tabSim.put(func.nome, func)
       posid = func
       npf = 0
@@ -229,7 +228,7 @@ class SemanticoScala extends Constants {
     val funcOrProc = tabSim.get(posid.absNome)
     try {
       val func = funcOrProc.get.asInstanceOf[ID_Funcao]
-      val newFunc = new ID_Funcao(func.nome, func.nivel, func.desloc, func.end_prim_instr, npf,
+      val newFunc = new ID_Funcao(func.nome, func.nivel, func.end_prim_instr, npf,
         func.list_params, null)
       tabSim.put(newFunc.nome, newFunc)
     } catch {
@@ -242,7 +241,11 @@ class SemanticoScala extends Constants {
   }
 
   def act10(token: Token) {
-    //TODO
+    val tabSim = pegaTabSim(posid.absNome)
+    val func = tabSim.get(posid.absNome).get.asInstanceOf[ID_Funcao]
+    val newFunc = new ID_Funcao(func.nome, func.nivel, func.end_prim_instr,
+      func.num_parms, func.list_params, tipoAtual)
+    tabSim.put(newFunc.nome, newFunc)
   }
 
   def act11(token: Token) {
@@ -257,7 +260,7 @@ class SemanticoScala extends Constants {
   }
 
   def act13(token: Token) {
-    //TODO marca pos do ultimo elemento da lista (relativa a TS)
+    //marca pos fim
   }
 
   def act14(token: Token) {
@@ -270,17 +273,34 @@ class SemanticoScala extends Constants {
       lidsPar += newId
     }
     val tabSim = pegaTabSim(posid.absNome)
-    val oldProc = tabSim.get(posid.absNome).get.asInstanceOf[ID_Procedimento]
 
-    val oldParams = oldProc.list_params
-    val newParams = lidsPar.toArray
+    val procOrFunc = tabSim.get(posid.absNome).get
+      if (procOrFunc.isInstanceOf[ID_Procedimento]) {
+      val oldProc = procOrFunc.asInstanceOf[ID_Procedimento]
 
-    if (oldParams == null) {
-      val newProc = new ID_Procedimento(oldProc.nome, oldProc.nivel, oldProc.end_prim_instr, oldProc.num_parms, newParams)
-      tabSim.put(newProc.nome, newProc)
+      val oldParams = oldProc.list_params
+      val newParams = lidsPar.toArray
+
+      if (oldParams == null) {
+        val newProc = new ID_Procedimento(oldProc.nome, oldProc.nivel, oldProc.end_prim_instr, oldProc.num_parms, newParams)
+        tabSim.put(newProc.nome, newProc)
+      } else {
+        val newProc = new ID_Procedimento(oldProc.nome, oldProc.nivel, oldProc.end_prim_instr, oldProc.num_parms, (oldParams ++ newParams))
+        tabSim.put(newProc.nome, newProc)
+      }
     } else {
-      val newProc = new ID_Procedimento(oldProc.nome, oldProc.nivel, oldProc.end_prim_instr, oldProc.num_parms, (oldParams ++ newParams))
-      tabSim.put(newProc.nome, newProc)
+        val oldFunc = procOrFunc.asInstanceOf[ID_Funcao]
+
+        val oldParams = oldFunc.list_params
+        val newParams = lidsPar.toArray
+
+        if (oldParams == null) {
+          val newFunc = new ID_Funcao(oldFunc.nome, oldFunc.nivel, oldFunc.end_prim_instr, oldFunc.num_parms, newParams, oldFunc.tipo_resultado)
+          tabSim.put(newFunc.nome, newFunc)
+        } else {
+          val newFunc = new ID_Funcao(oldFunc.nome, oldFunc.nivel, oldFunc.end_prim_instr, oldFunc.num_parms, (oldParams ++ newParams), oldFunc.tipo_resultado)
+          tabSim.put(newFunc.nome, newFunc)
+        }
     }
   }
 
@@ -316,13 +336,13 @@ class SemanticoScala extends Constants {
       } else {
         val tabSim = listTabSim(na)
         val id = tabSim.get(token.getLexeme)
-        if (id.isInstanceOf[ID_Variavel]) {
+        if (id.get.isInstanceOf[ID_Variavel]) {
           if (id.asInstanceOf[ID_Variavel].tipo != "pre-definido") {
             throw new SemanticError("Tipo de Id Inválido")
           }
           //TODO gera código leitura
-        } else if (id.isInstanceOf[ID_Parametro]) {
-          if (id.asInstanceOf[ID_Parametro].tipo != "pre-definido") {
+        } else if (id.get.isInstanceOf[ID_Parametro]) {
+          if (id.get.asInstanceOf[ID_Parametro].tipo != "pre-definido") {
             throw new SemanticError("Tipo de Id Inválido")
           }
           //TODO gera código leitura
@@ -397,7 +417,7 @@ class SemanticoScala extends Constants {
     val id = listTabSim(na).get(token.getLexeme)
     if (!jaDeclarado(token)) {
       throw new SemanticError("Id não declarado: " + token.getLexeme)
-    } else if (!id.isInstanceOf[ID_Constante]){
+    } else if (!id.get.isInstanceOf[ID_Constante]){
       throw new SemanticError("Esperava-se um id de constante")
     } else {
       valConst = token.getLexeme
@@ -510,10 +530,11 @@ class SemanticoScala extends Constants {
   }
 
   def act40(token: Token) {
-    if(npa==npf)
-      "Gerar código cham"//TODO: gerar codigo p/ chamada de proc
-    else
+    if(npa!=npf)
       throw new SemanticError("Erro na quantidade de parametros")
+    /*else
+      TODO: gerar codigo p/ chamada de proc
+     */
   }
 
   def act41(token: Token) {
