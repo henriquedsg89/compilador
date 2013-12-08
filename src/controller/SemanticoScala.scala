@@ -13,8 +13,9 @@ import java.util.logging.Logger
  * Time: 21:28
  */
 class SemanticoScala extends Constants {
+
   val log = Logger.getLogger("SemanticoScala")
-  val listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
+  var listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
 
   var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr,
     tipoExpSimples, tipoTermo, tipoFator, opRel, operador, tipoResultadoOperacao,
@@ -24,6 +25,7 @@ class SemanticoScala extends Constants {
   var valConst, valVar : Object = null
   var na, desloc, npf, npa, limInfVetor, limSupVetor, numIndices, numDim : Int = 0
   var posid: ID_Abstract = null
+  var lids = new ArrayBuffer[String]()
 
   def executeAction(action: Int, token: Token) {
     action match {
@@ -143,6 +145,7 @@ class SemanticoScala extends Constants {
   }
 
   def act01(token: Token) {
+    listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
     na = 0;
 
     val prog = new ID_Programa(token.getLexeme)
@@ -174,7 +177,7 @@ class SemanticoScala extends Constants {
 
   def act04(token: Token) {
     contextoLID = "decl"
-    //TODO marca pos do primeiro id da lista(relativa a TS)
+    lids = new ArrayBuffer[String]()
   }
 
   def act05(token: Token) {
@@ -182,7 +185,12 @@ class SemanticoScala extends Constants {
   }
 
   def act06(token: Token) {
-    //TODO
+    lids map { id =>
+      val tabSim = pegaTabSim(id)
+      val oldId = tabSim.get(id).get.asInstanceOf[ID_Variavel]
+      val newId = new ID_Variavel(oldId.nome, tipoAtual, oldId.subCategoria)
+      tabSim.put(id, newId)
+    }
   }
 
   def act07(token: Token) {
@@ -264,22 +272,23 @@ class SemanticoScala extends Constants {
       if (jaDeclarado(token)) {
         throw new SemanticError("Id já declarado: " + token.getLexeme)
       } else {
-        val tabSim = pegaTabSim(token.getLexeme)
+        val tabSim = listTabSim(na)
         tabSim.put(token.getLexeme, new ID_Variavel(token.getLexeme, null, null))
+        lids += token.getLexeme
       }
     } else if (contextoLID == "par-formal") {
       if (jaDeclarado(token)) {
         throw new SemanticError("Id já declarado: " + token.getLexeme)
       } else {
         npf = npf + 1
-        val tabSim = pegaTabSim(token.getLexeme)
+        val tabSim = listTabSim(na)
         tabSim.put(token.getLexeme, new ID_Variavel(token.getLexeme, null, null))
       }
     } else if (contextoLID == "leitura") {
       if (!jaDeclarado(token)) {
         throw new SemanticError("Id não declarado: " + token.getLexeme)
       } else {
-        val tabSim = pegaTabSim(token.getLexeme)
+        val tabSim = listTabSim(na)
         val id = tabSim.get(token.getLexeme)
         if (id.isInstanceOf[ID_Variavel]) {
           if (id.asInstanceOf[ID_Variavel].tipo != "pre-definido") {
@@ -301,10 +310,10 @@ class SemanticoScala extends Constants {
   def act18(token: Token) {
     if (tipoConst != "inteiro") {
       throw new SemanticError("Esperava-se uma constante inteira")
-    } else if (valConst.isInstanceOf[String] && valConst.asInstanceOf[String].length > 256) {
-      throw new SemanticError("Tamanho da cadeia maior que o permitido! Até 256 caracteres")
-    } else {
+    } else if (valConst.isInstanceOf[String] && valConst.asInstanceOf[String].length < 256) {
       tipoAtual = "cadeia"
+    } else if (valConst.asInstanceOf[String].length >= 256) {
+      throw new SemanticError("Tamanho da cadeia maior que o permitido! Até 256 caracteres")
     }
   }
 
@@ -339,7 +348,7 @@ class SemanticoScala extends Constants {
     //FIXME:registra info
     val subCat = new Vetor(numDim, tipoIndiceDim1, tipoElementos, limInfVetor, limSupVetor)
 
-    val tabSim = pegaTabSim(token.getLexeme)
+    val tabSim = listTabSim(na)
 
     numDim = 2
   }
@@ -351,9 +360,10 @@ class SemanticoScala extends Constants {
   }
 
   def act24(token: Token) {
+    val id = listTabSim(na).get(token.getLexeme)
     if (!jaDeclarado(token)) {
       throw new SemanticError("Id não declarado: " + token.getLexeme)
-    } else if (!pegaTabSim(token.getLexeme).get(token.getLexeme).isInstanceOf[ID_Constante]){
+    } else if (!id.isInstanceOf[ID_Constante]){
       throw new SemanticError("Esperava-se um id de constante")
     } else {
       valConst = token.getLexeme
@@ -377,7 +387,7 @@ class SemanticoScala extends Constants {
   }
 
   def act29(token: Token) {
-    val tabSim = pegaTabSim(token.getLexeme)
+    val tabSim = listTabSim(na)
     if (!tabSim.contains(token.getLexeme)) {
       throw new SemanticError("Identificador não declarado")
     } else {
