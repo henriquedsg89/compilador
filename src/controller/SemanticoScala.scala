@@ -16,8 +16,9 @@ class SemanticoScala extends Constants {
   val log = Logger.getLogger("SemanticoScala")
   val listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
 
-  var tipoConst, tipoVar, tipoResultadoFuncao, contextLID, tipoExpr,
-    tipoExpSimples, tipoTermo, tipoFator, opRel, operador, tipoResultadoOperacao : String = null
+  var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr,
+    tipoExpSimples, tipoTermo, tipoFator, opRel, operador, tipoResultadoOperacao,
+    mpp: String = null
   var opNega, opUnario: Boolean = false
   var valConst, valVar : Object = null
   var na, desloc, npf, npa : Int = 0
@@ -165,8 +166,52 @@ class SemanticoScala extends Constants {
   }
 
   def act15(token: Token) {
-
+    mpp = "referencia"
   }
+
+  def act16(token: Token) {
+    mpp = "valor"
+  }
+
+  def act17(token: Token) {
+    if (contextoLID == "decl") {
+      val tabSim = listTabSim(na)
+      if (tabSim.contains(token.getLexeme)) {
+        throw new SemanticError("Id já declarado: " + token.getLexeme)
+      } else {
+        tabSim.put(token.getLexeme, new ID_Variavel(token.getLexeme, null, null))
+      }
+    } else if (contextoLID == "par-formal") {
+      val tabSim = listTabSim(na)
+      if (tabSim.contains(token.getLexeme)) {
+        throw new SemanticError("Id já declarado: " + token.getLexeme)
+      } else {
+        npf = npf + 1
+        tabSim.put(token.getLexeme, new ID_Variavel(token.getLexeme, null, null))
+      }
+    } else if (contextoLID == "leitura") {
+      val tabSim = listTabSim(na)
+      if (!tabSim.contains(token.getLexeme)) {
+        throw new SemanticError("Id não declarado: " + token.getLexeme)
+      } else {
+        val id = tabSim.get(token.getLexeme)
+        if (id.isInstanceOf[ID_Variavel]) {
+          if (id.asInstanceOf[ID_Variavel].tipo != "pre-definido") {
+            throw new SemanticError("Tipo de Id Inválido")
+          }
+          //TODO gera código leitura
+        } else if (id.isInstanceOf[ID_Parametro]) {
+          if (id.asInstanceOf[ID_Parametro].tipo != "pre-definido") {
+            throw new SemanticError("Tipo de Id Inválido")
+          }
+          //TODO gera código leitura
+        } else {
+          throw new SemanticError("Apenas var podem ser lidas")
+        }
+      }
+    }
+  }
+
 
 
 
