@@ -17,7 +17,8 @@ class SemanticoScala extends Constants {
   val listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
 
   var tipoConst, tipoVar, tipoResultadoFuncao, contextLID, tipoExpr,
-    tipoExpSimples, tipoTermo, tipoFator, opRel, operador : String = null
+    tipoExpSimples, tipoTermo, tipoFator, opRel, operador, tipoResultadoOperacao : String = null
+  var opNega, opUnario: Boolean = false
   var valConst, valVar : Object = null
   var na, desloc, npf, npa : Int = 0
   var posid: ID_Abstract = null
@@ -36,6 +37,7 @@ class SemanticoScala extends Constants {
       //TODO: verificar se nao da merda usar range dentro do case
       case 46 until 51 => act46(token) //tem mesma implementacao
       case 55 until 57 => act55(token)
+      case 64 until 66 => act64(token)
       case 75 => act75(token)
       case 79 => act79(token)
       case 80 => act80(token)
@@ -179,7 +181,55 @@ class SemanticoScala extends Constants {
   }
 
   def act60(token: Token) {
+    if(!tipoFator.equalsIgnoreCase(tipoTermo))//TODO: podem ser diferentes mas compativeis
+      log.warning("Operandos incompativeis")
+    else
+      tipoTermo = tipoResultadoOperacao
+  }
 
+  def act64(token: Token) {
+    operador = token.getLexeme
+  }
+
+  def act67(token: Token) {
+    if(opNega)
+      log.warning("Operadores nao consecutivos")
+    else
+      opNega = true
+  }
+
+  def act68(token: Token) {
+    if(!tipoFator.equalsIgnoreCase("booleano"))
+      log.warning("Op. 'nao' exige operando booleano")
+  }
+
+  def act69(token: Token) {
+    if(opUnario)
+      log.warning("Ops. 'unario' consecutivos")
+    else
+      opUnario = true
+  }
+
+  def act70(token: Token) {
+    if(!tipoFator.equalsIgnoreCase("inteiro")|| !tipoFator.equalsIgnoreCase("real"))
+      log.warning("Op. '+/-' exige operando numerico")
+  }
+
+  def act71(token: Token) {
+    opNega = false
+    opUnario = false
+  }
+
+  def act72(token: Token) {
+    tipoFator = tipoExpr
+  }
+
+  def act73(token: Token) {
+    tipoFator = tipoVar
+  }
+
+  def act74(token: Token) {
+    tipoFator = tipoConst
   }
 
   def act75(token: Token) {
