@@ -19,12 +19,14 @@ class SemanticoScala extends Constants {
   var desloc = 0
   var tipoConst : String = null
   var valConst : Object = null
+  var contextLID : String = null
 
   def executeAction(action: Int, token: Token) {
     action match {
       case 1 => act01(token)
       case 2 => act02(token)
       case 3 => act03(token)
+      case 4 => act04(token)
       case 75 => act75(token)
       case 79 => act79(token)
       case 80 => act80(token)
@@ -71,6 +73,30 @@ class SemanticoScala extends Constants {
     val newId = new ID_Constante(id.nome, id.nivel, id.desloc, tipoConst, valConst)
     tabSim.put(newId.nome, newId)
   }
+
+  def act04(token: Token) {
+    contextLID = "decl"
+    //TODO marca pos do primeiro id da lista(relativa a TS)
+  }
+
+  def act05(token: Token) {
+    //TODO marca a pos do ultimo id da lista (relativa a TS)
+  }
+
+  def act06(token: Token) {
+    //TODO
+  }
+
+  def act07(token: Token) {
+    val tabSim = listTabSim(na)
+    if (tabSim.contains(token.getLexeme)) {
+      throw new SemanticError("Id já declarado: " + token.getLexeme)
+    } else {
+      val proc = new ID_Procedimento(token.getLexeme, na, 0, 0, 0, 0)
+      tabSim.put(proc.nome, proc)
+    }
+  }
+
 
   def act75(token: Token) {
     listTabSim(na).get(token.getLexeme)
