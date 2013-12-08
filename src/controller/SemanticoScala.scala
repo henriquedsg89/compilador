@@ -13,20 +13,12 @@ import java.util.logging.Logger
  * Time: 21:28
  */
 class SemanticoScala extends Constants {
-
   val log = Logger.getLogger("SemanticoScala")
-
   val listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
 
-  var na = 0
-  var desloc = 0
-  var tipoConst : String = null
-  var valConst : Object = null
-  var tipoVar: String = null
-  var valVar: String = null
-  var tipoResultadoFuncao: String = null
-  var contextLID : String = null
-  var npf, npa : Int = 0
+  var tipoConst, tipoVar, tipoResultadoFuncao, contextLID, tipoExpr, tipoExpSimples : String = null
+  var valConst, valVar : Object = null
+  var na, desloc, npf, npa : Int = 0
   var posid: ID_Abstract = null
 
   def executeAction(action: Int, token: Token) {
@@ -130,6 +122,9 @@ class SemanticoScala extends Constants {
     }
   }
 
+  def act44(token: Token) {
+
+  }
 
   def act75(token: Token) {
     try{
@@ -142,7 +137,13 @@ class SemanticoScala extends Constants {
 
   def act76(token: Token) {
     if(npa == npf)
-      tipoVar
+      tipoVar = tipoResultadoFuncao
+    else
+      log.warning("Erro na quantidade de parametros")
+  }
+
+  def act77(token: Token) {
+    //TODO
   }
 
   def act79(token: Token) {
