@@ -18,7 +18,7 @@ class SemanticoScala extends Constants {
 
   var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr,
     tipoExpSimples, tipoTermo, tipoFator, opRel, operador, tipoResultadoOperacao,
-    mpp, tipoAtual, tipoConstVetor: String = null
+    mpp, tipoAtual, tipoLadoEsq, tipoVarIndexada, tipoConstVetor: String = null
   var opNega, opUnario: Boolean = false
   var valConst, valVar : Object = null
   var na, desloc, npf, npa, limInfVetor, limSupVetor : Int = 0
@@ -307,8 +307,45 @@ class SemanticoScala extends Constants {
 
 
 
+  def act33(token: Token){//TODO: revisar que a porra eh foda e eu to com sono
+    if(posid.isInstanceOf[ID_Variavel]) {
+      if(posid.asInstanceOf[ID_Variavel].tipo == "vetor") {
+        throw new SemanticError(posid.absNome + " deveria ser indexado")
+      } else {
+        tipoLadoEsq = posid.asInstanceOf[ID_Variavel].tipo
+      }
+    } else if (posid.isInstanceOf[ID_Parametro]) {
+      if(posid.asInstanceOf[ID_Parametro].tipo == "vetor") {
+        throw new SemanticError(posid.absNome + " deveria ser indexado")
+      } else {
+        tipoLadoEsq = posid.asInstanceOf[ID_Parametro].tipo
+      }
+    } else if(posid.isInstanceOf[ID_Funcao]) {
+      if(false) { //TODO:se fora do escopo da funcao id
+        throw new SemanticError("fora do escopo da funcao")
+      } else {
+        tipoLadoEsq = posid.asInstanceOf[ID_Funcao].tipo_resultado
+      }
+    } else {
+      throw new SemanticError(posid.absNome + " deveria ser var/par/funcao")
+    }
+  }
 
+  def act34(token: Token) {
+    if(tipoExpr != tipoLadoEsq) //TODO: verificar compatibilidade, podem ser diferentes
+      throw new SemanticError("esperava-se uma variavel")
+  }
 
+  def act35(token: Token) {
+    if(!posid.isInstanceOf[ID_Variavel])
+      throw new SemanticError("esperava-se uma variavel")
+    else {
+      if(posid.asInstanceOf[ID_Variavel].tipo != "vetor" && posid.asInstanceOf[ID_Variavel].tipo != "cadeia")
+        throw new SemanticError("apenas vetores e caidas podem ser indexados")
+      else
+        tipoVarIndexada = "todo porra"//TODO: setar tipo = vetor ou cadeia
+    }
+  }
 
   def act44(token: Token) {
     tipoExpr = tipoExpSimples
