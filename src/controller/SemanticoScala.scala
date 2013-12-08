@@ -24,7 +24,8 @@ class SemanticoScala extends Constants {
   var valVar : Object = null
   var na, desloc, npf, npa, limInfVetor, limSupVetor, numIndices, numDim : Int = 0
   var posid: ID_Abstract = null
-  var dimensao1, dimensao2 : Dimensao = null
+  var dimensao1, dimensao2: Dimensao = null
+  var vetor_temp: Vetor = null
   var lids = new ArrayBuffer[ID_Abstract]()
 
   def executeAction(action: Int, token: Token) {
@@ -193,7 +194,11 @@ class SemanticoScala extends Constants {
     lids map { id =>
       val tabSim = pegaTabSim(id.absNome)
       val oldId = tabSim.get(id.absNome).get.asInstanceOf[ID_Variavel]
-      val newId = new ID_Variavel(oldId.nome, na, tipoAtual, oldId.subCategoria)
+      var newId = new ID_Variavel(null,0,null,null)
+      if(tipoAtual == "vetor")
+        newId = ID_Variavel(oldId.nome, na, tipoAtual, vetor_temp)
+      else
+        newId = new ID_Variavel(oldId.nome, na, tipoAtual, oldId.subCategoria)
       tabSim.put(id.absNome, newId)
     }
   }
@@ -398,7 +403,7 @@ class SemanticoScala extends Constants {
     tipoAtual = "vetor"
     if (numDim == 2)
       tipoIndiceDim2 = tipoConst//FIXME:verificar se esta ok
-    val vect = new Vetor(numDim, tipoElementos, dimensao1, dimensao2)
+    vetor_temp = new Vetor(numDim, tipoElementos, dimensao1, dimensao2)
     //FIXME: salvar na tabsim (provavelmente na acao 06)
   }
 
