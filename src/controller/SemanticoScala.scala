@@ -132,9 +132,12 @@ class SemanticoScala extends Constants {
   def pegaTabSim(id: String) = {
     var tabSim: HashMap[String, ID_Abstract] = null
     var i = na
-    for (i <- na to 0) {
-      if (listTabSim(i).contains(id))
+
+    while(tabSim == null && i >= 1) {
+      if (listTabSim(i).contains(id)) {
         tabSim = listTabSim(i)
+      }
+      i = i - 1
     }
     tabSim
   }
