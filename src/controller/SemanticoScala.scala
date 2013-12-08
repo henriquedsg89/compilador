@@ -167,7 +167,7 @@ class SemanticoScala extends Constants {
 
   def act03(token: Token) {
     val tabSim = pegaTabSim(posid.absNome)
-    val id = tabSim.get(token.getLexeme).asInstanceOf[ID_Constante]
+    val id = tabSim.get(posid.absNome).get.asInstanceOf[ID_Constante]
     val newId = new ID_Constante(id.nome, id.nivel, id.desloc, tipoConst, valConst)
     tabSim.put(newId.nome, newId)
   }
