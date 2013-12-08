@@ -336,7 +336,7 @@ class SemanticoScala extends Constants {
   def act18(token: Token) {
     if (tipoConst != "inteiro") {
       throw new SemanticError("Esperava-se uma constante inteira")
-    } else if (valConst.isInstanceOf[Int] && valConst.length < 256) {
+    } else if (valConst.isInstanceOf[String] && valConst.length < 256) {
       tipoAtual = "cadeia"
     } else if (valConst.length >= 256) {
       throw new SemanticError("Tamanho da cadeia maior que o permitido! Até 256 caracteres")
