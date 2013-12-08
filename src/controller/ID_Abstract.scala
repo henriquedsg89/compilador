@@ -7,4 +7,5 @@ package controller
  */
 abstract class ID_Abstract(nome: String, categoria: Int, nivel: Int, desloc: Int) {
 
+  def absNome = nome
 }

@@ -35,6 +35,11 @@ class SemanticoScala extends Constants {
       case 2 => act02(token)
       case 3 => act03(token)
       case 4 => act04(token)
+      case 5 => act05(token)
+      case 6 => act06(token)
+      case 7 => act07(token)
+      case 8 => act08(token)
+      case 9 => act09(token)
       case 75 => act75(token)
       case 79 => act79(token)
       case 80 => act80(token)
@@ -102,6 +107,7 @@ class SemanticoScala extends Constants {
     } else {
       val proc = new ID_Procedimento(token.getLexeme, na, 0, 0, 0, 0)
       tabSim.put(proc.nome, proc)
+      posid = proc
       npf = 0
       incNa()
     }
@@ -114,6 +120,7 @@ class SemanticoScala extends Constants {
     } else {
       val func = new ID_Funcao(token.getLexeme, na, 0, 0, 0, 0, null)
       tabSim.put(func.nome, func)
+      posid = func
       npf = 0
       incNa()
     }
@@ -121,14 +128,25 @@ class SemanticoScala extends Constants {
 
   def act09(token: Token) {
     val tabSim = listTabSim(na)
-    val funcOrProc = tabSim.get(token.getLexeme)
+    val funcOrProc = tabSim.get(posid.absNome)
     try {
       val func = funcOrProc.asInstanceOf[ID_Funcao]
       val newFunc = new ID_Funcao(func.nome, func.nivel, func.desloc, func.end_prim_instr, npf,
         0, null)
-      tabSim.
+      tabSim.put(newFunc.nome, newFunc)
+    } catch {
+      case ex: ClassCastException => {
+        val proc = funcOrProc.asInstanceOf[ID_Procedimento]
+        val newProc = new ID_Procedimento(proc.nome, proc.nivel, proc.desloc, proc.end_prim_instr, npf, proc.list_marams)
+        tabSim.put(newProc.nome, newProc)
+      }
     }
   }
+
+  def act10(token: Token) {
+//    val tabSim = listTabSim()
+  }
+
 
 
   def act75(token: Token) {
@@ -136,7 +154,7 @@ class SemanticoScala extends Constants {
       posid.asInstanceOf[ID_Funcao] //TODO: testar se realmente verifica posid ser uma funcao
     }
     catch {
-      case ex: ClassCastException => log.warning(posid.name + " deveria ser uma funcao")
+      case ex: ClassCastException => log.warning(posid.absNome + " deveria ser uma funcao")
     }
   }
 
