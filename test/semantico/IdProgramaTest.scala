@@ -107,19 +107,41 @@ class IdProgramaTest extends FlatSpec with Matchers {
   }
 
   "Declarando procedimentos com 3 parametros formais" should "conter num parametros formais = 3" in {
-    lex.setInput("programa asdf; proc id(val p1, p2: inteiro; val p3: real);{}; {}.")
+    lex.setInput("programa asdf; proc id(ref p1, p2: inteiro; val p3: real);{}; {}.")
     try {
       sin.parse(lex, sem)
       val proced = semScala.listTabSim(1).get("id").get.asInstanceOf[ID_Procedimento]
       proced.num_parms should be (3)
       proced.list_params(0).nome should be ("p1")
       proced.list_params(0).tipo should be ("inteiro")
+      proced.list_params(0).mecanismo_passagem should be ("referencia")
       proced.list_params(1).nome should be ("p2")
       proced.list_params(1).tipo should be ("inteiro")
+      proced.list_params(1).mecanismo_passagem should be ("referencia")
       proced.list_params(2).nome should be ("p3")
       proced.list_params(2).tipo should be ("real")
-      semScala.contextoLID should be ("par-formal")
-      semScala.mpp should be ("valor")
+      proced.list_params(2).mecanismo_passagem should be ("val")
+    } catch {
+      case e: Exception => fail("Não deveria dar excecao: " + e)
+    }
+
+  }
+
+  "Declarando procedimentos com 3 parametros formais" should "conveter tipo de passagem por valor e referencia" in {
+    lex.setInput("programa asdf; proc id(val p1, p2: inteiro; ref p3: real);{}; {}.")
+    try {
+      sin.parse(lex, sem)
+      val proced = semScala.listTabSim(1).get("id").get.asInstanceOf[ID_Procedimento]
+      proced.num_parms should be (3)
+      proced.list_params(0).nome should be ("p1")
+      proced.list_params(0).tipo should be ("inteiro")
+      proced.list_params(0).mecanismo_passagem should be ("valor")
+      proced.list_params(1).nome should be ("p2")
+      proced.list_params(1).tipo should be ("inteiro")
+      proced.list_params(1).mecanismo_passagem should be ("valor")
+      proced.list_params(2).nome should be ("p3")
+      proced.list_params(2).tipo should be ("real")
+      proced.list_params(2).mecanismo_passagem should be ("referencia")
     } catch {
       case e: Exception => fail("Não deveria dar excecao: " + e)
     }
