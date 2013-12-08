@@ -35,6 +35,16 @@ class SemanticoScala extends Constants {
       case 7 => act07(token)
       case 8 => act08(token)
       case 9 => act09(token)
+      case 10 => act10(token)
+      case 11 => act11(token)
+      case 12 => act12(token)
+      case 13 => act13(token)
+      case 14 => act14(token)
+      case 15 => act15(token)
+      case 16 => act16(token)
+      case 17 => act17(token)
+      case 18 => act18(token)
+
       //TODO: verificar se nao da merda usar range dentro do case
       case 46 until 51 => act46(token) //tem mesma implementacao
       case 55 until 57 => act55(token)
