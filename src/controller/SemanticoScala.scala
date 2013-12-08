@@ -390,6 +390,7 @@ class SemanticoScala extends Constants {
       tipoConstVetorLimSup = tipoConst
       limSupVetor = intValConst
     }
+    dimensao2 = new Dimensao(tipoIndiceDim2, limInfVetor, limSupVetor)
   }
 
   def act21(token: Token) {
@@ -397,6 +398,8 @@ class SemanticoScala extends Constants {
     tipoAtual = "vetor"
     if (numDim == 2)
       tipoIndiceDim2 = tipoConst//FIXME:verificar se esta ok
+    val vect = new Vetor(numDim, tipoElementos, dimensao1, dimensao2)
+    //FIXME: salvar na tabsim (provavelmente na acao 06)
   }
 
   def act22(token: Token) {
