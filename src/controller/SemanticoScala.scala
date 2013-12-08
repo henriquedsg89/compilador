@@ -25,6 +25,13 @@ class SemanticoScala extends Constants {
       case 1 => act01(token)
       case 2 => act02(token)
       case 3 => act03(token)
+      case 75 => act75(token)
+      case 79 => act79(token)
+      case 80 => act80(token)
+      case 81 => act81(token)
+      case 82 => act82(token)
+      case 83 => act83(token)
+      case 84 => act84(token)
       case _ => throw new Exception("Ação não Implementada: Acao = " + action)
     }
   }
@@ -65,8 +72,38 @@ class SemanticoScala extends Constants {
     tabSim.put(newId.nome, newId)
   }
 
+  def act75(token: Token) {
+    listTabSim(na).get(token.getLexeme)
+  }
 
+  def act79(token: Token) {
+    //TODO
+  }
 
+  def act80(token: Token) {
+    tipoConst = "inteiro"
+    valConst = token.getLexeme
+  }
+
+  def act81(token: Token) {
+    tipoConst = "real"
+    valConst = token.getLexeme
+  }
+
+  def act82(token: Token) {
+    tipoConst = "booleano"
+    valConst = token.getLexeme
+  }
+
+  def act83(token: Token) {
+    tipoConst = "booleano"
+    valConst = token.getLexeme
+  }
+
+  def act84(token: Token) {
+    tipoConst = "literal"
+    valConst = token.getLexeme
+  }
 }
 
 
