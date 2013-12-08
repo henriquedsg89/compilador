@@ -1,7 +1,7 @@
 package semantico
 
 import org.scalatest._
-import controller.{ID_Variavel, Controller}
+import controller.{ID_Parametro, ID_Procedimento, ID_Variavel, Controller}
 import gals.{Semantico, SemanticError, LexicalError, Constants}
 
 /**
@@ -80,6 +80,49 @@ class IdProgramaTest extends FlatSpec with Matchers {
     }
   }
 
+  "Declarando procedimentos sem parametros formais" should "conter num parametros formais = 0" in {
+    lex.setInput("programa asdf; proc id;{}; {}.")
+    try {
+      sin.parse(lex, sem)
+      semScala.listTabSim(1).get("id").get.asInstanceOf[ID_Procedimento].num_parms should be (0)
+    } catch {
+      case e: Exception => fail("Não deveria dar excecao: " + e)
+    }
+  }
+
+  "Declarando procedimentos com valores parametros formais" should "conter num parametros formais = 1" in {
+    lex.setInput("programa asdf; proc id(val p1: inteiro);{}; {}.")
+    try {
+      sin.parse(lex, sem)
+      semScala.listTabSim(1).get("id").get.asInstanceOf[ID_Procedimento].num_parms should be (1)
+      semScala.listTabSim(1).get("id").get.asInstanceOf[ID_Procedimento].list_params(0).nome should be ("p1")
+      semScala.listTabSim(1).get("id").get.asInstanceOf[ID_Procedimento].list_params(0).tipo should be ("inteiro")
+      semScala.contextoLID should be ("par-formal")
+      semScala.mpp should be ("valor")
+    } catch {
+      case e: Exception => fail("Não deveria dar excecao: " + e)
+    }
+  }
+
+  "Declarando procedimentos com 3 parametros formais" should "conter num parametros formais = 3" in {
+    lex.setInput("programa asdf; proc id(val p1, p2: inteiro; val p3: real);{}; {}.")
+    try {
+      sin.parse(lex, sem)
+      val proced = semScala.listTabSim(1).get("id").get.asInstanceOf[ID_Procedimento]
+      proced.num_parms should be (3)
+      proced.list_params(0).nome should be ("p1")
+      proced.list_params(0).tipo should be ("inteiro")
+      proced.list_params(1).nome should be ("p2")
+      proced.list_params(1).tipo should be ("inteiro")
+      proced.list_params(2).nome should be ("p3")
+      proced.list_params(2).tipo should be ("real")
+      semScala.contextoLID should be ("par-formal")
+      semScala.mpp should be ("valor")
+    } catch {
+      case e: Exception => fail("Não deveria dar excecao: " + e)
+    }
+  }
+
   "Declarando variaveis validas do tipo cadeia" should "possuir tipo cadeia" in {
     lex.setInput("programa asdf; var A, B: cadeia[5]; {}.")
     try {
@@ -92,7 +135,7 @@ class IdProgramaTest extends FlatSpec with Matchers {
   }
 
   "Declarando procedimento com nome do programa" should "gerar erro semantico" in {
-    lex.setInput("programa asdf; proc asdf(); {}.")
+    lex.setInput("programa asdf; proc asdf; {}.")
     a [SemanticError] should be thrownBy {
       sin.parse(lex, sem)
     }

@@ -25,7 +25,7 @@ class SemanticoScala extends Constants {
   var valConst, valVar : Object = null
   var na, desloc, npf, npa, limInfVetor, limSupVetor, numIndices, numDim : Int = 0
   var posid: ID_Abstract = null
-  var lids = new ArrayBuffer[String]()
+  var lids = new ArrayBuffer[ID_Abstract]()
 
   def executeAction(action: Int, token: Token) {
     action match {
@@ -177,7 +177,7 @@ class SemanticoScala extends Constants {
 
   def act04(token: Token) {
     contextoLID = "decl"
-    lids = new ArrayBuffer[String]()
+    lids = new ArrayBuffer[ID_Abstract]()
   }
 
   def act05(token: Token) {
@@ -186,10 +186,10 @@ class SemanticoScala extends Constants {
 
   def act06(token: Token) {
     lids map { id =>
-      val tabSim = pegaTabSim(id)
-      val oldId = tabSim.get(id).get.asInstanceOf[ID_Variavel]
-      val newId = new ID_Variavel(oldId.nome, tipoAtual, oldId.subCategoria)
-      tabSim.put(id, newId)
+      val tabSim = pegaTabSim(id.absNome)
+      val oldId = tabSim.get(id.absNome).get.asInstanceOf[ID_Variavel]
+      val newId = new ID_Variavel(oldId.nome, na, tipoAtual, oldId.subCategoria)
+      tabSim.put(id.absNome, newId)
     }
   }
 
@@ -197,8 +197,8 @@ class SemanticoScala extends Constants {
     if (jaDeclarado(token)) {
       throw new SemanticError("Id já declarado: " + token.getLexeme)
     } else {
-      val tabSim = pegaTabSim(token.getLexeme)
-      val proc = new ID_Procedimento(token.getLexeme, na, 0, 0, 0, 0)
+      val tabSim = listTabSim(na)
+      val proc = new ID_Procedimento(token.getLexeme, na, 0, 0, null)
       tabSim.put(proc.nome, proc)
       posid = proc
       npf = 0
@@ -223,14 +223,14 @@ class SemanticoScala extends Constants {
     val tabSim = pegaTabSim(posid.absNome)
     val funcOrProc = tabSim.get(posid.absNome)
     try {
-      val func = funcOrProc.asInstanceOf[ID_Funcao]
+      val func = funcOrProc.get.asInstanceOf[ID_Funcao]
       val newFunc = new ID_Funcao(func.nome, func.nivel, func.desloc, func.end_prim_instr, npf,
         0, null)
       tabSim.put(newFunc.nome, newFunc)
     } catch {
       case ex: ClassCastException => {
-        val proc = funcOrProc.asInstanceOf[ID_Procedimento]
-        val newProc = new ID_Procedimento(proc.nome, proc.nivel, proc.desloc, proc.end_prim_instr, npf, proc.list_marams)
+        val proc = funcOrProc.get.asInstanceOf[ID_Procedimento]
+        val newProc = new ID_Procedimento(proc.nome, proc.nivel, proc.end_prim_instr, npf, proc.list_params)
         tabSim.put(newProc.nome, newProc)
       }
     }
@@ -248,7 +248,7 @@ class SemanticoScala extends Constants {
 
   def act12(token: Token) {
     contextoLID = "par-formal"
-    //TODO marca pos do primero id da lista (relativa a TS)
+    lids = new ArrayBuffer[ID_Abstract]()
   }
 
   def act13(token: Token) {
@@ -256,7 +256,27 @@ class SemanticoScala extends Constants {
   }
 
   def act14(token: Token) {
-    //TODO
+    val lidsPar = new ArrayBuffer[ID_Parametro]()
+    lids map { id =>
+      val tabSim = pegaTabSim(id.absNome)
+      val oldId = tabSim.get(id.absNome).get.asInstanceOf[ID_Parametro]
+      val newId = new ID_Parametro(oldId.nome, oldId.nivel, 0, mpp, tipoAtual)
+      tabSim.put(newId.nome, newId)
+      lidsPar += newId
+    }
+    val tabSim = pegaTabSim(posid.absNome)
+    val oldProc = tabSim.get(posid.absNome).get.asInstanceOf[ID_Procedimento]
+
+    val oldParams = oldProc.list_params
+    val newParams = lidsPar.toArray
+
+    if (oldParams == null) {
+      val newProc = new ID_Procedimento(oldProc.nome, oldProc.nivel, oldProc.end_prim_instr, oldProc.num_parms, newParams)
+      tabSim.put(newProc.nome, newProc)
+    } else {
+      val newProc = new ID_Procedimento(oldProc.nome, oldProc.nivel, oldProc.end_prim_instr, oldProc.num_parms, (oldParams ++ newParams))
+      tabSim.put(newProc.nome, newProc)
+    }
   }
 
   def act15(token: Token) {
@@ -273,8 +293,8 @@ class SemanticoScala extends Constants {
         throw new SemanticError("Id já declarado: " + token.getLexeme)
       } else {
         val tabSim = listTabSim(na)
-        tabSim.put(token.getLexeme, new ID_Variavel(token.getLexeme, null, null))
-        lids += token.getLexeme
+        tabSim.put(token.getLexeme, new ID_Variavel(token.getLexeme, na, null, null))
+        lids += new ID_Variavel(token.getLexeme, na, null, null)
       }
     } else if (contextoLID == "par-formal") {
       if (jaDeclarado(token)) {
@@ -282,7 +302,8 @@ class SemanticoScala extends Constants {
       } else {
         npf = npf + 1
         val tabSim = listTabSim(na)
-        tabSim.put(token.getLexeme, new ID_Variavel(token.getLexeme, null, null))
+        tabSim.put(token.getLexeme, new ID_Parametro(token.getLexeme, na, 0, mpp, null))
+          lids += new ID_Parametro(token.getLexeme, na, 0, mpp, null)
       }
     } else if (contextoLID == "leitura") {
       if (!jaDeclarado(token)) {
