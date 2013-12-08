@@ -124,6 +124,7 @@ class IdProgramaTest extends FlatSpec with Matchers {
     } catch {
       case e: Exception => fail("Não deveria dar excecao: " + e)
     }
+
   }
 
   "Declarando procedimentos com 3 parametros formais" should "conveter tipo de passagem por valor e referencia" in {
