@@ -24,6 +24,7 @@ class SemanticoScala extends Constants {
   var valVar : Object = null
   var na, desloc, npf, npa, limInfVetor, limSupVetor, numIndices, numDim : Int = 0
   var posid: ID_Abstract = null
+  var dimensao1, dimensao2 : Dimensao = null
   var lids = new ArrayBuffer[ID_Abstract]()
 
   def executeAction(action: Int, token: Token) {
@@ -185,7 +186,7 @@ class SemanticoScala extends Constants {
   }
 
   def act05(token: Token) {
-    //TODO marca a pos do ultimo id da lista (relativa a TS)
+    //FIXME: marca a pos do ultimo id da lista (relativa a TS) ->nao usado
   }
 
   def act06(token: Token) {
@@ -392,24 +393,20 @@ class SemanticoScala extends Constants {
   }
 
   def act21(token: Token) {
-    tipoElementos = tipoAtual
+    tipoElementos = tipoAtual//FIXME:salvar o tipoAtual no tipo do tabsim
     tipoAtual = "vetor"
     if (numDim == 2)
       tipoIndiceDim2 = tipoConst//FIXME:verificar se esta ok
   }
 
   def act22(token: Token) {
-    //FIXME:registra info
-    val subCat = new Vetor(numDim, tipoIndiceDim1, tipoElementos, limInfVetor, limSupVetor)
-
-    val tabSim = listTabSim(na)
-
+    dimensao1 = new Dimensao(tipoConstVetorLimSup, limInfVetor, limSupVetor)
     numDim = 2
   }
 
 
   def act23(token: Token) {
-    //TODO: registra info
+    dimensao1 = new Dimensao(tipoConstVetorLimSup, limInfVetor, limSupVetor)
     numDim = 1
   }
 
