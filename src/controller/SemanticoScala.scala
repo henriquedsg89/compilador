@@ -16,7 +16,7 @@ class SemanticoScala extends Constants {
   val log = Logger.getLogger("SemanticoScala")
   val listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
 
-  var tipoConst, tipoVar, tipoResultadoFuncao, contextLID, tipoExpr, tipoExpSimples : String = null
+  var tipoConst, tipoVar, tipoResultadoFuncao, contextLID, tipoExpr, tipoExpSimples, opRel : String = null
   var valConst, valVar : Object = null
   var na, desloc, npf, npa : Int = 0
   var posid: ID_Abstract = null
@@ -120,7 +120,7 @@ class SemanticoScala extends Constants {
 
   def act09(token: Token) {
     val tabSim = listTabSim(na)
-    val funcOrProc = tabSim.get(posid.absNome)
+    val funcOrProc = tabSim.get(token.getLexeme)
     try {
       val func = funcOrProc.asInstanceOf[ID_Funcao]
       val newFunc = new ID_Funcao(func.nome, func.nivel, func.desloc, func.end_prim_instr, npf,
@@ -139,7 +139,18 @@ class SemanticoScala extends Constants {
 //    val tabSim = listTabSim()
   }
   def act44(token: Token) {
+    tipoExpr = tipoExpSimples
+  }
 
+  def act45(token: Token) {
+    if(!tipoExpSimples.equalsIgnoreCase(tipoExpr))
+      log.warning("Operandos incompativeis")
+    else
+      tipoExpr = "booleano"
+  }
+
+  def act46(token: Token) {//ate act51 a implementacao eh a mesma!
+    opRel = token.getLexeme
   }
 
   def act75(token: Token) {
