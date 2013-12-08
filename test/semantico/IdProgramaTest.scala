@@ -157,4 +157,32 @@ class IdProgramaTest extends FlatSpec with Matchers {
       sin.parse(lex, sem)
     }
   }
+
+  "Declarando variavel valida do tipo vetor indexada por numero" should "salvar o tipo de elementos, tipo de indices e limInf/limSup sem erro semantico" in {
+    lex.setInput("programa asdf; var A: vetor[1 .. 2] de inteiro; {}.")//TODO: arrumar lexico para suportar 1..2
+    sin.parse(lex, sem)
+    semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel].tipo should be ("vetor")
+  }
+
+  "Declarando variavel valida do tipo vetor indexada por letra" should "salvar o tipo de elementos, tipo de indices e limInf/limSup sem erro semantico" in {
+    lex.setInput("programa asdf; var A: vetor['a' .. 'f'] de inteiro; {}.")
+    sin.parse(lex, sem)
+    semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel].tipo should be ("vetor")
+  }
+
+  "Declarando variaveis validas do tipo vetor" should "nao gerar erro semantico" in {
+    lex.setInput("programa asdf; var A, B, C: vetor[1 .. 2] de inteiro; {}.")
+    sin.parse(lex, sem)
+    semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel].tipo should be ("vetor")
+    semScala.listTabSim(1).get("B").get.asInstanceOf[ID_Variavel].tipo should be ("vetor")
+    semScala.listTabSim(1).get("C").get.asInstanceOf[ID_Variavel].tipo should be ("vetor")
+  }
+
+  "Declarando variavel valida do tipo vetor bidimensional de inteiros" should "salvar tipo das duas dimensoes sem erro semantico" in {
+    lex.setInput("programa asdf; var A: vetor[1 .. 2, 'a' .. 'b'] de inteiro; {}.")
+    sin.parse(lex, sem)
+    semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel].tipo should be ("vetor")
+//    semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].numDim should be (2)
+//    semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].tipoElem should be ("inteiro")
+  }
 }

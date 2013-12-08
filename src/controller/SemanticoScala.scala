@@ -17,12 +17,12 @@ class SemanticoScala extends Constants {
   val log = Logger.getLogger("SemanticoScala")
   var listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
 
-  var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr,
+  var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr, valConst,
     tipoExpSimples, tipoTermo, tipoFator, opRel, operador, tipoResultadoOperacao,
     mpp, tipoAtual, tipoLadoEsq, tipoVarIndexada, tipoConstVetorLimSup, tipoConstVetorLimInf, contextoEXPR, tipoIndiceDim1,
     tipoIndiceDim2, tipoElementos: String = null
   var opNega, opUnario: Boolean = false
-  var valConst, valVar : Object = null
+  var valVar : Object = null
   var na, desloc, npf, npa, limInfVetor, limSupVetor, numIndices, numDim : Int = 0
   var posid: ID_Abstract = null
   var lids = new ArrayBuffer[ID_Abstract]()
@@ -142,6 +142,11 @@ class SemanticoScala extends Constants {
       i = i - 1
     }
     tabSim
+  }
+
+  def getLiteralAsInt(l: String) :Int = {
+    val li : Char = l.charAt(1)
+    Character.getNumericValue(li)
   }
 
   def act01(token: Token) {
@@ -331,30 +336,38 @@ class SemanticoScala extends Constants {
   def act18(token: Token) {
     if (tipoConst != "inteiro") {
       throw new SemanticError("Esperava-se uma constante inteira")
-    } else if (valConst.isInstanceOf[String] && valConst.asInstanceOf[String].length < 256) {
+    } else if (valConst.isInstanceOf[Int] && valConst.length < 256) {
       tipoAtual = "cadeia"
-    } else if (valConst.asInstanceOf[String].length >= 256) {
+    } else if (valConst.length >= 256) {
       throw new SemanticError("Tamanho da cadeia maior que o permitido! Até 256 caracteres")
     }
   }
 
   def act19(token: Token) {
-    if (tipoConst != "inteiro" && tipoConst != "caracter") {
+    if (tipoConst != "inteiro" && tipoConst != "literal") {
       throw new SemanticError("Tipo do índice inválido")
     } else {
       tipoConstVetorLimInf = tipoConst
-      limInfVetor = token.getLexeme.asInstanceOf[Int]
+      if(tipoConstVetorLimInf == "literal")
+        limInfVetor = getLiteralAsInt(token.getLexeme)
+      else
+        limInfVetor = Integer.parseInt(token.getLexeme)
     }
   }
 
   def act20(token: Token) {
-    if (tipoConst != tipoConstVetorLimInf && tipoConst != tipoConstVetorLimInf) {
+    var intValConst :Int = 0
+    if(tipoConst=="literal")
+      intValConst = getLiteralAsInt(token.getLexeme)
+    else
+      intValConst = Integer.parseInt(token.getLexeme)
+    if (tipoConst != tipoConstVetorLimInf) {
       throw new SemanticError("Ctes do interv devem ser do mesmo tipo")
-    } else if (valConst.asInstanceOf[Int] <= limInfVetor) {
+    } else if (intValConst <= limInfVetor) {
       throw new SemanticError("Lim Sup Deve ser >  que L. Inf.")
     } else {
       tipoConstVetorLimSup = tipoConst
-      limSupVetor = token.getLexeme.asInstanceOf[Int]
+      limSupVetor = intValConst
     }
   }
 
@@ -419,8 +432,8 @@ class SemanticoScala extends Constants {
   def act30(token: Token) {
     if (tipoExpr != "booleano" && tipoExpr != "inteiro")
        throw new SemanticError("Tipo inválido da expressão")
-    else
-      "Gera código"//TODO
+    //else
+      //TODO:"Gera código"
   }
 
   def act31(token: Token) {
@@ -432,8 +445,8 @@ class SemanticoScala extends Constants {
     val tiposParaImp = Array("inteiro", "real", "caracter", "cadeia")
     if (!tiposParaImp.contains(tipoExpr))
       throw new SemanticError("Tipo inválido para impressão")
-    else
-      "G. Código"//TODO
+    //else
+      //TODO:"G. Código"
   }
 
   def act33(token: Token){//TODO: revisar que a porra eh foda e eu to com sono
