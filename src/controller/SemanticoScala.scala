@@ -22,8 +22,11 @@ class SemanticoScala extends Constants {
   var desloc = 0
   var tipoConst : String = null
   var valConst : Object = null
+  var tipoVar: String = null
+  var valVar: String = null
+  var tipoResultadoFuncao: String = null
   var contextLID : String = null
-  var npf, npa : Int = 0;
+  var npf, npa : Int = 0
   var posid: ID_Abstract = null
 
   def executeAction(action: Int, token: Token) {
@@ -130,11 +133,16 @@ class SemanticoScala extends Constants {
 
   def act75(token: Token) {
     try{
-      val id_func = posid.asInstanceOf[ID_Funcao]
+      posid.asInstanceOf[ID_Funcao] //TODO: testar se realmente verifica posid ser uma funcao
     }
     catch {
       case ex: ClassCastException => log.warning(posid.name + " deveria ser uma funcao")
     }
+  }
+
+  def act76(token: Token) {
+    if(npa == npf)
+      tipoVar
   }
 
   def act79(token: Token) {
