@@ -23,6 +23,7 @@ class SemanticoScala extends Constants {
   var tipoConst : String = null
   var valConst : Object = null
   var contextLID : String = null
+  var npf : Int = 0;
   var posid: ID_Abstract = null
 
   def executeAction(action: Int, token: Token) {
@@ -98,6 +99,30 @@ class SemanticoScala extends Constants {
     } else {
       val proc = new ID_Procedimento(token.getLexeme, na, 0, 0, 0, 0)
       tabSim.put(proc.nome, proc)
+      npf = 0
+      incNa()
+    }
+  }
+
+  def act08(token: Token) {
+    val tabSim = listTabSim(na)
+    if (tabSim.contains(token.getLexeme)) {
+      throw new SemanticError("Id já declarado: " + token.getLexeme)
+    } else {
+      val func = new ID_Funcao(token.getLexeme, na, 0, 0, 0, 0, null)
+      tabSim.put(func.nome, func)
+      npf = 0
+      incNa()
+    }
+  }
+
+  def act09(token: Token) {
+    val tabSim = listTabSim(na)
+    val funcOrProc = tabSim.get(token.getLexeme)
+    try {
+      val func = funcOrProc.asInstanceOf[ID_Funcao]
+      val newFunc = new ID_Funcao(func.nome, func.nivel, func.desloc, func.end_prim_instr, npf,
+        0, null)
     }
   }
 
