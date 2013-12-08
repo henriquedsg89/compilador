@@ -18,10 +18,11 @@ class SemanticoScala extends Constants {
 
   var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr,
     tipoExpSimples, tipoTermo, tipoFator, opRel, operador, tipoResultadoOperacao,
-    mpp, tipoAtual, tipoLadoEsq, tipoVarIndexada, tipoConstVetor, contextoEXPR: String = null
+    mpp, tipoAtual, tipoLadoEsq, tipoVarIndexada, tipoConstVetorLimSup, tipoConstVetorLimInf, contextoEXPR, tipoIndiceDim1,
+    tipoIndiceDim2, tipoElementos: String = null
   var opNega, opUnario: Boolean = false
   var valConst, valVar : Object = null
-  var na, desloc, npf, npa, limInfVetor, limSupVetor : Int = 0
+  var na, desloc, npf, npa, limInfVetor, limSupVetor, numIndices, numDim : Int = 0
   var posid: ID_Abstract = null
 
   def executeAction(action: Int, token: Token) {
@@ -58,9 +59,6 @@ class SemanticoScala extends Constants {
       case 30 => act30(token)
       case 31 => act31(token)
       case 32 => act32(token)
-      case 33 => act33(token)
-
-
       case 33 => act33(token)
       case 34 => act34(token)
       case 35 => act35(token)
@@ -290,33 +288,42 @@ class SemanticoScala extends Constants {
     if (tipoConst != "inteiro" && tipoConst != "caracter") {
       throw new SemanticError("Tipo do índice inválido")
     } else {
-      tipoConstVetor = tipoConst
+      tipoConstVetorLimInf = tipoConst
       limInfVetor = token.getLexeme.asInstanceOf[Int]
     }
   }
 
   def act20(token: Token) {
-    if (tipoConst != tipoConstVetor && tipoConst != tipoConstVetor) {
+    if (tipoConst != tipoConstVetorLimInf && tipoConst != tipoConstVetorLimInf) {
       throw new SemanticError("Ctes do interv devem ser do mesmo tipo")
     } else if (valConst.asInstanceOf[Int] <= limInfVetor) {
       throw new SemanticError("Lim Sup Deve ser >  que L. Inf.")
     } else {
-      tipoConstVetor = tipoConst
+      tipoConstVetorLimSup = tipoConst
       limSupVetor = token.getLexeme.asInstanceOf[Int]
     }
   }
 
   def act21(token: Token) {
-    //TODO
+    tipoElementos = tipoAtual
+    tipoAtual = "vetor"
+    if (numDim == 2)
+      tipoIndiceDim2 = tipoConst//FIXME:verificar se esta ok
   }
 
   def act22(token: Token) {
-    //TODO
+    //FIXME:registra info
+    val subCat = new Vetor(numDim, tipoIndiceDim1, tipoElementos, limInfVetor, limSupVetor)
+
+    val tabSim = listTabSim(na)
+
+    numDim = 2
   }
 
 
   def act23(token: Token) {
-    //TODO
+    //TODO: registra info
+    numDim = 1
   }
 
   def act24(token: Token) {
@@ -407,11 +414,26 @@ class SemanticoScala extends Constants {
   def act35(token: Token) {
     if(!posid.isInstanceOf[ID_Variavel])
       throw new SemanticError("esperava-se uma variavel")
-    else {
-      if(posid.asInstanceOf[ID_Variavel].tipo != "vetor" && posid.asInstanceOf[ID_Variavel].tipo != "cadeia")
-        throw new SemanticError("apenas vetores e caidas podem ser indexados")
+    else if(posid.asInstanceOf[ID_Variavel].tipo == "vetor")
+      tipoVarIndexada = "vetor"
+    else if (posid.asInstanceOf[ID_Variavel].tipo == "cadeia")
+      tipoVarIndexada = "cadeia"
+    else
+      throw new SemanticError("apenas vetores e cadeias podem ser indexados")
+  }
+
+  def act36(token: Token) {
+    numIndices = 1
+    if (tipoVarIndexada == "vetor") {
+      if (tipoExpr != tipoIndiceDim1)
+        throw new SemanticError("Tipo indice inválido")
       else
-        tipoVarIndexada = "todo porra"//TODO: setar tipo = vetor ou cadeia
+          tipoLadoEsq = tipoElementos
+    } else {//cadeia
+      if (tipoExpr != "inteiro")
+        throw new SemanticError("Indice deveria ser inteiro")
+      else
+        tipoLadoEsq = "caracter"
     }
   }
 
@@ -422,7 +444,7 @@ class SemanticoScala extends Constants {
 
   def act40(token: Token) {
     if(npa==npf)
-      //TODO: gerar codigo p/ chamada de proc
+      "Gerar código cham"//TODO: gerar codigo p/ chamada de proc
     else
       throw new SemanticError("Erro na quantidade de parametros")
   }
