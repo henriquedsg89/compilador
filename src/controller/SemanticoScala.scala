@@ -211,7 +211,7 @@ class SemanticoScala extends Constants {
       throw new SemanticError("Id já declarado: " + token.getLexeme)
     } else {
       val tabSim = pegaTabSim(token.getLexeme)
-      val func = new ID_Funcao(token.getLexeme, na, 0, 0, 0, 0, null)
+      val func = new ID_Funcao(token.getLexeme, na, 0, 0, 0, null, null)
       tabSim.put(func.nome, func)
       posid = func
       npf = 0
@@ -225,7 +225,7 @@ class SemanticoScala extends Constants {
     try {
       val func = funcOrProc.get.asInstanceOf[ID_Funcao]
       val newFunc = new ID_Funcao(func.nome, func.nivel, func.desloc, func.end_prim_instr, npf,
-        0, null)
+        func.list_params, null)
       tabSim.put(newFunc.nome, newFunc)
     } catch {
       case ex: ClassCastException => {

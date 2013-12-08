@@ -1,8 +1,10 @@
 package semantico
 
 import org.scalatest._
-import controller.{ID_Parametro, ID_Procedimento, ID_Variavel, Controller}
+import controller._
 import gals.{Semantico, SemanticError, LexicalError, Constants}
+import controller.ID_Variavel
+import controller.ID_Procedimento
 
 /**
  * Authors: Henrique & Octávio
@@ -116,6 +118,21 @@ class IdProgramaTest extends FlatSpec with Matchers {
       proced.list_params(1).tipo should be ("inteiro")
       proced.list_params(2).nome should be ("p3")
       proced.list_params(2).tipo should be ("real")
+      semScala.contextoLID should be ("par-formal")
+      semScala.mpp should be ("valor")
+    } catch {
+      case e: Exception => fail("Não deveria dar excecao: " + e)
+    }
+  }
+
+  "Declarando func com valor param formal" should "conter num parametros formais = 1" in {
+    lex.setInput("programa asdf; func id(val p1: inteiro):inteiro;{}; {}.")
+    try {
+      sin.parse(lex, sem)
+      val func = semScala.listTabSim(1).get("id").get.asInstanceOf[ID_Funcao]
+      func.num_parms should be (1)
+      func.list_params(0).nome should be ("p1")
+      func.list_params(0).tipo should be ("inteiro")
       semScala.contextoLID should be ("par-formal")
       semScala.mpp should be ("valor")
     } catch {
