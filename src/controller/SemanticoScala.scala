@@ -4,6 +4,7 @@ import scala.collection.mutable.{ArrayBuffer, HashMap}
 import gals.{SemanticError, Constants, Token}
 import scala.collection.mutable
 import controller.ID_Constante
+import java.util.logging.Logger
 
 
 /**
@@ -13,6 +14,8 @@ import controller.ID_Constante
  */
 class SemanticoScala extends Constants {
 
+  val log = Logger.getLogger("SemanticoScala")
+
   val listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
 
   var na = 0
@@ -20,6 +23,7 @@ class SemanticoScala extends Constants {
   var tipoConst : String = null
   var valConst : Object = null
   var contextLID : String = null
+  var posid: ID_Abstract = null
 
   def executeAction(action: Int, token: Token) {
     action match {
@@ -99,7 +103,12 @@ class SemanticoScala extends Constants {
 
 
   def act75(token: Token) {
-    listTabSim(na).get(token.getLexeme)
+    try{
+      val id_func = posid.asInstanceOf[ID_Funcao]
+    }
+    catch {
+      case ex: ClassCastException => log.warning(posid.name + " deveria ser uma funcao")
+    }
   }
 
   def act79(token: Token) {
