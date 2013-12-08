@@ -18,10 +18,10 @@ class SemanticoScala extends Constants {
 
   var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr,
     tipoExpSimples, tipoTermo, tipoFator, opRel, operador, tipoResultadoOperacao,
-    mpp, tipoAtual: String = null
+    mpp, tipoAtual, tipoConstVetor: String = null
   var opNega, opUnario: Boolean = false
   var valConst, valVar : Object = null
-  var na, desloc, npf, npa : Int = 0
+  var na, desloc, npf, npa, limInfVetor, limSupVetor : Int = 0
   var posid: ID_Abstract = null
 
   def executeAction(action: Int, token: Token) {
@@ -44,6 +44,16 @@ class SemanticoScala extends Constants {
       case 16 => act16(token)
       case 17 => act17(token)
       case 18 => act18(token)
+      case 19 => act19(token)
+      case 20 => act20(token)
+      case 21 => act21(token)
+      case 22 => act22(token)
+      case 23 => act23(token)
+      case 24 => act24(token)
+      case 25 => act25(token)
+      case 26 => act26(token)
+      case 27 => act27(token)
+      case 28 => act28(token)
 
       //TODO: verificar se nao da merda usar range dentro do case
       case 46 until 51 => act46(token) //tem mesma implementacao
@@ -230,6 +240,66 @@ class SemanticoScala extends Constants {
     } else {
       tipoAtual = "cadeia"
     }
+  }
+
+  def act19(token: Token) {
+    if (tipoConst != "inteiro" && tipoConst != "caracter") {
+      throw new SemanticError("Tipo do índice inválido")
+    } else {
+      tipoConstVetor = tipoConst
+      limInfVetor = token.getLexeme.asInstanceOf[Int]
+    }
+  }
+
+  def act20(token: Token) {
+    if (tipoConst != tipoConstVetor && tipoConst != tipoConstVetor) {
+      throw new SemanticError("Ctes do interv devem ser do mesmo tipo")
+    } else if (valConst.asInstanceOf[Int] <= limInfVetor) {
+      throw new SemanticError("Lim Sup Deve ser >  que L. Inf.")
+    } else {
+      tipoConstVetor = tipoConst
+      limSupVetor = token.getLexeme.asInstanceOf[Int]
+    }
+  }
+
+  def act21(token: Token) {
+    //TODO
+  }
+
+  def act22(token: Token) {
+    //TODO
+  }
+
+
+  def act23(token: Token) {
+    //TODO
+  }
+
+  def act24(token: Token) {
+    val id = listTabSim(na).get(token.getLexeme)
+    if (id == null) {
+      throw new SemanticError("Id não declarado: " + token.getLexeme)
+    } else if (!id.isInstanceOf[ID_Constante]){
+      throw new SemanticError("Esperava-se um id de constante")
+    } else {
+      valConst = token.getLexeme
+    }
+  }
+
+  def act25(token: Token) {
+    tipoAtual = "inteiro"
+  }
+
+  def act26(token: Token) {
+    tipoAtual = "real"
+  }
+
+  def act27(token: Token) {
+    tipoAtual = "booleano"
+  }
+
+  def act28(token: Token) {
+    tipoAtual = "caracter"
   }
 
 
