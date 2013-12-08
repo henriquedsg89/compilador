@@ -18,7 +18,7 @@ class SemanticoScala extends Constants {
 
   var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr,
     tipoExpSimples, tipoTermo, tipoFator, opRel, operador, tipoResultadoOperacao,
-    mpp: String = null
+    mpp, tipoAtual: String = null
   var opNega, opUnario: Boolean = false
   var valConst, valVar : Object = null
   var na, desloc, npf, npa : Int = 0
@@ -209,6 +209,16 @@ class SemanticoScala extends Constants {
           throw new SemanticError("Apenas var podem ser lidas")
         }
       }
+    }
+  }
+
+  def act18(token: Token) {
+    if (tipoConst != "inteiro") {
+      throw new SemanticError("Esperava-se uma constante inteira")
+    } else if (valConst.isInstanceOf[String] && valConst.asInstanceOf[String].length > 256) {
+      throw new SemanticError("Tamanho da cadeia maior que o permitido! Até 256 caracteres")
+    } else {
+      tipoAtual = "cadeia"
     }
   }
 
