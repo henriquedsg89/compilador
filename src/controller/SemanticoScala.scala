@@ -61,11 +61,42 @@ class SemanticoScala extends Constants {
       case 33 => act33(token)
 
 
+      case 33 => act33(token)
+      case 34 => act34(token)
+      case 35 => act35(token)
+      case 36 => //TODO: act36(token)
+      case 37 => //TODO: act37(token)
+      case 38 => act38(token)
+      case 39 => //TODO: act39(token)
+      case 40 => act40(token)
+      case 41 => act41(token)
+      case 42 => //TODO: act42(token)
+      case 43 => //TODO: act43(token)
+      case 44 => act44(token)
+      case 45 => act45(token)
       //TODO: verificar se nao da merda usar range dentro do case
       case 46 until 51 => act46(token) //tem mesma implementacao
+      case 52 => act52(token)
+      case 53 => act53(token)
+      case 54 => act54(token)
       case 55 until 57 => act55(token)
+      case 58 => act58(token)
+      case 59 => act59(token)
+      case 60 => act60(token)
+      case 61 until 63 => //nao existe!
       case 64 until 66 => act64(token)
+      case 67 => act67(token)
+      case 68 => act68(token)
+      case 69 => act69(token)
+      case 70 => act70(token)
+      case 71 => act71(token)
+      case 72 => act72(token)
+      case 73 => act73(token)
+      case 74 => act74(token)
       case 75 => act75(token)
+      case 76 => act76(token)
+      case 77 => act77(token)
+      case 78 => //TODO: act78(token)
       case 79 => act79(token)
       case 80 => act80(token)
       case 81 => act81(token)
@@ -377,6 +408,23 @@ class SemanticoScala extends Constants {
     }
   }
 
+  def act38(token: Token) {
+    if(!posid.isInstanceOf[ID_Procedimento])
+      throw new SemanticError(posid.absNome + " deveria ser uma procedure")
+  }
+
+  def act40(token: Token) {
+    if(npa==npf)
+      //TODO: gerar codigo p/ chamada de proc
+    else
+      throw new SemanticError("Erro na quantidade de parametros")
+  }
+
+  def act41(token: Token) {
+    if(!posid.isInstanceOf[ID_Procedimento])
+      throw new SemanticError(posid.absNome + " deveria ser uma procedure")
+  }
+
   def act44(token: Token) {
     tipoExpr = tipoExpSimples
   }
@@ -398,6 +446,10 @@ class SemanticoScala extends Constants {
 
   def act53(token: Token) {
     //TODO: verificar se operador se aplica a tipoExpSimples
+  }
+
+  def act54(token: Token) {
+    //TODO: tipo termo incompativil com tipo expsimples -> ERRO
   }
 
   def act55(token: Token) {
