@@ -120,11 +120,10 @@ class IdProgramaTest extends FlatSpec with Matchers {
       proced.list_params(1).mecanismo_passagem should be ("referencia")
       proced.list_params(2).nome should be ("p3")
       proced.list_params(2).tipo should be ("real")
-      proced.list_params(2).mecanismo_passagem should be ("val")
+      proced.list_params(2).mecanismo_passagem should be ("valor")
     } catch {
       case e: Exception => fail("Não deveria dar excecao: " + e)
     }
-
   }
 
   "Declarando procedimentos com 3 parametros formais" should "conveter tipo de passagem por valor e referencia" in {
@@ -156,8 +155,6 @@ class IdProgramaTest extends FlatSpec with Matchers {
       func.tipo_resultado should be ("inteiro")
       func.list_params(0).nome should be ("p1")
       func.list_params(0).tipo should be ("inteiro")
-      semScala.contextoLID should be ("par-formal")
-      semScala.mpp should be ("valor")
     } catch {
       case e: Exception => fail("Não deveria dar excecao: " + e)
     }
@@ -165,6 +162,17 @@ class IdProgramaTest extends FlatSpec with Matchers {
 
   "Declarando variaveis validas do tipo cadeia" should "possuir tipo cadeia" in {
     lex.setInput("programa asdf; var A, B: cadeia[5]; {}.")
+    try {
+      sin.parse(lex, sem)
+      semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel].tipo should be ("cadeia")
+      semScala.listTabSim(1).get("B").get.asInstanceOf[ID_Variavel].tipo should be ("cadeia")
+    } catch {
+      case e: Exception => fail("Não deveria dar excecao: " + e)
+    }
+  }
+
+  "Declarando constantes elas" should "aceitar ids" in {
+    lex.setInput("programa asdf; const A = 5; proc id;{ const B = A; } {}.")
     try {
       sin.parse(lex, sem)
       semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel].tipo should be ("cadeia")
