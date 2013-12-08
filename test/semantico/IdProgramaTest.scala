@@ -2,7 +2,7 @@ package semantico
 
 import org.scalatest._
 import controller.Controller
-import gals.{LexicalError, Constants}
+import gals.{SemanticError, LexicalError, Constants}
 
 /**
  * Authors: Henrique & Octávio
@@ -16,6 +16,19 @@ class IdProgramaTest extends FlatSpec with Matchers {
 
   "Semantico" should "não gerar error" in {
     lex.setInput("programa asdf; {}.")
-    sin.parse(lex, sem)
+    try {
+      sin.parse(lex, sem)
+    } catch {
+      case e: Exception => fail("Não deveria dar excecao: " + e)
+    }
+
+  }
+
+  "Semantico" should "gerar error em caso de variavel com mesmo nome do programa" in {
+    lex.setInput("programa asdf; var asdf: inteiro; {}.")
+
+    a [SemanticError] should be thrownBy {
+      sin.parse(lex, sem)
+    }
   }
 }
