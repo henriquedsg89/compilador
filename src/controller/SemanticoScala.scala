@@ -86,7 +86,7 @@ class SemanticoScala extends Constants {
   }
 
   def act04(token: Token) {
-    contextLID = "decl"
+    contextoLID = "decl"
     //TODO marca pos do primeiro id da lista(relativa a TS)
   }
 
@@ -126,7 +126,7 @@ class SemanticoScala extends Constants {
 
   def act09(token: Token) {
     val tabSim = listTabSim(na)
-    val funcOrProc = tabSim.get(token.getLexeme)
+    val funcOrProc = tabSim.get(posid.absNome)
     try {
       val func = funcOrProc.asInstanceOf[ID_Funcao]
       val newFunc = new ID_Funcao(func.nome, func.nivel, func.desloc, func.end_prim_instr, npf,
@@ -144,6 +144,37 @@ class SemanticoScala extends Constants {
   def act10(token: Token) {
 //    val tabSim = listTabSim()
   }
+
+  def act11(token: Token) {
+    //FIXME verificar -> retirar as variavies declaradas localmente
+    listTabSim remove na
+    na = na - 1
+  }
+
+  def act12(token: Token) {
+    contextoLID = "par-formal"
+    //TODO marca pos do primero id da lista (relativa a TS)
+  }
+
+  def act13(token: Token) {
+    //TODO marca pos do ultimo elemento da lista (relativa a TS)
+  }
+
+  def act14(token: Token) {
+    //TODO
+  }
+
+  def act15(token: Token) {
+
+  }
+
+
+
+
+
+
+
+
   def act44(token: Token) {
     tipoExpr = tipoExpSimples
   }
