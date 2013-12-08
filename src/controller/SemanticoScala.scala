@@ -18,7 +18,7 @@ class SemanticoScala extends Constants {
 
   var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr,
     tipoExpSimples, tipoTermo, tipoFator, opRel, operador, tipoResultadoOperacao,
-    mpp, tipoAtual, tipoLadoEsq, tipoVarIndexada, tipoConstVetor: String = null
+    mpp, tipoAtual, tipoLadoEsq, tipoVarIndexada, tipoConstVetor, contextoEXPR: String = null
   var opNega, opUnario: Boolean = false
   var valConst, valVar : Object = null
   var na, desloc, npf, npa, limInfVetor, limSupVetor : Int = 0
@@ -54,6 +54,12 @@ class SemanticoScala extends Constants {
       case 26 => act26(token)
       case 27 => act27(token)
       case 28 => act28(token)
+      case 29 => act29(token)
+      case 30 => act30(token)
+      case 31 => act31(token)
+      case 32 => act32(token)
+      case 33 => act33(token)
+
 
       //TODO: verificar se nao da merda usar range dentro do case
       case 46 until 51 => act46(token) //tem mesma implementacao
@@ -302,10 +308,34 @@ class SemanticoScala extends Constants {
     tipoAtual = "caracter"
   }
 
+  def act29(token: Token) {
+    val tabSim = listTabSim(na)
+    if (!tabSim.contains(token.getLexeme)) {
+      throw new SemanticError("Identificador não declarado")
+    } else {
+      posid = tabSim.get(token.getLexeme).get
+    }
+  }
 
+  def act30(token: Token) {
+    if (tipoExpr != "booleano" && tipoExpr != "inteiro")
+       throw new SemanticError("Tipo inválido da expressão")
+    else
+      "Gera código"//TODO
+  }
 
+  def act31(token: Token) {
+    contextoLID = "leitura"
+  }
 
-
+  def act32(token: Token) {
+    contextoEXPR = "impressao"
+    val tiposParaImp = Array("inteiro", "real", "caracter", "cadeia")
+    if (!tiposParaImp.contains(tipoExpr))
+      throw new SemanticError("Tipo inválido para impressão")
+    else
+      "G. Código"//TODO
+  }
 
   def act33(token: Token){//TODO: revisar que a porra eh foda e eu to com sono
     if(posid.isInstanceOf[ID_Variavel]) {
