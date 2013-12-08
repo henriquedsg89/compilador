@@ -16,7 +16,8 @@ class SemanticoScala extends Constants {
   val log = Logger.getLogger("SemanticoScala")
   val listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
 
-  var tipoConst, tipoVar, tipoResultadoFuncao, contextLID, tipoExpr, tipoExpSimples, opRel : String = null
+  var tipoConst, tipoVar, tipoResultadoFuncao, contextLID, tipoExpr,
+    tipoExpSimples, tipoTermo, tipoFator, opRel, operador : String = null
   var valConst, valVar : Object = null
   var na, desloc, npf, npa : Int = 0
   var posid: ID_Abstract = null
@@ -32,6 +33,9 @@ class SemanticoScala extends Constants {
       case 7 => act07(token)
       case 8 => act08(token)
       case 9 => act09(token)
+      //TODO: verificar se nao da merda usar range dentro do case
+      case 46 until 51 => act46(token) //tem mesma implementacao
+      case 55 until 57 => act55(token)
       case 75 => act75(token)
       case 79 => act79(token)
       case 80 => act80(token)
@@ -151,6 +155,31 @@ class SemanticoScala extends Constants {
 
   def act46(token: Token) {//ate act51 a implementacao eh a mesma!
     opRel = token.getLexeme
+  }
+
+  def act52(token: Token) {
+    tipoExpSimples = tipoTermo
+  }
+
+  def act53(token: Token) {
+    //TODO: verificar se operador se aplica a tipoExpSimples
+  }
+
+  def act55(token: Token) {
+    operador = token.getLexeme
+  }
+
+  def act58(token: Token) {
+    tipoTermo = tipoFator
+  }
+
+  def act59(token: Token) {
+    //TODO: se operador nao se aplica a tipoTermo
+    log.warning("Operador e operando incompativeis")
+  }
+
+  def act60(token: Token) {
+
   }
 
   def act75(token: Token) {
