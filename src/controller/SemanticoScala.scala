@@ -159,13 +159,14 @@ class SemanticoScala extends Constants {
     if (jaDeclarado(token)) {
       throw new SemanticError("Id já declarado: " + token.getLexeme)
     } else {
-      val tabSim = pegaTabSim(token.getLexeme)
-      tabSim.put(token.getLexeme, new ID_Constante(token.getLexeme,na,0, null, null))
+      posid = new ID_Constante(token.getLexeme,na,0, null, null)
+      val tabSim = listTabSim(na)
+      tabSim.put(token.getLexeme, posid)
     }
   }
 
   def act03(token: Token) {
-    val tabSim = pegaTabSim(token.getLexeme)
+    val tabSim = pegaTabSim(posid.absNome)
     val id = tabSim.get(token.getLexeme).asInstanceOf[ID_Constante]
     val newId = new ID_Constante(id.nome, id.nivel, id.desloc, tipoConst, valConst)
     tabSim.put(newId.nome, newId)
