@@ -120,13 +120,13 @@ class SemanticoScala extends Constants {
   }
 
   def jaDeclarado(token: Token): Boolean = {
-    var i = 0
-    for (i <- 0 to na) {
-      val tabSim = listTabSim(na)
-      if (tabSim.contains(token.getLexeme))
-        true
+    var i = na
+    var ret = false
+    while(i >= 0 && ret == false) {
+      ret = listTabSim(i).contains(token.getLexeme)
+      i = i - 1
     }
-    false
+    ret
   }
 
   def pegaTabSim(id: String) = {

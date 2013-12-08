@@ -26,7 +26,6 @@ class IdProgramaTest extends FlatSpec with Matchers {
 
   "Semantico" should "gerar error em caso de variavel com mesmo nome do programa" in {
     lex.setInput("programa asdf; var asdf: inteiro; {}.")
-
     a [SemanticError] should be thrownBy {
       sin.parse(lex, sem)
     }
