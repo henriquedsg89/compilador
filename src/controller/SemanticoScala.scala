@@ -23,7 +23,7 @@ class SemanticoScala extends Constants {
   var tipoConst : String = null
   var valConst : Object = null
   var contextLID : String = null
-  var npf : Int = 0;
+  var npf, npa : Int = 0;
   var posid: ID_Abstract = null
 
   def executeAction(action: Int, token: Token) {
@@ -123,6 +123,7 @@ class SemanticoScala extends Constants {
       val func = funcOrProc.asInstanceOf[ID_Funcao]
       val newFunc = new ID_Funcao(func.nome, func.nivel, func.desloc, func.end_prim_instr, npf,
         0, null)
+      tabSim.
     }
   }
 
