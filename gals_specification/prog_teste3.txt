@@ -1,0 +1,7 @@
+Programa ex1;
+    var A, B, C: inteiro;
+    {
+        leia (A, B);
+        C := (A + B) * ( A – B ) escreva (“resultado = “, C);
+    }
+.

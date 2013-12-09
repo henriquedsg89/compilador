@@ -1,2 +1,53 @@
-programa ProgramaTeste;
-{comandoUm := meuVal(“valor definido”)}.
+programa ex_mat;
+    var i, j, soma, aux: inteiro;
+    var A: vetor[1..2,1..2] de inteiro;
+    {
+        i := 1; soma := 0;
+        enquanto i<=2 faca {
+          j := 1;
+          enquanto j<=2 faca {
+            leia(aux);
+            A[i,j] := aux;
+            soma := soma + A[i,j];
+            j := j + 1;
+          }
+          i := i + 1;
+        }
+        escreva('soma = ', soma);
+    }
+.
+
+programa fatoriais;
+    var i, aux, qtd, x_counter, y_couter: inteiro;
+	var X, Y:vetor[1..100] de inteiro,
+	funcao fatorial(val x: inteiro):inteiro; {
+		se x>1 entao
+			fatorial := x * fatorial(x-1);
+		senao
+			fatorial := 1;
+	}
+	{
+		escreva('Quantos elementos serão inseridos? obs:máx 100');
+		leia(qtd);
+		se qtd>0 e qtd<=100 entao {
+			i := 0; x_counter := 0; y_counter := 0;
+			enquanto i<qtd faca {
+				leia(aux);
+				se aux<2 entao {
+					X[x_counter] := aux;
+					x_counter = x_counter + 1;
+				} senao {
+					Y[y_counter] := aux;
+					y_counter := y_counter + 1;
+				}
+				i := i + 1;
+			}
+			i := 0;
+			enquanto i<y_counter faca {
+				Y[i] := fatorial(Y[i]);
+				i := i + 1;
+			}
+		} senao
+			escreva('Quantidade inválida');
+	}
+.
