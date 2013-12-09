@@ -30,7 +30,7 @@ class RvarTest extends FlatSpec with Matchers {
     try {
       sin.parse(lex, sem)
     } catch {
-      case e: Exception => fail("Não deveria dar excecao: " + e)
+      case e: SemanticError => fail("Não deveria dar excecao: " + e)
     }
   }
 }

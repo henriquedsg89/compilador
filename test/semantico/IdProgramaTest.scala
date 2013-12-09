@@ -256,10 +256,40 @@ class IdProgramaTest extends FlatSpec with Matchers {
     }
   }
 
+  "Id de procedimento usado em chamada de procedimento" should "deve nao gerar erro lexico" in {
+    lex.setInput("programa p; proc iei;{}; {iei}.")
+    semScala.listTabSim(1).get("iei").get.asInstanceOf[ID_Procedimento].num_parms should be (0)
+  }
+
   "Id de funcao" should "apenas ser usado no contexto de expressoes" in {
     lex.setInput("programa p; funcao iei :inteiro;{iei:=20;}; {iei:=10}.")
     a [SemanticError] should be thrownBy {
       sin.parse(lex, sem)
     }
   }
+  "Variaveis de tipo vetor uni-dimensional" should "so poder ser usadas de forma indexada" in {
+    lex.setInput("programa p; var V: vetor[1 .. 5] de inteiro; var A: inteiro;{V[2]:= 1; A:= V[2]}.")
+    semScala.listTabSim(1).get("V").get.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice should be ("inteiro")
+  }//TODO: fazer passar
+
+  "Atribuindo um elemento de um vetor a uma variavel de tipo diferente" should "gerar erro semantico" in {
+    lex.setInput("programa p; var V: vetor[1 .. 5] de caracter; var A: inteiro;{A:= V[2]}.")
+    a [SemanticError] should be thrownBy {
+      sin.parse(lex, sem)//tipos incompativeis (passou)
+    }
+  }
+
+  "Identificadores de parametros" should "poder ser usados em todos os contextos onde for valido uso de variavel" in {
+    //TODO: nao entendi (item 09)
+  }
+
+  "Constantes literais de tamanho 1" should "ser consideradas como tipo caracter" in {
+    lex.setInput("programa p; const A = 'c'; {}.")
+    semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Constante].tipo should be ("caracter")
+  }//FIXME: dando problema de cast
+
+  "Referencia a um elemente de cadeia" should "ser tipo caracter" in {
+    lex.setInput("programa p; var A: cadeia[3]; var B: caracter; {B:=A[2];}.")
+    semScala.listTabSim(1).get("B").get.asInstanceOf[ID_Variavel].tipo should be ("caracter")
+  }//FIXME:none
 }
