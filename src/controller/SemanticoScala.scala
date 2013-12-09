@@ -603,10 +603,11 @@ class SemanticoScala extends Constants {
 
       }
     } else {
-      val par = funcOrProc.asInstanceOf[ID_Procedimento].list_params(npa-1)
-      if(par == null)
+
+      if(funcOrProc.asInstanceOf[ID_Procedimento].list_params == null)
         throw new SemanticError("Parametro nao encontrado", token.getPosition)
       else {
+        val par = funcOrProc.asInstanceOf[ID_Procedimento].list_params(npa-1)
         if(mpp != par.mecanismo_passagem)
           throw new SemanticError("Tipo de passagem de parametro incompativel", token.getPosition)
         if (par.tipo == "real") {
