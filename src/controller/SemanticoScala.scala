@@ -447,11 +447,10 @@ class SemanticoScala extends Constants {
   }
 
   def act29(token: Token) {
-    val tabSim = listTabSim(na)
-    if (!tabSim.contains(token.getLexeme)) {
+    if (!jaDeclarado(token)) {
       throw new SemanticError("Identificador não declarado")
     } else {
-      posid = tabSim.get(token.getLexeme).get
+      posid = pegaTabSim(token.getLexeme).get(token.getLexeme).get
     }
   }
 
@@ -601,26 +600,26 @@ class SemanticoScala extends Constants {
 
   def act67(token: Token) {
     if(opNega)
-      log.warning("Operadores nao consecutivos")
+      throw new SemanticError("Operadores 'não' consecutivos não é permitido")
     else
       opNega = true
   }
 
   def act68(token: Token) {
     if(!tipoFator.equalsIgnoreCase("booleano"))
-      log.warning("Op. 'nao' exige operando booleano")
+      throw new SemanticError("Op. 'nao' exige operando booleano")
   }
 
   def act69(token: Token) {
     if(opUnario)
-      log.warning("Ops. 'unario' consecutivos")
+      throw new SemanticError("Ops. 'unario' consecutivos")
     else
       opUnario = true
   }
 
   def act70(token: Token) {
-    if(!tipoFator.equalsIgnoreCase("inteiro")|| !tipoFator.equalsIgnoreCase("real"))
-      log.warning("Op. '+/-' exige operando numerico")
+    if(!tipoFator.equalsIgnoreCase("inteiro") || !tipoFator.equalsIgnoreCase("real"))
+      throw new SemanticError("Op. '+/-' exige operando numerico")
   }
 
   def act71(token: Token) {
@@ -641,27 +640,48 @@ class SemanticoScala extends Constants {
   }
 
   def act75(token: Token) {
-    try{
-      posid.asInstanceOf[ID_Funcao] //TODO: testar se realmente verifica posid ser uma funcao
-    }
-    catch {
-      case ex: ClassCastException => log.warning(posid.absNome + " deveria ser uma funcao")
-    }
+    val id = pegaTabSim(posid.absNome).get(posid.absNome).get
+    if (!id.isInstanceOf[ID_Funcao])
+      throw new SemanticError("Id deveria ser de uma função: " + id.absNome)
   }
 
   def act76(token: Token) {
     if(npa == npf)
       tipoVar = tipoResultadoFuncao
     else
-      log.warning("Erro na quantidade de parametros")
+      throw new SemanticError("Erro na quantidade de parametros")
   }
 
   def act77(token: Token) {
     //TODO
   }
 
-  def act79(token: Token) {
+  def act78(token: Token) {
     //TODO
+  }
+
+  def act79(token: Token) {
+    val fator = pegaTabSim(token.getLexeme).get(token.getLexeme).get
+    if (fator.isInstanceOf[ID_Variavel]) {
+      if (fator.asInstanceOf[ID_Variavel].tipo == "vetor")
+        throw new SemanticError("Vetor deve ser indexado")
+      else
+        tipoVar = fator.asInstanceOf[ID_Variavel].tipo
+    } else if (fator.isInstanceOf[ID_Parametro]) {
+      if (fator.asInstanceOf[ID_Parametro].tipo == "vetor")
+        throw new SemanticError("Vetor deve ser indexado")
+      else
+        tipoVar = fator.asInstanceOf[ID_Parametro].tipo
+    } else if (fator.isInstanceOf[ID_Funcao]) {
+      if (npf != 0)
+        throw new SemanticError("Erro na quantidade de parametros")
+      else
+        tipoVar = fator.asInstanceOf[ID_Funcao].tipo_resultado//TODO Gera codigo
+    } else if (fator.isInstanceOf[ID_Constante]) {
+      tipoVar = fator.asInstanceOf[ID_Constante].tipo
+    } else {
+      throw new SemanticError("Esperava-se var, id-funcao ou constante")
+    }
   }
 
   def act80(token: Token) {
