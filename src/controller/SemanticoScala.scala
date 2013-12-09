@@ -597,11 +597,31 @@ class SemanticoScala extends Constants {
   }
 
   def act53(token: Token) {
-    //TODO: verificar se operador se aplica a tipoExpSimples
+    if(operador=="+" || operador == "-") {
+      if(!(tipoExpSimples=="inteiro" || tipoExpSimples=="real"))
+        throw new SemanticError("Operador e operando incompativeis")
+    } else {
+      if(operador == "ou") {
+        if(tipoExpSimples != "booleano")
+          throw new SemanticError("Operador e operando incomaptiveis")
+      }
+    }
   }
 
   def act54(token: Token) {
-    //TODO: tipo termo incompativil com tipo expsimples -> ERRO
+    if(tipoTermo == "real" || tipoTermo == "inteiro") {
+      if(tipoExpSimples != "real" && tipoExpSimples != "inteiro")
+        throw new SemanticError("Operandos incompativeis")
+      else {
+        tipoExpSimples = tipoResultadoOperacao
+      }
+    } else if(tipoTermo == "booleano") {
+      if(tipoExpSimples != "booleano")
+        throw new SemanticError("Operandos incompativeis")
+      else {
+        tipoExpSimples = tipoResultadoOperacao
+      }
+    }
   }
 
   def act55(token: Token) {
