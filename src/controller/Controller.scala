@@ -10,7 +10,7 @@ import _root_.java.util.logging.{Level, Logger}
 class Controller {
 
   val LEX_OK_MSG = "O código está correto lexicamente"
-  val SIN_OK_MSG = "O código está correto sintaticamente"
+  val SIN_OK_MSG = "O código está correto sintaticamente e semanticamente"
 
   val lexico = new Lexico
   val sintatico = new Sintatico

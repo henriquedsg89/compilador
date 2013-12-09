@@ -261,7 +261,6 @@ class SemanticoScala extends Constants {
   }
 
   def act11(token: Token) {
-    //FIXME verificar -> retirar as variavies declaradas localmente
     listTabSim remove na
     na = na - 1
   }
@@ -773,15 +772,47 @@ class SemanticoScala extends Constants {
   }
 
   def act59(token: Token) {
-    //TODO: se operador nao se aplica a tipoTermo
-    throw new SemanticError("Operador e operando incompativeis", token.getPosition)
+    if (operador == "/" || operador == "*") {
+      if (tipoTermo != "real" && tipoTermo != "inteiro") {
+        throw new SemanticError("Operador e operando incompativeis, '*' ou '/' verifique", token.getPosition)
+      }
+    } else if (operador == "e") {
+      if (tipoTermo != "booleano")
+        throw new SemanticError("Operador e operando incompativeis, 'e' aceita booleano", token.getPosition)
+    }
   }
 
   def act60(token: Token) {
-    if(!tipoFator.equalsIgnoreCase(tipoTermo))//TODO: podem ser diferentes mas compativeis
-      throw new SemanticError("Operandos incompativeis", token.getPosition)
-    else
-      tipoTermo = tipoResultadoOperacao
+    if(tipoTermo == "real" || tipoTermo == "inteiro") {
+      if(tipoFator != "real" && tipoFator != "inteiro")
+        throw new SemanticError("Operandos incompativeis, tipo fator e termo", token.getPosition)
+      else {
+        if (posid.isInstanceOf[ID_Variavel]) {
+          if (posid.asInstanceOf[ID_Variavel].tipo == "inteiro") {
+            if (tipoTermo != "inteiro" || tipoFator != "inteiro")
+              throw new SemanticError("Operador e operando incompativeis, '*' ou '/' verifique", token.getPosition)
+          }
+        } else if (posid.isInstanceOf[ID_Funcao]) {
+          if (posid.asInstanceOf[ID_Funcao].tipo_resultado == "inteiro") {
+            if (tipoTermo != "inteiro" || tipoFator != "inteiro")
+              throw new SemanticError("Operador e operando incompativeis, '*' ou '/' verifique", token.getPosition)
+          }
+        }
+      }
+    } else if(tipoTermo == "booleano") {
+      if(tipoFator != "booleano")
+        throw new SemanticError("Operandos incompativeis, tipo fator e termo", token.getPosition)
+      else {
+        if (posid.isInstanceOf[ID_Variavel]) {
+          if (posid.asInstanceOf[ID_Variavel].tipo != "booleano")
+            throw new SemanticError("Operador e operando incompativeis, '*' ou '/' verifique", token.getPosition)
+        } else if (posid.isInstanceOf[ID_Funcao]) {
+          if (posid.asInstanceOf[ID_Funcao].tipo_resultado == "booleano") {
+            throw new SemanticError("Operador e operando incompativeis, '*' ou '/' verifique", token.getPosition)
+          }
+        }
+      }
+    }
   }
 
   def act64(token: Token) {
@@ -808,8 +839,8 @@ class SemanticoScala extends Constants {
   }
 
   def act70(token: Token) {
-    if(!tipoFator.equalsIgnoreCase("inteiro") || !tipoFator.equalsIgnoreCase("real"))
-      throw new SemanticError("Op. '+/-' exige operando numerico", token.getPosition)
+    if(tipoFator != "inteiro" && tipoFator != "real")
+      throw new SemanticError("Op. unario '+/-' exige operando numerico", token.getPosition)
   }
 
   def act71(token: Token) {
