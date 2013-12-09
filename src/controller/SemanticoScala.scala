@@ -582,10 +582,21 @@ class SemanticoScala extends Constants {
   }
 
   def act45(token: Token) {
-    if(!tipoExpSimples.equalsIgnoreCase(tipoExpr))
-      throw new SemanticError("Operandos incompativeis")
-    else
-      tipoExpr = "booleano"
+    if(tipoExpr == "real" || tipoExpr == "inteiro") {
+      if(tipoExpSimples != "real" && tipoExpSimples != "inteiro")
+        throw new SemanticError("Operandos incompativeis")
+      else {
+        tipoExpr = "booleano"
+      }
+    }
+    else if(opRel == "<>" || opRel == "=") {
+      if(tipoExpr == "cadeia" || tipoExpr == "literal") {
+        if(tipoExpSimples != "cadeia" && tipoExpSimples != "literal")
+          throw new SemanticError("Operandos incompativeis")
+      } else {
+        tipoExpr = "booleano"
+      }
+    }
   }
 
   def act46(token: Token) {//ate act51 a implementacao eh a mesma!
