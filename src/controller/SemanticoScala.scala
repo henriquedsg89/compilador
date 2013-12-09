@@ -18,7 +18,7 @@ class SemanticoScala extends Constants {
 
   var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr, valConst,
     tipoExpSimples, tipoTermo, tipoFator, opRel, operador, tipoResultadoOperacao,
-    mpp, tipoAtual, tipoLadoEsq, tipoVarIndexada, tipoConstVetorLimSup, tipoConstVetorLimInf, contextoEXPR, tipoIndiceDim1,
+    mpp, tipoAtual, tipoLadoEsq, tipoVarIndexada, tipoConstVetorLimSup, tipoConstVetorLimInf, contextoEXPR,
     tipoIndiceDim2, tipoElementos: String = null
   var opNega, opUnario: Boolean = false
   var valVar : Object = null
@@ -325,7 +325,7 @@ class SemanticoScala extends Constants {
 
   def act17(token: Token) {
     if (contextoLID == "decl") {
-      if (listTabSim(na).contains(token.getLexeme) || notNomePrograma(token.getLexeme)) {//FIXME:verificar, deveria ser &&
+      if (listTabSim(na).contains(token.getLexeme) || notNomePrograma(token.getLexeme)) {
         throw new SemanticError("Id já declarado: " + token.getLexeme, token.getPosition)
       } else {
         val tabSim = listTabSim(na)
@@ -407,9 +407,8 @@ class SemanticoScala extends Constants {
     tipoElementos = tipoAtual//FIXME:salvar o tipoAtual no tipo do tabsim
     tipoAtual = "vetor"
     if (numDim == 2)
-      tipoIndiceDim2 = tipoConst//FIXME:verificar se esta ok
+      tipoIndiceDim2 = tipoConst//FIXME:verificar se esta ok, dimensao 2 com tipoIndice
     vetor_temp = new Vetor(numDim, tipoElementos, dimensao1, dimensao2)
-    //FIXME: salvar na tabsim (provavelmente na acao 06)
   }
 
   def act22(token: Token) {
@@ -539,8 +538,9 @@ class SemanticoScala extends Constants {
 
   def act36(token: Token) {
     numIndices = 1
+    val tipoIndiceDim1 = posid.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice
     if (tipoVarIndexada == "vetor") {
-      if (tipoExpr != tipoIndiceDim1)//FIXME:tipoIndiceDim1 esta null
+      if (tipoExpr != tipoIndiceDim1)//FIXME: declarando vetores com indices de tipo diferente dah pau
         throw new SemanticError("Tipo indice inválido", token.getPosition)
       else
           tipoLadoEsq = tipoElementos
@@ -878,8 +878,9 @@ class SemanticoScala extends Constants {
 
   def act77(token: Token) {
     numIndices = 1
+    val tipoIndiceDim1 = posid.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice
     if(tipoVarIndexada == "vetor") {
-      if(tipoExpr != dimensao1.tipoIndice) {
+      if(tipoExpr != tipoIndiceDim1) {//TODO:abrir tipo dimensao1 da tabsim
         throw new SemanticError("Tipo do indice invalido", token.getPosition)
       } else {
         tipoVar = tipoElementos

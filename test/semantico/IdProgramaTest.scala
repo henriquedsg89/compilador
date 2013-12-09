@@ -278,7 +278,14 @@ class IdProgramaTest extends FlatSpec with Matchers {
     lex.setInput("programa p; var V: vetor[1 .. 5] de inteiro; var A: inteiro;{V[2]:= 1; A:= V[2]}.")
     sin.parse(lex, sem)
     semScala.listTabSim(1).get("V").get.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice should be ("inteiro")
-  }//TODO: fazer passar
+  }
+
+  "Variaveis de tipo vetor bi-dimensional" should "so poder ser usadas de forma indexada com os dois indices" in {
+    lex.setInput("programa p;var V: vetor[1 .. 5, 'a' .. 'c'] de inteiro;var A: inteiro;{V[2, 'b']:= 1;A:= V[2, 'a'];}.")
+    sin.parse(lex, sem)
+    semScala.listTabSim(1).get("V").get.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice should be ("inteiro")
+    semScala.listTabSim(1).get("V").get.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim2.tipoIndice should be ("literal")
+  }
 
   "Atribuindo um elemento de um vetor a uma variavel de tipo diferente" should "gerar erro semantico" in {
     lex.setInput("programa p; var V: vetor[1 .. 5] de caracter; var A: inteiro;{A:= V[2]}.")
