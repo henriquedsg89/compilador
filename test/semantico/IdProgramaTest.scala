@@ -2,7 +2,7 @@ package semantico
 
 import org.scalatest._
 import controller._
-import gals.{Semantico, SemanticError, LexicalError, Constants}
+import gals.{Semantico, SemanticError}
 import controller.ID_Variavel
 import controller.ID_Procedimento
 
@@ -197,15 +197,22 @@ class IdProgramaTest extends FlatSpec with Matchers {
       sin.parse(lex, sem)
     }
   }
-
+  //TODO: arrumar lexico para suportar 1..2
   "Declarando variavel valida do tipo vetor indexada por numero" should "salvar o tipo de elementos, tipo de indices e limInf/limSup sem erro semantico" in {
-    lex.setInput("programa asdf; var A, B: vetor[1 .. 2] de inteiro; {}.")//TODO: arrumar lexico para suportar 1..2
+    lex.setInput("programa p; var A, B: vetor[1 .. 2] de inteiro; {}.")
     sin.parse(lex, sem)
     val variavel = semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel]
     variavel.tipo should be ("vetor")
     variavel.subCategoria.asInstanceOf[Vetor].numDim should be (1)
     variavel.subCategoria.asInstanceOf[Vetor].tipoElem should be ("inteiro")
     variavel.subCategoria.asInstanceOf[Vetor].dim1.tipoIndice should be ("inteiro")
+  }
+
+  "Declarando variavel valida do tipo vetor indexada por numero" should "ser acessivel por indices validos sem erro semantico" in {
+    lex.setInput("programa p; var A: vetor[1 .. 5] de inteiro; var B: inteiro; {B:= A[3];}.")
+    sin.parse(lex, sem)
+    val variavel = semScala.listTabSim(1).get("B").get.asInstanceOf[ID_Variavel]
+    variavel.tipo should be ("inteiro")
   }
 
   "Declarando variavel valida do tipo vetor indexada por letra" should "salvar o tipo de elementos, tipo de indices e limInf/limSup sem erro semantico" in {
@@ -269,6 +276,7 @@ class IdProgramaTest extends FlatSpec with Matchers {
   }
   "Variaveis de tipo vetor uni-dimensional" should "so poder ser usadas de forma indexada" in {
     lex.setInput("programa p; var V: vetor[1 .. 5] de inteiro; var A: inteiro;{V[2]:= 1; A:= V[2]}.")
+    sin.parse(lex, sem)
     semScala.listTabSim(1).get("V").get.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice should be ("inteiro")
   }//TODO: fazer passar
 

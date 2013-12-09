@@ -325,7 +325,7 @@ class SemanticoScala extends Constants {
 
   def act17(token: Token) {
     if (contextoLID == "decl") {
-      if (listTabSim(na).contains(token.getLexeme) || notNomePrograma(token.getLexeme)) {
+      if (listTabSim(na).contains(token.getLexeme) || notNomePrograma(token.getLexeme)) {//FIXME:verificar, deveria ser &&
         throw new SemanticError("Id já declarado: " + token.getLexeme, token.getPosition)
       } else {
         val tabSim = listTabSim(na)
@@ -400,7 +400,7 @@ class SemanticoScala extends Constants {
       tipoConstVetorLimSup = tipoConst
       limSupVetor = intValConst
     }
-    dimensao2 = new Dimensao(tipoIndiceDim2, limInfVetor, limSupVetor)
+    dimensao2 = new Dimensao(tipoIndiceDim2, limInfVetor, limSupVetor)//TODO:tipoindiceDim2 esta null
   }
 
   def act21(token: Token) {
@@ -540,7 +540,7 @@ class SemanticoScala extends Constants {
   def act36(token: Token) {
     numIndices = 1
     if (tipoVarIndexada == "vetor") {
-      if (tipoExpr != tipoIndiceDim1)
+      if (tipoExpr != tipoIndiceDim1)//FIXME:tipoIndiceDim1 esta null
         throw new SemanticError("Tipo indice inválido", token.getPosition)
       else
           tipoLadoEsq = tipoElementos
