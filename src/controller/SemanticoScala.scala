@@ -453,6 +453,8 @@ class SemanticoScala extends Constants {
       throw new SemanticError(token.getLexeme + " nao declarado", token.getPosition)
     } else if (contextoEXPR != "par-atual") {
       posid = pegaTabSim(token.getLexeme).get(token.getLexeme).get
+    } else if (jaDeclarado(token)) {
+      mpp = "referencia"
     }
   }
 
