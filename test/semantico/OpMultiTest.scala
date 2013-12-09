@@ -23,7 +23,7 @@ class OpMultiTest extends FlatSpec with Matchers {
     }
   }
 
-  "Operador" should "multi" in {
+  "Variavel inteira" should "aceitar operações e unários" in {
     lex.setInput("programa p; var a : inteiro; { a:= 2 * 4; a:= a + -5; a := (2 + 3) * (5 - -2) }.")
     try {
       sin.parse(lex, sem)
@@ -31,4 +31,12 @@ class OpMultiTest extends FlatSpec with Matchers {
       case e: SemanticError => fail("Não deveria dar excecao: " + e)
     }
   }
+
+  "Variavel inteira nao" should "aceitar real" in {
+    lex.setInput("programa p; var a : inteiro; { a:= a + -5; a := (2 + 3) / (5 + -2) }.")
+    a [SemanticError] should be thrownBy {
+      sin.parse(lex, sem)//tipos incompativeis (passou)
+    }
+  }
+
 }

@@ -813,6 +813,8 @@ class SemanticoScala extends Constants {
         }
       }
     }
+    if (operador == "/")
+      tipoTermo = "real"
   }
 
   def act64(token: Token) {
