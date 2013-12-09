@@ -28,6 +28,8 @@ class SemanticoScala extends Constants {
   var vetor_temp: Vetor = null
   var lids = new ArrayBuffer[ID_Abstract]()
 
+  val tiposPreDefinidos = Array("inteiro", "real", "booleano", "caracter")
+
   def executeAction(action: Int, token: Token) {
     action match {
       case 1 => act01(token)
@@ -343,13 +345,13 @@ class SemanticoScala extends Constants {
         val tabSim = listTabSim(na)
         val id = tabSim.get(token.getLexeme)
         if (id.get.isInstanceOf[ID_Variavel]) {
-          if (id.asInstanceOf[ID_Variavel].tipo != "pre-definido") {
-            throw new SemanticError("Tipo de Id Inválido", token.getPosition)
+          if (!tiposPreDefinidos.contains(id.get.asInstanceOf[ID_Variavel].tipo)) {
+            throw new SemanticError("Tipo de Id Inválido, deveria ser pre-definido", token.getPosition)
           }
           //TODO gera código leitura
         } else if (id.get.isInstanceOf[ID_Parametro]) {
-          if (id.get.asInstanceOf[ID_Parametro].tipo != "pre-definido") {
-            throw new SemanticError("Tipo de Id Inválido", token.getPosition)
+          if (!tiposPreDefinidos.contains(id.get.asInstanceOf[ID_Parametro].tipo)) {
+            throw new SemanticError("Tipo de Id Inválido, deveria ser pre-definido", token.getPosition)
           }
           //TODO gera código leitura
         } else {
@@ -684,12 +686,18 @@ class SemanticoScala extends Constants {
       if(tipoExpSimples != "real" && tipoExpSimples != "inteiro")
         throw new SemanticError("Operandos incompativeis", token.getPosition)
       else {
+        if (operador == "/")
+          tipoResultadoOperacao = "real"
+        else
+          tipoResultadoOperacao = "inteiro"
+
         tipoExpSimples = tipoResultadoOperacao
       }
     } else if(tipoTermo == "booleano") {
       if(tipoExpSimples != "booleano")
         throw new SemanticError("Operandos incompativeis", token.getPosition)
       else {
+        tipoResultadoOperacao = "booleano"
         tipoExpSimples = tipoResultadoOperacao
       }
     }
