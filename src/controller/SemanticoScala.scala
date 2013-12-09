@@ -780,6 +780,8 @@ class SemanticoScala extends Constants {
       if (tipoTermo != "booleano")
         throw new SemanticError("Operador e operando incompativeis, 'e' aceita booleano", token.getPosition)
     }
+    if (operador == "/")
+      tipoExpSimples = "real"
   }
 
   def act60(token: Token) {
