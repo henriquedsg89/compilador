@@ -1,0 +1,12 @@
+programa p;
+    var i, soma: inteiro;
+    var A: vetor[1 .. 10] de inteiro;
+    {
+        i := 0; soma := 0;
+        enquanto i<10 faca {
+            A[i] := soma;
+            soma := soma + 2;
+            i := i + 1;
+        }
+    }
+.

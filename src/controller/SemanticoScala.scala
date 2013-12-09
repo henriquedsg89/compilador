@@ -565,7 +565,7 @@ class SemanticoScala extends Constants {
   }
 
   def act38(token: Token) {
-    if(!posid.isInstanceOf[ID_Procedimento])
+    if(!(posid.isInstanceOf[ID_Procedimento] || posid.isInstanceOf[ID_Funcao]))
       throw new SemanticError(posid.absNome + " deveria ser uma procedure", token.getPosition)
     contextoEXPR = "par-atual"
   }

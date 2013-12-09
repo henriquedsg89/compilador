@@ -1,4 +1,4 @@
-Programa ex1;
+programa ex1;
     var A, B, C: inteiro;
     {
         leia (A, B);
