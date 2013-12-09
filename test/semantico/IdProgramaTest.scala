@@ -172,11 +172,13 @@ class IdProgramaTest extends FlatSpec with Matchers {
   }
 
   "Declarando constantes elas" should "aceitar ids" in {
-    lex.setInput("programa asdf; const A = 5; proc id;{ const B = A; } {}.")
+    lex.setInput("programa asdf; const A = 5; proc id; const B = A; {}; {}.")
     try {
       sin.parse(lex, sem)
-      semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel].tipo should be ("cadeia")
-      semScala.listTabSim(1).get("B").get.asInstanceOf[ID_Variavel].tipo should be ("cadeia")
+      val a = semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Constante]
+      a.tipo should be ("inteiro")
+      a.nivel should be (1)
+      a.valor should be ("5")
     } catch {
       case e: Exception => fail("Não deveria dar excecao: " + e)
     }

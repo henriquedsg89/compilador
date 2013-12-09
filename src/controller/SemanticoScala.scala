@@ -419,13 +419,14 @@ class SemanticoScala extends Constants {
   }
 
   def act24(token: Token) {
-    val id = listTabSim(na).get(token.getLexeme)
+    val id = pegaTabSim(token.getLexeme).get(token.getLexeme)
     if (!jaDeclarado(token)) {
       throw new SemanticError("Id não declarado: " + token.getLexeme)
     } else if (!id.get.isInstanceOf[ID_Constante]){
       throw new SemanticError("Esperava-se um id de constante")
     } else {
-      valConst = token.getLexeme
+      valConst = id.get.asInstanceOf[ID_Constante].valor.asInstanceOf[String]
+      tipoConst = id.get.asInstanceOf[ID_Constante].tipo
     }
   }
 
