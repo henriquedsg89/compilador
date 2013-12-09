@@ -152,6 +152,10 @@ class SemanticoScala extends Constants {
     Character.getNumericValue(li)
   }
 
+  def notNomePrograma(id: String): Boolean = {
+    listTabSim(0).contains(id)
+  }
+
   def act01(token: Token) {
     listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
     na = 0;
@@ -322,7 +326,7 @@ class SemanticoScala extends Constants {
 
   def act17(token: Token) {
     if (contextoLID == "decl") {
-      if (listTabSim(na).contains(token.getLexeme)) {
+      if (listTabSim(na).contains(token.getLexeme) || notNomePrograma(token.getLexeme)) {
         throw new SemanticError("Id já declarado: " + token.getLexeme, token.getPosition)
       } else {
         val tabSim = listTabSim(na)
@@ -330,7 +334,7 @@ class SemanticoScala extends Constants {
         lids += new ID_Variavel(token.getLexeme, na, null, null)
       }
     } else if (contextoLID == "par-formal") {
-      if (listTabSim(na).contains(token.getLexeme)) {
+      if (listTabSim(na).contains(token.getLexeme) || notNomePrograma(token.getLexeme)) {
         throw new SemanticError("Id já declarado: " + token.getLexeme, token.getPosition)
       } else {
         npf = npf + 1
