@@ -13,7 +13,6 @@ import java.util.logging.Logger
  */
 class SemanticoScala extends Constants {
 
-  val log = Logger.getLogger("SemanticoScala")
   var listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
 
   var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr, valConst,
@@ -553,7 +552,7 @@ class SemanticoScala extends Constants {
 
   def act45(token: Token) {
     if(!tipoExpSimples.equalsIgnoreCase(tipoExpr))
-      log.warning("Operandos incompativeis")
+      throw new SemanticError("Operandos incompativeis")
     else
       tipoExpr = "booleano"
   }
@@ -584,12 +583,12 @@ class SemanticoScala extends Constants {
 
   def act59(token: Token) {
     //TODO: se operador nao se aplica a tipoTermo
-    log.warning("Operador e operando incompativeis")
+    throw new SemanticError("Operador e operando incompativeis")
   }
 
   def act60(token: Token) {
     if(!tipoFator.equalsIgnoreCase(tipoTermo))//TODO: podem ser diferentes mas compativeis
-      log.warning("Operandos incompativeis")
+      throw new SemanticError("Operandos incompativeis")
     else
       tipoTermo = tipoResultadoOperacao
   }
