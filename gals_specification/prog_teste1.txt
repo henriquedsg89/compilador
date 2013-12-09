@@ -1,17 +1,24 @@
 programa @PROG;
 
-const @CONST = 20;
+const CONT_INT = 20;
+const CONT_LIT = 'shuwbaca';
 
-var @ID1, @ID2: inteiro;
+var X, Y: inteiro;
+var C: cadeia[5];
 
-proc @preced1(val param1: inteiro; ref param2: inteiro);
+proc borala(val param1: inteiro; ref param2: inteiro);
 {
-	param1 := 20 + 30
+	escreva(param1, param2)
+};
+funcao vemca(val param1,param2: inteiro): inteiro; var in_x: inteiro; {
+    vemca := param1 + param2;
 };
 
 {
 	se nao verdadeiro entao
-		leia( @X )
+		leia( X )
 	senao
-		escrXXXXeva( 20 ) //não está dando erro sintático!
+		escreva( vemca(1,5) )
+
+	borala(3,5)
 }.
