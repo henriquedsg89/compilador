@@ -28,6 +28,8 @@ class SemanticoScala extends Constants {
   var vetor_temp: Vetor = null
   var lids = new ArrayBuffer[ID_Abstract]()
 
+  var forcaReal = false
+
   val tiposPreDefinidos = Array("inteiro", "real", "booleano", "caracter")
 
   def executeAction(action: Int, token: Token) {
@@ -780,8 +782,9 @@ class SemanticoScala extends Constants {
       if (tipoTermo != "booleano")
         throw new SemanticError("Operador e operando incompativeis, 'e' aceita booleano", token.getPosition)
     }
+
     if (operador == "/")
-      tipoExpSimples = "real"
+      forcaReal = true
   }
 
   def act60(token: Token) {
@@ -791,13 +794,17 @@ class SemanticoScala extends Constants {
       else {
         if (posid.isInstanceOf[ID_Variavel]) {
           if (posid.asInstanceOf[ID_Variavel].tipo == "inteiro") {
-            if (tipoTermo != "inteiro" || tipoFator != "inteiro")
+            if (tipoTermo != "inteiro" || tipoFator != "inteiro" || forcaReal) {
+              forcaReal = false
               throw new SemanticError("Operador e operando incompativeis, '*' ou '/' verifique", token.getPosition)
+            }
           }
         } else if (posid.isInstanceOf[ID_Funcao]) {
           if (posid.asInstanceOf[ID_Funcao].tipo_resultado == "inteiro") {
-            if (tipoTermo != "inteiro" || tipoFator != "inteiro")
+            if (tipoTermo != "inteiro" || tipoFator != "inteiro" || forcaReal) {
+              forcaReal = false
               throw new SemanticError("Operador e operando incompativeis, '*' ou '/' verifique", token.getPosition)
+            }
           }
         }
       }
@@ -815,8 +822,6 @@ class SemanticoScala extends Constants {
         }
       }
     }
-    if (operador == "/")
-      tipoTermo = "real"
   }
 
   def act64(token: Token) {
