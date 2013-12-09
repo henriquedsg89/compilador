@@ -377,11 +377,11 @@ class SemanticoScala extends Constants {
   }
 
   def act19(token: Token) {
-    if (tipoConst != "inteiro" && tipoConst != "literal") {
+    if (tipoConst != "inteiro" && tipoConst != "caracter") {
       throw new SemanticError("Tipo do índice inválido", token.getPosition)
     } else {
       tipoConstVetorLimInf = tipoConst
-      if(tipoConstVetorLimInf == "literal")
+      if(tipoConstVetorLimInf == "caracter")
         limInfVetor = getLiteralAsInt(token.getLexeme)
       else
         limInfVetor = Integer.parseInt(token.getLexeme)
@@ -390,7 +390,7 @@ class SemanticoScala extends Constants {
 
   def act20(token: Token) {
     var intValConst :Int = 0
-    if(tipoConst=="literal")
+    if(tipoConst=="caracter")
       intValConst = getLiteralAsInt(token.getLexeme)
     else
       intValConst = Integer.parseInt(token.getLexeme)
@@ -754,6 +754,21 @@ class SemanticoScala extends Constants {
           tipoResultadoOperacao = "inteiro"
 
         tipoExpSimples = tipoResultadoOperacao
+        if (posid.isInstanceOf[ID_Variavel]) {
+          if (posid.asInstanceOf[ID_Variavel].tipo == "inteiro") {
+            if (tipoTermo != "inteiro" || tipoFator != "inteiro" || forcaReal) {
+              forcaReal = false
+              throw new SemanticError("Operador e operando incompativeis, '*' ou '/' verifique", token.getPosition)
+            }
+          }
+        } else if (posid.isInstanceOf[ID_Funcao]) {
+          if (posid.asInstanceOf[ID_Funcao].tipo_resultado == "inteiro") {
+            if (tipoTermo != "inteiro" || tipoFator != "inteiro" || forcaReal) {
+              forcaReal = false
+              throw new SemanticError("Operador e operando incompativeis, '*' ou '/' verifique", token.getPosition)
+            }
+          }
+        }
       }
     } else if(tipoTermo == "booleano") {
       if(tipoExpSimples != "booleano")
@@ -885,8 +900,8 @@ class SemanticoScala extends Constants {
 
   def act77(token: Token) {
     numIndices = 1
-    val tipoIndiceDim1 = posid.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice
     if(tipoVarIndexada == "vetor") {
+      val tipoIndiceDim1 = posid.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice
       if(tipoExpr != tipoIndiceDim1) {//TODO:abrir tipo dimensao1 da tabsim
         throw new SemanticError("Tipo do indice invalido", token.getPosition)
       } else {
@@ -960,8 +975,11 @@ class SemanticoScala extends Constants {
   }
 
   def act84(token: Token) {
-    tipoConst = "literal"
     valConst = token.getLexeme
+    if (valConst.length > 3)//'a'
+      tipoConst = "literal"
+    else
+      tipoConst = "caracter"
   }
 }
 

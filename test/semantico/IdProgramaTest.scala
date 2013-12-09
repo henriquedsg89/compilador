@@ -221,7 +221,7 @@ class IdProgramaTest extends FlatSpec with Matchers {
     val limSupChar: Char = 'f'
     val variavel = semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel]
     variavel.tipo should be ("vetor")
-    variavel.subCategoria.asInstanceOf[Vetor].dim1.tipoIndice should be ("literal")
+    variavel.subCategoria.asInstanceOf[Vetor].dim1.tipoIndice should be ("caracter")
     variavel.subCategoria.asInstanceOf[Vetor].numDim should be (1)
     variavel.subCategoria.asInstanceOf[Vetor].tipoElem should be ("inteiro")
     variavel.subCategoria.asInstanceOf[Vetor].dim1.limSup should be (Character.getNumericValue(limSupChar))
@@ -284,7 +284,7 @@ class IdProgramaTest extends FlatSpec with Matchers {
     lex.setInput("programa p;var V: vetor[1 .. 5, 'a' .. 'c'] de inteiro;var A: inteiro;{V[2, 'b']:= 1;A:= V[2, 'a'];}.")
     sin.parse(lex, sem)
     semScala.listTabSim(1).get("V").get.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice should be ("inteiro")
-    semScala.listTabSim(1).get("V").get.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim2.tipoIndice should be ("literal")
+    semScala.listTabSim(1).get("V").get.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim2.tipoIndice should be ("caracter")
   }
 
   "Atribuindo um elemento de um vetor a uma variavel de tipo diferente" should "gerar erro semantico" in {
@@ -300,11 +300,21 @@ class IdProgramaTest extends FlatSpec with Matchers {
 
   "Constantes literais de tamanho 1" should "ser consideradas como tipo caracter" in {
     lex.setInput("programa p; const A = 'c'; {}.")
-    semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Constante].tipo should be ("caracter")
-  }//FIXME: dando problema de cast
+    try {
+      sin.parse(lex, sem)
+      semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Constante].tipo should be ("caracter")
+    } catch {
+     case e: Exception => fail("Não deveria dar excecao: " + e)
+    }
+  }
 
   "Referencia a um elemente de cadeia" should "ser tipo caracter" in {
     lex.setInput("programa p; var A: cadeia[3]; var B: caracter; {B:=A[2];}.")
-    semScala.listTabSim(1).get("B").get.asInstanceOf[ID_Variavel].tipo should be ("caracter")
-  }//FIXME:none
+    try {
+      sin.parse(lex, sem)
+      semScala.listTabSim(1).get("B").get.asInstanceOf[ID_Variavel].tipo should be ("caracter")
+    } catch {
+      case e: Exception => fail("Não deveria dar excecao: " + e)
+    }
+  }
 }

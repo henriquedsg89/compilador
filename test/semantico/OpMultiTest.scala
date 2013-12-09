@@ -35,21 +35,28 @@ class OpMultiTest extends FlatSpec with Matchers {
   "Variavel inteira nao" should "aceitar real" in {
     lex.setInput("programa p; var a : inteiro; { a:= a / -5; }.")
     a [SemanticError] should be thrownBy {
-      sin.parse(lex, sem)//tipos incompativeis (passou)
+      sin.parse(lex, sem)
     }
   }
 
   "Variavel inteira nao" should "aceitar real mesmo com parenteses" in {
     lex.setInput("programa p; var a : inteiro; { a:= (a / 5); }.")
     a [SemanticError] should be thrownBy {
-      sin.parse(lex, sem)//tipos incompativeis (passou)
+      sin.parse(lex, sem)
+    }
+  }
+
+  "Variavel inteira nao" should "aceitar real constante explicita" in {
+    lex.setInput("programa p; var a : inteiro; { a:= a + 5.2; }.")
+    a [SemanticError] should be thrownBy {
+      sin.parse(lex, sem)
     }
   }
 
   "Variavel inteira nao" should "aceitar real mesmo com parenteses em duas exp e o div no meio" in {
     lex.setInput("programa p; var a : inteiro; { a:= (1 + -5) / (7 + 4); }.")
     a [SemanticError] should be thrownBy {
-      sin.parse(lex, sem)//tipos incompativeis (passou)
+      sin.parse(lex, sem)
     }
   }
 
