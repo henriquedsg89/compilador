@@ -234,4 +234,32 @@ class IdProgramaTest extends FlatSpec with Matchers {
     semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel].tipo should be ("vetor")
     semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].numDim should be (2)
   }
+
+  "Id de constante" should "nao ser usado no lado esquedo de uma atribuicao" in {
+    lex.setInput("programa p; const A = 10; { A := 3; }.")
+    a [SemanticError] should be thrownBy {
+      sin.parse(lex, sem)
+    }
+  }
+
+  "Id de constante" should "nao ser usado em comando de leitura" in {
+    lex.setInput("programa p; const A = 10; {leia(A); }.")
+    a [SemanticError] should be thrownBy {
+      sin.parse(lex, sem)
+    }
+  }
+
+  "Id de procedimento" should "apenas ser usado em chamada de procedimento" in {
+    lex.setInput("programa p; proc iei;{}; {iei:=10}.")
+    a [SemanticError] should be thrownBy {
+      sin.parse(lex, sem)
+    }
+  }
+
+  "Id de funcao" should "apenas ser usado no contexto de expressoes" in {
+    lex.setInput("programa p; funcao iei :inteiro;{iei:=20;}; {iei:=10}.")
+    a [SemanticError] should be thrownBy {
+      sin.parse(lex, sem)
+    }
+  }
 }
