@@ -448,7 +448,7 @@ class SemanticoScala extends Constants {
 
   def act29(token: Token) {
     if (!jaDeclarado(token)) {
-      throw new SemanticError("Identificador não declarado")
+      throw new SemanticError(token.getLexeme + " nao declarado")
     } else {
       posid = pegaTabSim(token.getLexeme).get(token.getLexeme).get
     }
@@ -457,8 +457,6 @@ class SemanticoScala extends Constants {
   def act30(token: Token) {
     if (tipoExpr != "booleano" && tipoExpr != "inteiro")
        throw new SemanticError("Tipo inválido da expressão")
-    //else
-      //TODO:"Gera código"
   }
 
   def act31(token: Token) {
@@ -470,11 +468,9 @@ class SemanticoScala extends Constants {
     val tiposParaImp = Array("inteiro", "real", "caracter", "cadeia")
     if (!tiposParaImp.contains(tipoExpr))
       throw new SemanticError("Tipo inválido para impressão")
-    //else
-      //TODO:"G. Código"
   }
 
-  def act33(token: Token){//TODO: revisar que a porra eh foda e eu to com sono
+  def act33(token: Token){
     if(posid.isInstanceOf[ID_Variavel]) {
       if(posid.asInstanceOf[ID_Variavel].tipo == "vetor") {
         throw new SemanticError(posid.absNome + " deveria ser indexado")
@@ -487,11 +483,11 @@ class SemanticoScala extends Constants {
       } else {
         tipoLadoEsq = posid.asInstanceOf[ID_Parametro].tipo
       }
-    } else if(posid.isInstanceOf[ID_Funcao]) {
-      if(false) { //TODO:se fora do escopo da funcao id
-        throw new SemanticError("fora do escopo da funcao")
-      } else {
+    } else if(posid.isInstanceOf[ID_Funcao]) { //TODO:fragilidade, possivel declarar nome da funcao fora da funcao
+      if(na >= posid.asInstanceOf[ID_Funcao].nivel + 1) {
         tipoLadoEsq = posid.asInstanceOf[ID_Funcao].tipo_resultado
+      } else {
+        throw new SemanticError("fora do escopo da funcao")
       }
     } else {
       throw new SemanticError(posid.absNome + " deveria ser var/par/funcao")
@@ -499,8 +495,27 @@ class SemanticoScala extends Constants {
   }
 
   def act34(token: Token) {
-    if(tipoExpr != tipoLadoEsq) //TODO: verificar compatibilidade, podem ser diferentes
-      throw new SemanticError("esperava-se uma variavel")
+    if(tipoLadoEsq=="real") {
+      if(tipoExpr!="real" && tipoExpr!="inteiro") {
+        throw new SemanticError("Tipos imcompativeis")
+      }
+    } else if(tipoLadoEsq=="inteiro") {
+      if(tipoExpr!="inteiro") {
+        throw new SemanticError("Tipos incompativeis")
+      }
+    } else if(tipoLadoEsq=="cadeia") {
+      if(tipoExpr!="cadeia" && tipoExpr!="literal") {
+        throw new SemanticError("Tipos incompativeis")
+      }
+    } else if(tipoLadoEsq=="booleano") {
+      if(tipoExpr!="booleano") {
+        throw new SemanticError("Tipos incompativeis")
+      }
+    } else if(tipoLadoEsq == "vetor") {
+      if(tipoExpr!="vetor") {
+        throw new SemanticError("Tipos incompativeis")
+      }
+    }
   }
 
   def act35(token: Token) {
@@ -529,22 +544,67 @@ class SemanticoScala extends Constants {
     }
   }
 
+  def act37(token: Token) {
+    if(numIndices == 2) {
+      if(tipoVarIndexada == "cadeia") {
+        throw new SemanticError("Cadeia so pode ter 1 indice")
+      } else if(numDim != 2) {
+        throw new SemanticError("Vetor eh unidimensional")
+      } else if(tipoExpr != dimensao2.tipoIndice) {
+        throw new SemanticError("Tipo de indice invalido")
+      } else {
+        tipoLadoEsq = tipoElementos
+      }
+    } else if(numDim == 2) {
+      throw new SemanticError("Vetor eh bi-dimensional")
+    }
+  }
+
   def act38(token: Token) {
     if(!posid.isInstanceOf[ID_Procedimento])
       throw new SemanticError(posid.absNome + " deveria ser uma procedure")
   }
 
+  def act39(token: Token) {
+    npa = 1
+    contextoEXPR = "par-atual"
+    val funcOrProc = pegaTabSim(posid.absNome).get(posid.absNome).get
+    if(funcOrProc.isInstanceOf[ID_Funcao]) {
+      val par = funcOrProc.asInstanceOf[ID_Funcao].temPar(token.getLexeme)
+      if(par == null)
+        throw new SemanticError("Parametro nao encontrado")
+      else {
+        if(mpp != par.mecanismo_passagem)
+          throw new SemanticError("Tipo de passagem de parametro incompativel")
+      }
+    } else {
+      val par = funcOrProc.asInstanceOf[ID_Procedimento].temPar(token.getLexeme)
+      if(par == null)
+        throw new SemanticError("Parametro nao encontrado")
+      else {
+        if(mpp != par.mecanismo_passagem)
+          throw new SemanticError("Tipo de passagem de parametro incompativel")
+      }
+    }
+  }
+
   def act40(token: Token) {
     if(npa!=npf)
       throw new SemanticError("Erro na quantidade de parametros")
-    /*else
-      TODO: gerar codigo p/ chamada de proc
-     */
   }
 
   def act41(token: Token) {
     if(!posid.isInstanceOf[ID_Procedimento])
       throw new SemanticError(posid.absNome + " deveria ser uma procedure")
+    else {
+      if(npf!=0) {
+        throw new SemanticError("Erro na quantidade de parametros")
+      }
+    }
+  }
+
+  def act42(token: Token) {
+    numIndices = 2//FIXME:verificar essa merda
   }
 
   def act43(token: Token) {
@@ -714,11 +774,34 @@ class SemanticoScala extends Constants {
   }
 
   def act77(token: Token) {
-    //TODO
+    numIndices = 1
+    if(tipoVarIndexada == "vetor") {
+      if(tipoExpr != dimensao1.tipoIndice) {
+        throw new SemanticError("Tipo do indice invalido")
+      } else {
+        tipoVar = tipoElementos
+      }
+    } else if(tipoExpr != "inteiro") {
+      throw new SemanticError("Indice deveria ser inteiro")
+    } else {
+      tipoVar = "caracter"
+    }
   }
 
   def act78(token: Token) {
-    //TODO
+    if(numIndices==2) {
+      if(tipoVarIndexada == "cadeia") {
+        throw new SemanticError("Cadeia so pode ter 1 indice")
+      } else if(numDim!=2) {
+        throw new SemanticError("Vetor eh uni-dimensional")
+      } else if(tipoExpr!=dimensao2.tipoIndice) {
+        throw new SemanticError("Tipo do indice invalido")
+      } else {
+        tipoVar = tipoElementos
+      }
+    } else if(numDim == 2) {
+      throw new SemanticError("Vetor eh bi-dimensional")
+    }
   }
 
   def act79(token: Token) {

@@ -160,6 +160,13 @@ class IdProgramaTest extends FlatSpec with Matchers {
     }
   }
 
+  "Tentando declarar variavel com nome de funcao fora da funcao" should "gerar erro lexico" in {
+    lex.setInput("programa p; funcao @func:inteiro;{}; {@func := 3;}.")
+    a [SemanticError] should be thrownBy {
+      sin.parse(lex, sem)
+    }
+  }
+
   "Declarando variaveis validas do tipo cadeia" should "possuir tipo cadeia" in {
     lex.setInput("programa asdf; var A, B: cadeia[5]; {}.")
     try {
