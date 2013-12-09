@@ -8,7 +8,7 @@ SemanticName = Semantico
 Package = gals
 ScannerCaseSensitive = true
 ScannerTable = Compact
-Input = String
+Input = Stream
 Parser = LL
 #RegularDefinitions
 L:[a-zA-Z]
@@ -112,25 +112,25 @@ verdadeiro = id : "verdadeiro"
 
 <bloco> ::= <dcl_const> <dcl_var> <dcl_procs> <listacomando> ;
 
-<dcl_const> ::= const id #2 "=" <constante> #3 ";" <dcl_const> | î ;
+<dcl_const> ::= const id #2 "=" <constante> #3 ";" <dcl_const> | ? ;
 
-<dcl_var> ::= var #04 <lid> #05 ":" <tipo> #06 ";" <dcl_var> | î ;
+<dcl_var> ::= var #04 <lid> #05 ":" <tipo> #06 ";" <dcl_var> | ? ;
 
-<dcl_procs> ::= <dcl_proc> ";" <dcl-procs> | î ;
+<dcl_procs> ::= <dcl_proc> ";" <dcl_procs> | ? ;
 
-<dcl_proc>::= proc id #07 <par-formais> #09 ";" <bloco> #11
+<dcl_proc>::= proc id #07 <par_formais> #09 ";" <bloco> #11
  | funcao id #08 <par_formais> #09 ":" <tipo_pre_definido> #10";" <bloco> #11 ;
 
 <par_formais> ::= "(" <mp_par> #12 <lid> #13 ":"
- <tipo_pre_definido> #14 <rep_par> ")" | î
+ <tipo_pre_definido> #14 <rep_par> ")" | ?;
 
-<rep_par> ::= ";" <mp_par> #12 <lid> #13 ":" <tipo_pre_definido> #14 <rep_par> | î ;
+<rep_par> ::= ";" <mp_par> #12 <lid> #13 ":" <tipo_pre_definido> #14 <rep_par> | ? ;
 
 <mp_par> ::= ref #15 | val #16 ;
 
 <lid> ::= id #17 <rep_lid> ;
 
-<rep_lid> ::= "," <lid> | î ;
+<rep_lid> ::= "," <lid> | ? ;
 
 <tipo> ::= <tipo_pre_definido>
 
@@ -141,15 +141,15 @@ verdadeiro = id : "verdadeiro"
 
 
 <dimensao2> ::= "," #22 <constante> #19 ".." <constante> #20
- | î #23;
+ | ? #23;
 
 <constante> ::= id #24 | <constante_explicita> ;
 
 <tipo_pre_definido> ::= inteiro #25 | real #26
  | booleano #27 | caracter #28 ;
 
-<listacomando> ::= "{" <comando> <replistacomando> "}"
-<replistacomando> ::= ";" <comando> <replistacomando> | î ;
+<listacomando> ::= "{" <comando> <replistacomando> "}";
+<replistacomando> ::= ";" <comando> <replistacomando> | ? ;
 
 <comando> ::= id #29 <rcomid>
  | <listacomando>
@@ -159,43 +159,43 @@ verdadeiro = id : "verdadeiro"
 
  | leia "(" #31 <lid> ")"
 
- | escreva "(" <expressao> #32 <rep-lexpr> ")"
+ | escreva "(" <expressao> #32 <rep_lexpr> ")"
 
- | î ;
-<senaoparte> ::= senao <comando> | î ;
+ | ? ;
+<senaoparte> ::= senao <comando> | ? ;
 
 <rcomid> ::= #33 ":=" <expressao> #34
 
  |"[" #35 <expressao> #36 <expressao2> #37"]"
  ":=" <expressao> #34
 
- | "(" #38 <expressao> #39 <rep-lexpr> ")" #40
+ | "(" #38 <expressao> #39 <rep_lexpr> ")" #40
 
- | î #41;
+ | ? #41;
 
-<expressao2> ::= “,” #42 <expressão> | î ;
+<expressao2> ::= "," #42 <expressao> | ? ;
 
-<rep_lexpr> ::= "," <expressao> #43 <rep-lexpr> | î ;
+<rep_lexpr> ::= "," <expressao> #43 <rep_lexpr> | ? ;
 
-<expressao> ::= <expsimp> #44 <resto-expressao> ;
+<expressao> ::= <expsimp> #44 <resto_expressao> ;
 
-<resto_expressao> ::= <oprel> <expsimp> #45 | î ;
+<resto_expressao> ::= <oprel> <expsimp> #45 | ? ;
 
 <oprel> ::= "=" #46 | "<" #47 | ">" #48
 
  | ">=" #49 | "<=" #50 | "<>" #51 ;
 
-<expsimp> ::= #71 <termo> #52 <repexpsimp> ;
+<expsimp> ::= #71 <termo> #52 <rep_expsimp> ;
 
-<repexpsimp>::= <opadd> #53 <termo> #54 <repexpsimp> | î;
+<rep_expsimp>::= <op_add> #53 <termo> #54 <rep_expsimp> | ?;
 
-<opadd> ::= "+" #55 | "-" #56 | ou #57 ;
+<op_add> ::= "+" #55 | "-" #56 | ou #57 ;
 
-<termo> ::= <fator> #58 <reptermo> ;
+<termo> ::= <fator> #58 <rep_termo> ;
 
-<reptermo> ::= <opmult> #59 <fator> #60 <reptermo> | î ;
+<rep_termo> ::= <op_mult> #59 <fator> #60 <rep_termo> | ? ;
 
-<opmult> ::= "*" #64 | "/" #65 | e #66 ;
+<op_mult> ::= "*" #64 | "/" #65 | e #66 ;
 
 <fator> ::= nao #67 <fator> #68
 
@@ -203,12 +203,13 @@ verdadeiro = id : "verdadeiro"
 
  | "(" #71 <expressao> ")" #72
  | id #29 <rvar> #73
- | <constante_explicita> #74;  9
+ | <constante_explicita> #74;
 
-<rvar> ::= "(" #75 <expressao> #39 <rep-lexpr> ")" #76
+<rvar> ::= "(" #75 <expressao> #39 <rep_lexpr> ")" #76
  | "[" #35 <expressao> #77 <expressao2> #78 "]"
- | î #79 ;
+ | ? #79 ;
 
-<constante_explicita>::= num-int #80 | num-real #81
+<constante_explicita>::= num_int #80 | num_real #81
  | falso #82 | verdadeiro #83
  | literal #84 ;
+

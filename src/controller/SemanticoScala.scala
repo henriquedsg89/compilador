@@ -13,6 +13,7 @@ import java.util.logging.Logger
  */
 class SemanticoScala extends Constants {
 
+  val log = Logger.getLogger("SemanticoScala")
   var listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
 
   var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr, valConst,
@@ -544,6 +545,36 @@ class SemanticoScala extends Constants {
   def act41(token: Token) {
     if(!posid.isInstanceOf[ID_Procedimento])
       throw new SemanticError(posid.absNome + " deveria ser uma procedure")
+  }
+
+  def act43(token: Token) {
+    if(contextoEXPR == "par-atual") {
+      npa += 1
+      val funcOrProc = pegaTabSim(posid.absNome).get(posid.absNome).get
+      if(funcOrProc.isInstanceOf[ID_Funcao]) {
+        val par = funcOrProc.asInstanceOf[ID_Funcao].temPar(token.getLexeme)
+        if(par == null)
+          throw new SemanticError("Parametro nao encontrado")
+        else {
+         if(mpp != par.mecanismo_passagem)
+           throw new SemanticError("Tipo de passagem de parametro incompativel")
+        }
+      } else {
+        val par = funcOrProc.asInstanceOf[ID_Procedimento].temPar(token.getLexeme)
+        if(par == null)
+          throw new SemanticError("Parametro nao encontrado")
+        else {
+          if(mpp != par.mecanismo_passagem)
+            throw new SemanticError("Tipo de passagem de parametro incompativel")
+        }
+      }
+    }
+    if(contextoEXPR == "impressao") {
+      if(tipoExpr != "inteiro" && tipoExpr != "real" && tipoExpr != "caracter" && tipoExpr != "cadeia")
+        throw new SemanticError("Tipo invalido para impressao")
+      else
+        System.out.println("token: "+token.getLexeme+"\n cteExplicita :"+valConst)//FIXME: printa expressao
+    }
   }
 
   def act44(token: Token) {
