@@ -18,7 +18,7 @@ funcao vemca(val param1,param2: inteiro): inteiro; var in_x: inteiro; {
 	se nao verdadeiro entao
 		leia( X )
 	senao
-		escreva( vemca(1,5) )
+		escreva( vemca(1,5) );
 
-	borala(3,5)
+	borala(3,X)
 }.

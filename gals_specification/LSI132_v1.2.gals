@@ -21,6 +21,7 @@ literal : '[^']*('')?[^']*'
  :! "/*" [\000-\255]* "*/" //comentario de bloco
  : / / [^\n]* //comentario de linha
 
+
 "+"
 "-"
 "*"

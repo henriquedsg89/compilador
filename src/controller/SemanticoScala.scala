@@ -322,7 +322,7 @@ class SemanticoScala extends Constants {
 
   def act17(token: Token) {
     if (contextoLID == "decl") {
-      if (jaDeclarado(token)) {
+      if (listTabSim(na).contains(token.getLexeme)) {
         throw new SemanticError("Id já declarado: " + token.getLexeme, token.getPosition)
       } else {
         val tabSim = listTabSim(na)
@@ -330,7 +330,7 @@ class SemanticoScala extends Constants {
         lids += new ID_Variavel(token.getLexeme, na, null, null)
       }
     } else if (contextoLID == "par-formal") {
-      if (jaDeclarado(token)) {
+      if (listTabSim(na).contains(token.getLexeme)) {
         throw new SemanticError("Id já declarado: " + token.getLexeme, token.getPosition)
       } else {
         npf = npf + 1
@@ -339,7 +339,7 @@ class SemanticoScala extends Constants {
           lids += new ID_Parametro(token.getLexeme, na, 0, mpp, null)
       }
     } else if (contextoLID == "leitura") {
-      if (!jaDeclarado(token)) {
+      if (!listTabSim(na).contains(token.getLexeme)) {
         throw new SemanticError("Id não declarado: " + token.getLexeme, token.getPosition)
       } else {
         val tabSim = listTabSim(na)
@@ -475,26 +475,27 @@ class SemanticoScala extends Constants {
   }
 
   def act33(token: Token){
-    if(posid.isInstanceOf[ID_Variavel]) {
-      if(posid.asInstanceOf[ID_Variavel].tipo == "vetor") {
-        throw new SemanticError(posid.absNome + " deveria ser indexado", token.getPosition)
+    val id = pegaTabSim(token.getLexeme).get(token.getLexeme).get
+    if(id.isInstanceOf[ID_Variavel]) {
+      if(id.asInstanceOf[ID_Variavel].tipo == "vetor") {
+        throw new SemanticError(id.absNome + " deveria ser indexado", token.getPosition)
       } else {
-        tipoLadoEsq = posid.asInstanceOf[ID_Variavel].tipo
+        tipoLadoEsq = id.asInstanceOf[ID_Variavel].tipo
       }
-    } else if (posid.isInstanceOf[ID_Parametro]) {
-      if(posid.asInstanceOf[ID_Parametro].tipo == "vetor") {
-        throw new SemanticError(posid.absNome + " deveria ser indexado", token.getPosition)
+    } else if (id.isInstanceOf[ID_Parametro]) {
+      if(id.asInstanceOf[ID_Parametro].tipo == "vetor") {
+        throw new SemanticError(id.absNome + " deveria ser indexado", token.getPosition)
       } else {
-        tipoLadoEsq = posid.asInstanceOf[ID_Parametro].tipo
+        tipoLadoEsq = id.asInstanceOf[ID_Parametro].tipo
       }
-    } else if(posid.isInstanceOf[ID_Funcao]) { //TODO:fragilidade, possivel declarar nome da funcao fora da funcao
-      if(na >= posid.asInstanceOf[ID_Funcao].nivel + 1) {
-        tipoLadoEsq = posid.asInstanceOf[ID_Funcao].tipo_resultado
+    } else if(id.isInstanceOf[ID_Funcao]) { //TODO:fragilidade, possivel declarar nome da funcao fora da funcao
+      if(na >= id.asInstanceOf[ID_Funcao].nivel + 1) {
+        tipoLadoEsq = id.asInstanceOf[ID_Funcao].tipo_resultado
       } else {
         throw new SemanticError("fora do escopo da funcao", token.getPosition)
       }
     } else {
-      throw new SemanticError(posid.absNome + " deveria ser var/par/funcao", token.getPosition)
+      throw new SemanticError(id.absNome + " deveria ser var/par/funcao", token.getPosition)
     }
   }
 
@@ -581,6 +582,20 @@ class SemanticoScala extends Constants {
       else {
         if(mpp != par.mecanismo_passagem)
           throw new SemanticError("Tipo de passagem de parametro incompativel", token.getPosition)
+        if (par.tipo == "real") {
+          if (!(tipoExpr == "real" ||  tipoExpr == "inteiro"))
+            throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+        } else if (par.tipo == "inteiro") {
+          if (tipoExpr != "inteiro")
+            throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+        } else if (par.tipo == "cadeia") {
+          if (!(tipoExpr == "cadeia" ||  tipoExpr == "caracter"))
+            throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+        } else if (par.tipo == "caracter") {
+          if (tipoExpr != "caracter")
+            throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+        }
+
       }
     } else {
       val par = funcOrProc.asInstanceOf[ID_Procedimento].list_params(npa-1)
@@ -589,6 +604,19 @@ class SemanticoScala extends Constants {
       else {
         if(mpp != par.mecanismo_passagem)
           throw new SemanticError("Tipo de passagem de parametro incompativel", token.getPosition)
+        if (par.tipo == "real") {
+          if (!(tipoExpr == "real" ||  tipoExpr == "inteiro"))
+            throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+        } else if (par.tipo == "inteiro") {
+          if (tipoExpr != "inteiro")
+            throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+        } else if (par.tipo == "cadeia") {
+          if (!(tipoExpr == "cadeia" ||  tipoExpr == "caracter"))
+            throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+        } else if (par.tipo == "caracter") {
+          if (tipoExpr != "caracter")
+            throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+        }
       }
     }
   }
@@ -623,6 +651,19 @@ class SemanticoScala extends Constants {
         else {
          if(mpp != par.mecanismo_passagem)
            throw new SemanticError("Tipo de passagem de parametro incompativel", token.getPosition)
+          if (par.tipo == "real") {
+            if (!(tipoExpr == "real" ||  tipoExpr == "inteiro"))
+              throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+          } else if (par.tipo == "inteiro") {
+            if (tipoExpr != "inteiro")
+              throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+          } else if (par.tipo == "cadeia") {
+            if (!(tipoExpr == "cadeia" ||  tipoExpr == "caracter"))
+              throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+          } else if (par.tipo == "caracter") {
+            if (tipoExpr != "caracter")
+              throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+          }
         }
       } else {
         val par = funcOrProc.asInstanceOf[ID_Procedimento].list_params(npa-1)
@@ -631,6 +672,19 @@ class SemanticoScala extends Constants {
         else {
           if(mpp != par.mecanismo_passagem)
             throw new SemanticError("Tipo de passagem de parametro incompativel", token.getPosition)
+          if (par.tipo == "real") {
+            if (!(tipoExpr == "real" ||  tipoExpr == "inteiro"))
+              throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+          } else if (par.tipo == "inteiro") {
+            if (tipoExpr != "inteiro")
+              throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+          } else if (par.tipo == "cadeia") {
+            if (!(tipoExpr == "cadeia" ||  tipoExpr == "caracter"))
+              throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+          } else if (par.tipo == "caracter") {
+            if (tipoExpr != "caracter")
+              throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
+          }
         }
       }
     }
