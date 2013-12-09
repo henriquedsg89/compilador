@@ -451,7 +451,7 @@ class SemanticoScala extends Constants {
   def act29(token: Token) {
     if (!jaDeclarado(token)) {
       throw new SemanticError(token.getLexeme + " nao declarado", token.getPosition)
-    } else {
+    } else if (contextoEXPR != "par-atual") {
       posid = pegaTabSim(token.getLexeme).get(token.getLexeme).get
     }
   }
@@ -572,7 +572,7 @@ class SemanticoScala extends Constants {
     contextoEXPR = "par-atual"
     val funcOrProc = pegaTabSim(posid.absNome).get(posid.absNome).get
     if(funcOrProc.isInstanceOf[ID_Funcao]) {
-      val par = funcOrProc.asInstanceOf[ID_Funcao].temPar(token.getLexeme)
+      val par = funcOrProc.asInstanceOf[ID_Funcao].list_params(npa-1)
       if(par == null)
         throw new SemanticError("Parametro nao encontrado", token.getPosition)
       else {
@@ -580,7 +580,7 @@ class SemanticoScala extends Constants {
           throw new SemanticError("Tipo de passagem de parametro incompativel", token.getPosition)
       }
     } else {
-      val par = funcOrProc.asInstanceOf[ID_Procedimento].temPar(token.getLexeme)
+      val par = funcOrProc.asInstanceOf[ID_Procedimento].list_params(npa-1)
       if(par == null)
         throw new SemanticError("Parametro nao encontrado", token.getPosition)
       else {
@@ -614,7 +614,7 @@ class SemanticoScala extends Constants {
       npa += 1
       val funcOrProc = pegaTabSim(posid.absNome).get(posid.absNome).get
       if(funcOrProc.isInstanceOf[ID_Funcao]) {
-        val par = funcOrProc.asInstanceOf[ID_Funcao].temPar(token.getLexeme)
+        val par = funcOrProc.asInstanceOf[ID_Funcao].list_params(npa-1)
         if(par == null)
           throw new SemanticError("Parametro nao encontrado", token.getPosition)
         else {
@@ -622,7 +622,7 @@ class SemanticoScala extends Constants {
            throw new SemanticError("Tipo de passagem de parametro incompativel", token.getPosition)
         }
       } else {
-        val par = funcOrProc.asInstanceOf[ID_Procedimento].temPar(token.getLexeme)
+        val par = funcOrProc.asInstanceOf[ID_Procedimento].list_params(npa-1)
         if(par == null)
           throw new SemanticError("Parametro nao encontrado", token.getPosition)
         else {
@@ -776,7 +776,7 @@ class SemanticoScala extends Constants {
 
   def act76(token: Token) {
     if(npa == npf)
-      tipoVar = tipoResultadoFuncao
+      tipoVar = posid.asInstanceOf[ID_Funcao].tipo_resultado
     else
       throw new SemanticError("Erro na quantidade de parametros", token.getPosition)
   }
