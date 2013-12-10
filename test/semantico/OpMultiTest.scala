@@ -4,9 +4,9 @@ import org.scalatest.{Matchers, FlatSpec}
 import controller._
 import gals.{Semantico, SemanticError}
 /**
- * Authors: Henrique & Octávio
- * Date: Nov 2013
- */
+* Authors: Henrique & Octávio
+* Date: Dez 2013
+*/
 class OpMultiTest extends FlatSpec with Matchers {
   val con = new Controller
   val lex = con.lexico

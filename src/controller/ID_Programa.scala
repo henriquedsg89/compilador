@@ -1,9 +1,8 @@
 package controller
 
 /**
- * User: henrique & octavio
- * Date: 07/12/13
- * Time: 21:35
+ * Authors: Henrique & Octávio
+ * Date: Dez 2013
  */
 case class ID_Programa(nome: String) extends ID_Abstract(nome, 1, 0, 0) {
 

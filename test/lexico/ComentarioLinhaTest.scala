@@ -6,7 +6,7 @@ import gals.Constants
 
 /**
  * Authors: Henrique & Octávio
- * Date: Nov 2013
+ * Date: Dez 2013
  */
 class ComentarioLinhaTest extends FlatSpec with Matchers {
   val con = new Controller

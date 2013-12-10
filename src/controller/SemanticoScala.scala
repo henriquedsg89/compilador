@@ -4,12 +4,9 @@ import scala.collection.mutable.{ArrayBuffer, HashMap}
 import gals.{SemanticError, Constants, Token}
 import scala.collection.mutable
 import java.util.logging.Logger
-
-
 /**
- * User: henrique & octavio
- * Date: 07/12/13
- * Time: 21:28
+ * Authors: Henrique & Octávio
+ * Date: Dez 2013
  */
 class SemanticoScala extends Constants {
 

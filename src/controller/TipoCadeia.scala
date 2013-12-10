@@ -1,9 +1,7 @@
 package controller
-
 /**
- * User: henrique & octavio
- * Date: 07/12/13
- * Time: 22:28
+ * Authors: Henrique & Octávio
+ * Date: Dez 2013
  */
 case class TipoCadeia(tamanho: Int, valor: Object) {
 

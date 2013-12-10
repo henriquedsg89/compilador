@@ -5,10 +5,9 @@ import controller._
 import gals.{Semantico, SemanticError}
 import controller.ID_Variavel
 import controller.ID_Procedimento
-
 /**
  * Authors: Henrique & Octávio
- * Date: Nov 2013
+ * Date: Dez 2013
  */
 class IdProgramaTest extends FlatSpec with Matchers {
 

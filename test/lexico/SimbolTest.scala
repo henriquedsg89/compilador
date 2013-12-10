@@ -4,9 +4,8 @@ import controller.Controller
 import gals.Constants
 import org.scalatest._
 /**
- * User: henrique & octavio
- * Date: 07/12/13
- * Time: 18:26
+ * Authors: Henrique & Octávio
+ * Date: Dez 2013
  */
 class SimbolTest extends FlatSpec with Matchers {
   val lexico = new Controller().lexico

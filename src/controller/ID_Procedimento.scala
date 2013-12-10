@@ -1,9 +1,8 @@
 package controller
 
 /**
- * User: henrique & octavio
- * Date: 07/12/13
- * Time: 21:36
+ * Authors: Henrique & Octávio
+ * Date: Dez 2013
  */
 case class ID_Procedimento(nome: String, nivel: Int, end_prim_instr: Int, num_parms: Int, list_params: Array[ID_Parametro])
   extends ID_Abstract(nome, 4, nivel, 0) {

@@ -4,10 +4,9 @@ import _root_.java.util
 import org.scalatest._
 import controller._
 import gals.Constants
-
 /**
  * Authors: Henrique & Octávio
- * Date: Nov 2013
+ * Date: Dez 2013
  */
 class IdsTest extends FlatSpec with Matchers {
 

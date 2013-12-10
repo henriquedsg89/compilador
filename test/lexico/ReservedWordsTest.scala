@@ -4,10 +4,9 @@ import controller.Controller
 import org.scalatest._
 
 import _root_.java.util
-
 /**
  * Authors: Henrique & Octávio
- * Date: Nov 2013
+ * Date: Dez 2013
  */
 class ReservedWordsTest extends FlatSpec with Matchers {
 

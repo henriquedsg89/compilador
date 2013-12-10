@@ -3,10 +3,9 @@ package lexico
 import controller.Controller
 import gals.Constants
 import org.scalatest._
-
 /**
  * Authors: Henrique & Octávio
- * Date: Nov 2013
+ * Date: Dez 2013
  */
 class NumIntTest extends FlatSpec with Matchers {
 

@@ -4,9 +4,8 @@ import controller.Controller
 import gals.{LexicalError, Constants}
 import org.scalatest._
 /**
- * User: henrique & octavio
- * Date: 07/12/13
- * Time: 18:26
+ * Authors: Henrique & Octávio
+ * Date: Dez 2013
  */
 class ComentarioBlocoTest extends FlatSpec with Matchers {
 

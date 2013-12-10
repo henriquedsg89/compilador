@@ -3,10 +3,9 @@ package lexico
 import org.scalatest._
 import controller.Controller
 import gals.{LexicalError, Constants}
-
 /**
  * Authors: Henrique & Octávio
- * Date: Nov 2013
+ * Date: Dez 2013
  */
 class LiteraisTest extends FlatSpec with Matchers {
 

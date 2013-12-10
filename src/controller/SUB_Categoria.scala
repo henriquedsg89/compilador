@@ -1,10 +1,8 @@
 package controller
-
 /**
- * User: henrique & octavio
- * Date: 08/12/13
- * Time: 14:57
- */
+* Authors: Henrique & Octávio
+* Date: Dez 2013
+*/
 trait SUB_Categoria
 case class Cadeia(tamanho: Int, valor: String) extends SUB_Categoria
 case class Predefinido(valor: Object) extends SUB_Categoria

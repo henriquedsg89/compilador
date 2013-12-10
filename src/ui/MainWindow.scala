@@ -26,8 +26,7 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
 
   val anal = new JMenu("Analisador")
   val lex = new JMenuItem("Léxico")
-  val sin = new JMenuItem("Sintático")
-  val sem = new JMenuItem("Semântico")
+  val sin = new JMenuItem("Sintático e Semântico")
 
   val editor: Editor = new Editor()
   editor.init()
@@ -64,7 +63,6 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
 
     anal.add(lex)
     anal.add(sin)
-    anal.add(sem)
 
 
     menu.add(file)

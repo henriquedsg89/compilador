@@ -1,9 +1,8 @@
 package controller
 
 /**
- * User: henrique & octavio
- * Date: 07/12/13
- * Time: 22:23
+ * Authors: Henrique & Octávio
+ * Date: Dez 2013
  */
 case class ID_Variavel(nome: String, nivel: Int, tipo: String, subCategoria: SUB_Categoria) extends ID_Abstract(nome,3,0,0) {
 

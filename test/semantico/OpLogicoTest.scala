@@ -5,7 +5,7 @@ import controller._
 import gals.{Semantico, SemanticError}
 /**
  * Authors: Henrique & Octávio
- * Date: Nov 2013
+ * Date: Dez 2013
  */
 class OpLogicoTest extends FlatSpec with Matchers {
   val con = new Controller
