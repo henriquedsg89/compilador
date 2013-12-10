@@ -473,7 +473,7 @@ class SemanticoScala extends Constants {
 
   def act32(token: Token) {
     contextoEXPR = "impressao"
-    val tiposParaImp = Array("inteiro", "real", "caracter", "cadeia")
+    val tiposParaImp = Array("inteiro", "real", "caracter", "cadeia", "literal")
     if (!tiposParaImp.contains(tipoExpr))
       throw new SemanticError("Tipo inválido para impressão", token.getPosition)
   }
@@ -540,7 +540,7 @@ class SemanticoScala extends Constants {
 
   def act36(token: Token) {
     numIndices = 1
-    val tipoIndiceDim1 = posid.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice
+    val tipoIndiceDim1 = posid.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice// TODO: quando acessa V[i] dah pau
     if (tipoVarIndexada == "vetor") {
       if (tipoExpr != tipoIndiceDim1)//FIXME: declarando vetores com indices de tipo diferente dah pau
         throw new SemanticError("Tipo indice inválido", token.getPosition)
@@ -643,7 +643,7 @@ class SemanticoScala extends Constants {
   }
 
   def act42(token: Token) {
-    numIndices = 2//FIXME:verificar essa merda
+    numIndices = 2
   }
 
   def act43(token: Token) {
