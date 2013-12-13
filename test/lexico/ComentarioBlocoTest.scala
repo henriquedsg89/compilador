@@ -8,8 +8,8 @@ import org.scalatest._
  * Date: Dez 2013
  */
 class ComentarioBlocoTest extends FlatSpec with Matchers {
-
-  val lex = new Controller().lexico
+  val con = new Controller
+  val lex = con.lexico
 
   "Cometario de bloco" should "aceitar qualquer coisa" in {
     lex.setInput("/*asdf +10 -15 .5 10e15 14.e asdfasdf \n\\\n\t asdf @@@****asdf +14sa*/")
@@ -17,8 +17,6 @@ class ComentarioBlocoTest extends FlatSpec with Matchers {
   }
 
   "Cometario de bloco nao fechado" should "gerar erro lexico" in {
-    lex.setInput("/*asdf +10 -15 .5 10e15 comentario nao fechado.*asd***** /")
-    lex.nextToken().getLexeme should be ("/")
-    lex.nextToken().getLexeme should be ("*")
+    con.validateLexical("/*asdf +10 -15 .5 10e15 comentario nao fechado.*asd***** /") should not be (con.LEX_OK_MSG, 0)
   }
 }
