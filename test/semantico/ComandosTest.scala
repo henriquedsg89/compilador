@@ -36,4 +36,13 @@ class ComandosTest extends FlatSpec with Matchers {
       case e: SemanticError => fail("Não deveria dar excecao: " + e)
     }
   }
+
+  "Usando comando escreva com parametro variavel" should "nao gerar erro semantico" in {
+    lex.setInput("programa p; var a: inteiro; {a:= 10; leia(a);}.")
+    try {
+      sin.parse(lex, sem)
+    } catch {
+      case e: SemanticError => fail("Nao deveria dar exceccao: " + e)
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import controller.{ID_Constante, ID_Programa, Controller}
+import controller.Controller
 import javax.swing.SwingUtilities
 import ui.MainWindow
 
