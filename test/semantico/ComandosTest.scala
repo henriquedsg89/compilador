@@ -45,4 +45,13 @@ class ComandosTest extends FlatSpec with Matchers {
       case e: SemanticError => fail("Nao deveria dar exceccao: " + e)
     }
   }
+
+  "Usando enquanto faca iterando uma variavel" should " nao gerar erro semantico" in {
+    lex.setInput("programa p; var a: inteiro; { enquanto a>2 faca {a:= a +3;}; }.")
+    try {
+      sin.parse(lex, sem)
+    } catch {
+      case e: SemanticError => fail("Nao deveria dar exceccao: " + e)
+    }
+  }
 }
