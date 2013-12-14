@@ -850,8 +850,12 @@ class SemanticoScala extends Constants {
       else {
         if (operador == "/")
           tipoResultadoOperacao = "real"
-        else
+        else if(tipoTermo == "real" || tipoExpSimples == "real") {
+          tipoResultadoOperacao = "real"
+        }
+        else {
           tipoResultadoOperacao = "inteiro"
+        }
 
         tipoExpSimples = tipoResultadoOperacao
 
@@ -911,6 +915,16 @@ class SemanticoScala extends Constants {
       if(tipoFator != "real" && tipoFator != "inteiro")
         throw new SemanticError("Operandos incompativeis, tipo fator e termo", token.getPosition)
       else {
+        if (operador == "/")
+          tipoResultadoOperacao = "real"
+        else if(tipoTermo == "real" || tipoExpSimples == "real") {
+          tipoResultadoOperacao = "real"
+        }
+        else {
+          tipoResultadoOperacao = "inteiro"
+        }
+
+
         val id = posid.pop
         if (id.isInstanceOf[ID_Variavel]) {
           if (id.asInstanceOf[ID_Variavel].tipo == "inteiro") {
