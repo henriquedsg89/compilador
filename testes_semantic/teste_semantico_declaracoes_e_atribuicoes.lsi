@@ -1,0 +1,30 @@
+programa teste_semantico;
+const a = 10;
+const true = verdadeiro;
+var b : vetor [0 .. 10] de real;
+var c, d : inteiro;
+var bool : booleano;
+var f : real;
+var g : cadeia[5];
+var h : vetor ['g' .. 'm'] de booleano;
+// var array : vetor [10 .. 1] de booleano;
+// var string : cadeia[257];
+// var teste_semantico : inteiro;
+
+{
+bool := true;
+c := a;
+d := 2;
+b[2] := 5.7;
+f := 0.5e10;
+g := '12345';
+h['j'] := falso;
+// c := 2 + 1/2;
+// c := 7.9;
+// c := 5 + 2.7 + 8;
+// c := 1/6;
+// teste_semantico := 10;
+// a := 10;
+// c := teste_semantico;
+// c[2] := 10;
+}.

@@ -1,0 +1,51 @@
+programa teste_semantico;
+const N = 10;
+var i : inteiro;
+var d : real;
+var b : booleano;
+
+funcao somaInteiros (val x : inteiro; val y : inteiro) : inteiro;
+{
+    somaInteiros := x + y;
+};
+
+funcao somaReais (val x, y : real) : real;
+{
+    somaReais := x + y;
+};
+
+proc XMaiorQueY(val x : inteiro; val y : inteiro; ref b : booleano);
+{
+    se x > y entao
+        b := verdadeiro
+    senao
+        b := falso;
+};
+
+proc inc(ref x : inteiro);
+{
+    x := x + 1;
+};
+
+proc bemVindo;
+{
+    escreva('Seja bem vindo');
+};
+
+{
+    i := somaInteiros(10, 5);
+    inc(i);
+    XMaiorQueY(i, 5+5, b);
+    XMaiorQueY(i, N, b);
+    bemVindo;
+//    somaInteiros(10, 5);
+//    i := inc(i);
+//    inc(5);
+//    inc(N);
+//    inc(5 + N);
+//    inc(N + 5);
+//    inc(5 + i);
+//    inc(i + 5);
+//    XMaiorQueY(i, d, b);
+//    XMaiorQueY(i, N, verdadeiro);
+}.
