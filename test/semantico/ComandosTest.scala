@@ -19,7 +19,7 @@ class ComandosTest extends FlatSpec with Matchers {
     sin.parse(lex, sem)
     val variavel = semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel]
     variavel should not be (null)
-    semScala.posid should be (variavel)
+    semScala.posid.head should be (variavel)
   }
 
   "Dado expressao 1>2" should "validar expressao com falso sem gerar erro semantico" in {

@@ -91,6 +91,7 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
   /* acao invocada pelo menu lexico */
   val lexAction = new ActionListener {
     def actionPerformed(e: ActionEvent) {
+      errorArea.setText("")
       // chama o controller para validar
       val error = controller.validateLexical(editor.textArea.getText)
 
@@ -104,6 +105,7 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
 
   val sinAction = new ActionListener {
     def actionPerformed(e: ActionEvent) {
+      errorArea.setText("")
       val error = controller.validateSyntatic(editor.textArea.getText)
       errorArea.setText(error._1)
       editor.textArea.requestFocus()
