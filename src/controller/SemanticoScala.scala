@@ -505,12 +505,6 @@ class SemanticoScala extends Constants {
     if (contextoEXPR != "par-atual")
     posid = pegaTabSim(token.getLexeme).get(token.getLexeme).get
 
-    if (posid.isInstanceOf[ID_Variavel]) {
-      if (posid.asInstanceOf[ID_Variavel].tipo == "vetor") {
-        tipoElementos = posid.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].tipoElem
-      }
-    }
-
     if (posid.isInstanceOf[ID_Funcao]) {
       npf = posid.asInstanceOf[ID_Funcao].num_parms
       if (nomeFunc == token.getLexeme) {
@@ -603,11 +597,16 @@ class SemanticoScala extends Constants {
   def act36(token: Token) {
     numIndices = 1
     if (tipoVarIndexada == "vetor") {
-      val tipoIndiceDim1 = posid.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice// TODO: quando acessa V[i] dah pau
-      if (tipoExpr != tipoIndiceDim1)//FIXME: declarando vetores com indices de tipo diferente dah pau
-        throw new SemanticError("Tipo indice inválido", token.getPosition)
-      else
+      if (posid.isInstanceOf[ID_Variavel]) {
+        val tipoIndiceDim1 = posid.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice// TODO: quando acessa V[i] dah pau
+        if (tipoExpr != tipoIndiceDim1)//FIXME: declarando vetores com indices de tipo diferente dah pau
+          throw new SemanticError("Tipo indice inválido", token.getPosition)
+        else {
+          tipoElementos = posid.asInstanceOf[ID_Variavel].tipo
           tipoLadoEsq = tipoElementos
+
+        }
+      }
     } else {//cadeia
       if (tipoExpr != "inteiro")
         throw new SemanticError("Indice deveria ser inteiro", token.getPosition)
@@ -984,11 +983,14 @@ class SemanticoScala extends Constants {
   def act77(token: Token) {
     numIndices = 1
     if(tipoVarIndexada == "vetor") {
-      val tipoIndiceDim1 = posid.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice
-      if(tipoExpr != tipoIndiceDim1) {//TODO:abrir tipo dimensao1 da tabsim
-        throw new SemanticError("Tipo do indice invalido", token.getPosition)
-      } else {
-        tipoVar = tipoElementos
+      if (posid.isInstanceOf[ID_Variavel]){
+        val tipoIndiceDim1 = posid.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice
+        if(tipoExpr != tipoIndiceDim1) {//TODO:abrir tipo dimensao1 da tabsim
+          throw new SemanticError("Tipo do indice invalido", token.getPosition)
+        } else {
+          tipoElementos = posid.asInstanceOf[ID_Variavel].tipo
+          tipoVar = tipoElementos
+        }
       }
     } else if(tipoExpr != "inteiro") {
       throw new SemanticError("Indice deveria ser inteiro", token.getPosition)
