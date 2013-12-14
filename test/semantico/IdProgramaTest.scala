@@ -146,7 +146,7 @@ class IdProgramaTest extends FlatSpec with Matchers {
   }
 
   "Declarando func com valor param formal" should "conter num parametros formais = 1" in {
-    lex.setInput("programa asdf; funcao id(val p1: inteiro):inteiro;{}; {}.")
+    lex.setInput("programa asdf; funcao id(val p1: inteiro):inteiro;{id:= 1;}; {}.")
     try {
       sin.parse(lex, sem)
       val func = semScala.listTabSim(1).get("id").get.asInstanceOf[ID_Funcao]

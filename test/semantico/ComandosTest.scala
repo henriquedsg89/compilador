@@ -19,6 +19,7 @@ class ComandosTest extends FlatSpec with Matchers {
     sin.parse(lex, sem)
     val variavel = semScala.listTabSim(1).get("A").get.asInstanceOf[ID_Variavel]
     variavel should not be (null)
+    semScala.posid.pop
     semScala.posid.head should be (variavel)
   }
 

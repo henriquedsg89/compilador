@@ -200,7 +200,9 @@ class SemanticoScala extends Constants {
   }
 
   def act03(token: Token) {
-    posid.pop
+    if(posid.head.isInstanceOf[ID_Valor])
+      posid.pop
+
     val tabSim = pegaTabSim(posid.head.absNome)
     val id = tabSim.get(posid.head.absNome).get.asInstanceOf[ID_Constante]
     val newId = new ID_Constante(id.nome, id.nivel, id.desloc, tipoConst, valConst, token.getPosition)
@@ -922,7 +924,7 @@ class SemanticoScala extends Constants {
       else {
         if (operador == "/")
           tipoResultadoOperacao = "real"
-        else if(tipoTermo == "real" || tipoExpSimples == "real") {
+        else if(tipoTermo == "real" || tipoFator == "real") {
           tipoResultadoOperacao = "real"
         }
         else {
