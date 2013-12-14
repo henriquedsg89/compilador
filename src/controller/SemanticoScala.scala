@@ -291,6 +291,7 @@ class SemanticoScala extends Constants {
 
     listTabSim remove na
     na = na - 1
+    contextoEXPR = null
   }
 
   def act12(token: Token) {
@@ -369,8 +370,20 @@ class SemanticoScala extends Constants {
         throw new SemanticError("Id já declarado: " + token.getLexeme, token.getPosition)
       } else {
         npf = npf + 1
-        val tabSim = listTabSim(na)
-        tabSim.put(token.getLexeme, new ID_Parametro(token.getLexeme, na, 0, mpp, null, token.getPosition))
+        val tabSim = pegaTabSim(posid.absNome)
+        val funcOrProc = tabSim.get(posid.absNome).get
+        if (funcOrProc.isInstanceOf[ID_Procedimento]) {
+          val proc = funcOrProc.asInstanceOf[ID_Procedimento];
+          val newProc = new ID_Procedimento(proc.nome, proc.nivel, proc.end_prim_instr, npf, proc.list_params, proc.posicao)
+          tabSim.put(newProc.nome, newProc)
+        } else if (funcOrProc.isInstanceOf[ID_Funcao]) {
+          val func = funcOrProc.asInstanceOf[ID_Funcao];
+          val newFunc = new ID_Funcao(func.nome, func.nivel, func.end_prim_instr, npf, func.list_params, func.tipo_resultado, func.posicao)
+          tabSim.put(newFunc.nome, newFunc)
+        }
+
+        val tabSim2 = listTabSim(na)
+        tabSim2.put(token.getLexeme, new ID_Parametro(token.getLexeme, na, 0, mpp, null, token.getPosition))
           lids += new ID_Parametro(token.getLexeme, na, 0, mpp, null, token.getPosition)
       }
     } else if (contextoLID == "leitura") {
@@ -489,23 +502,26 @@ class SemanticoScala extends Constants {
       throw new SemanticError(token.getLexeme + " nao declarado", token.getPosition)
     }
 
+    if (contextoEXPR != "par-atual")
     posid = pegaTabSim(token.getLexeme).get(token.getLexeme).get
 
-//    if (posid.isInstanceOf[ID_Variavel]) {
-//      if (posid.asInstanceOf[ID_Variavel].tipo == "vetor") {
-//        tipoLadoEsq = posid.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].tipoElem
-//      }
-//    }
+    if (posid.isInstanceOf[ID_Variavel]) {
+      if (posid.asInstanceOf[ID_Variavel].tipo == "vetor") {
+        tipoElementos = posid.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].tipoElem
+      }
+    }
+
     if (posid.isInstanceOf[ID_Funcao]) {
       npf = posid.asInstanceOf[ID_Funcao].num_parms
       if (nomeFunc == token.getLexeme) {
         nomeFunc = null
         faltaReturn = false
       }
-      tipoLadoEsq = posid.asInstanceOf[ID_Funcao].tipo_resultado
+
     } else if (posid.isInstanceOf[ID_Procedimento]) {
       npf = posid.asInstanceOf[ID_Procedimento].num_parms
     }
+    mpp = "referencia"
   }
 
   def act30(token: Token) {
@@ -631,8 +647,9 @@ class SemanticoScala extends Constants {
       if(par == null)
         throw new SemanticError("Parametro nao encontrado", token.getPosition)
       else {
-        if(mpp != par.mecanismo_passagem)
+        if(par.mecanismo_passagem != mpp) {
           throw new SemanticError("Tipo de passagem de parametro incompativel", token.getPosition)
+        }
         if (par.tipo == "real") {
           if (!(tipoExpr == "real" ||  tipoExpr == "inteiro"))
             throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
@@ -675,6 +692,7 @@ class SemanticoScala extends Constants {
   def act40(token: Token) {
     if(npa!=npf)
       throw new SemanticError("Erro na quantidade de parametros", token.getPosition)
+    contextoEXPR = null
   }
 
   def act41(token: Token) {
@@ -877,7 +895,7 @@ class SemanticoScala extends Constants {
           if (posid.asInstanceOf[ID_Funcao].tipo_resultado == "inteiro") {
             if (tipoTermo != "inteiro" || tipoFator != "inteiro" || forcaReal) {
               forcaReal = false
-              throw new SemanticError("Funcao " + posid.asInstanceOf[ID_Variavel].nome + " é inteiro e não pode " +
+              throw new SemanticError("Funcao " + posid.asInstanceOf[ID_Funcao].nome + " é inteiro e não pode " +
                 "receber resultado real", token.getPosition)
             }
           }
@@ -946,6 +964,7 @@ class SemanticoScala extends Constants {
   }
 
   def act75(token: Token) {
+    contextoEXPR = "par-atual"
     val id = pegaTabSim(posid.absNome).get(posid.absNome).get
     if (!id.isInstanceOf[ID_Funcao] && !id.isInstanceOf[ID_Procedimento])
       throw new SemanticError("Id deveria ser de uma função ou procedimento: " + id.absNome, posid.pos)
@@ -959,6 +978,7 @@ class SemanticoScala extends Constants {
         throw new SemanticError("Erro na quantidade de parametros, num param atuais = " + npa +
           " num parm form = " + npf, token.getPosition)
     }
+    contextoEXPR = null
   }
 
   def act77(token: Token) {
