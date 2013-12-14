@@ -200,6 +200,7 @@ class SemanticoScala extends Constants {
   }
 
   def act03(token: Token) {
+    posid.pop
     val tabSim = pegaTabSim(posid.head.absNome)
     val id = tabSim.get(posid.head.absNome).get.asInstanceOf[ID_Constante]
     val newId = new ID_Constante(id.nome, id.nivel, id.desloc, tipoConst, valConst, token.getPosition)
@@ -613,6 +614,10 @@ class SemanticoScala extends Constants {
   def act36(token: Token) {
     numIndices = 1
     if (tipoVarIndexada == "vetor") {
+
+      if(posid.head.isInstanceOf[ID_Valor])
+        posid.pop
+
       val id = posid.head
       if (id.isInstanceOf[ID_Variavel]) {
         val tipoIndiceDim1 = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice// TODO: quando acessa V[i] dah pau
@@ -924,6 +929,7 @@ class SemanticoScala extends Constants {
           tipoResultadoOperacao = "inteiro"
         }
 
+        tipoTermo = tipoResultadoOperacao
 
         val id = posid.pop
         if (id.isInstanceOf[ID_Variavel]) {
