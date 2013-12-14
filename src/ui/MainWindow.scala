@@ -52,7 +52,12 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
     redo.setActionCommand("redo")
     redo.addActionListener(redoAction)
 
+    lex.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK))
+    lex.setActionCommand("Analize Lex")
     lex.addActionListener(lexAction)
+
+    sin.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK))
+    sin.setActionCommand("Parse")
     sin.addActionListener(sinAction)
 
     file.add(load)
