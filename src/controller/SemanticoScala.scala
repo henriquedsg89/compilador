@@ -827,7 +827,7 @@ class SemanticoScala extends Constants {
         tipoExpr = "booleano"
     }
     else if(tipoExpr == "cadeia" || tipoExpr == "literal" || tipoExpr == "caracter") {
-      if(tipoExpSimpLocal != "cadeia" && tipoExpSimpLocal != "literal" && tipoExpr != "caracter")
+      if(tipoExpSimpLocal != "cadeia" && tipoExpSimpLocal != "literal" && tipoExpSimpLocal != "caracter")
         throw new SemanticError("Operandos incompativeis, tipoExpr = " + tipoExpr + ", tipoExpSimples =" +
           tipoExpSimpLocal, token.getPosition)
       else
@@ -857,7 +857,8 @@ class SemanticoScala extends Constants {
     } else {
       if(operador == "ou") {
         if(tipoExpSimpLocal != "booleano")
-          throw new SemanticError("Operador e operando incomaptiveis", token.getPosition)
+          throw new SemanticError("Operador e operando incompativeis, 'e' aceita booleano.\n" +
+            "Regra OPERADORES LÓGICOS - 31 - Os operandos envolvidos devem ser booleanos", token.getPosition)
       }
     }
   }
@@ -908,7 +909,7 @@ class SemanticoScala extends Constants {
       }
     } else if(tipoTermoLocal == "caracter" || tipoTermoLocal == "literal" || tipoTermoLocal == "cadeia") {
       if(tipoExpSimpLocal != "caracter" && tipoExpSimpLocal != "cadeia" && tipoExpSimpLocal != "literal")
-        throw new SemanticError("Operandos incomp., o Termo = real e TipoExpSimple = " + tipoExpSimpLocal, token.getPosition)
+        throw new SemanticError("Operandos incomp., o Termo = " + tipoTermoLocal + " e TipoExpSimple = " + tipoExpSimpLocal, token.getPosition)
       else {
         if(tipoTermoLocal == "cadeia" || tipoExpSimpLocal == "cadeia" ||
           tipoTermoLocal == "literal" || tipoExpSimpLocal == "literal") {
@@ -939,7 +940,8 @@ class SemanticoScala extends Constants {
       }
     } else if (operador == "e") {
       if (tipoTermoLocal != "booleano")
-        throw new SemanticError("Operador e operando incompativeis, 'e' aceita booleano", token.getPosition)
+        throw new SemanticError("Operador e operando incompativeis, 'e' aceita booleano.\n" +
+          "Regra OPERADORES LÓGICOS - 31 - Os operandos envolvidos devem ser booleanos", token.getPosition)
     }
 
     if (operador == "/")
@@ -1068,7 +1070,11 @@ class SemanticoScala extends Constants {
   def act77(token: Token) {
     numIndices = 1
     if(tipoVarIndexada == "vetor") {
-      val id = posid.pop
+
+      if(posid.head.isInstanceOf[ID_Valor])
+        posid.pop
+
+      val id = posid.head
       if (id.isInstanceOf[ID_Variavel]){
         val tipoIndiceDim1 = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice
         if(tipoExpr != tipoIndiceDim1) {//TODO:abrir tipo dimensao1 da tabsim
