@@ -1,0 +1,8 @@
+programa asdf;
+var a: caracter;
+var vetInt: vetor['a' .. 'z'] de inteiro;
+var vetCar1: vetor[0 .. 10] de caracter;
+var vetCar2: vetor['a' .. 'b'] de caracter;
+{
+  vetCar2[vetCar1[vetInt['a'] + 1 - (8 * 7)] + 'b'] := vetCar2[vetCar1[vetInt['a']]] + 'a';
+}.

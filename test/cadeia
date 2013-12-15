@@ -1,0 +1,5 @@
+programa asdf;
+var a:cadeia[100];
+{
+a:= 'b' + 'c';
+}.

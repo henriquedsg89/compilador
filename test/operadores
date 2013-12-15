@@ -1,0 +1,5 @@
+programa asdf;
+var a:booleano;
+{
+a:= ((1 > 7) e ('a' < 'ak'));
+}.

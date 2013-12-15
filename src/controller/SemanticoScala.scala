@@ -15,7 +15,7 @@ class SemanticoScala extends Constants {
 
   var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr, valConst,
     tipoFator, opRel, operador, tipoResultadoOperacao,
-    mpp, tipoAtual, tipoLadoEsq, tipoVarIndexada, tipoConstVetorLimSup, tipoConstVetorLimInf, contextoEXPR,
+    mpp, tipoAtual, tipoLadoEsq, tipoConstVetorLimSup, tipoConstVetorLimInf, contextoEXPR,
     tipoIndiceDim2, tipoElementos: String = null
   var opNega, opUnario: Boolean = false
   var valVar : Object = null
@@ -25,6 +25,7 @@ class SemanticoScala extends Constants {
   var posid: Stack[ID_Abstract] = new Stack[ID_Abstract]()
   var tipoExpSimples: Stack[String] = new Stack[String]()
   var tipoTermo: Stack[String] = new Stack[String]()
+  var tipoVarIndexada: Stack[String] = new Stack[String]()
 
   var dimensao1, dimensao2: Dimensao = null
   var vetor_temp: Vetor = null
@@ -176,7 +177,53 @@ class SemanticoScala extends Constants {
   }
 
   def act01(token: Token) {
+    tipoExpSimples = new Stack[String]()
+    tipoTermo = new Stack[String]()
     posid = new Stack[ID_Abstract]()
+    tipoVarIndexada = new Stack[String]()
+
+    tipoConst = null
+    tipoVar = null
+    tipoResultadoFuncao = null
+    contextoLID = null
+    tipoExpr = null
+    valConst = null
+    tipoFator = null
+    opRel = null
+    operador = null
+    tipoResultadoOperacao = null
+    mpp = null
+    tipoAtual = null
+    tipoLadoEsq = null
+
+    tipoConstVetorLimSup = null
+    tipoConstVetorLimInf = null
+    contextoEXPR = null
+    tipoIndiceDim2 = null
+    tipoElementos = null
+
+    na = 0
+    desloc = 0
+    npf = 0
+    npa = 0
+    limInfVetor = 0
+    limSupVetor = 0
+    numIndices = 0
+    numDim = 0
+
+    opNega = false
+    opUnario = false
+    valVar = null
+
+    dimensao1 = null
+    dimensao2 = null
+    vetor_temp = null
+    lids = new ArrayBuffer[ID_Abstract]()
+
+    forcaReal = false
+    faltaReturn = false
+    nomeFunc = null
+
     listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
     na = 0;
 
@@ -611,16 +658,16 @@ class SemanticoScala extends Constants {
     if(!id.isInstanceOf[ID_Variavel])
       throw new SemanticError("esperava-se uma variavel", token.getPosition)
     else if(id.asInstanceOf[ID_Variavel].tipo == "vetor")
-      tipoVarIndexada = "vetor"
+      tipoVarIndexada.push("vetor")
     else if (id.asInstanceOf[ID_Variavel].tipo == "cadeia")
-      tipoVarIndexada = "cadeia"
+      tipoVarIndexada.push("cadeia")
     else
       throw new SemanticError("apenas vetores e cadeias podem ser indexados", token.getPosition)
   }
 
   def act36(token: Token) {
     numIndices = 1
-    if (tipoVarIndexada == "vetor") {
+    if (tipoVarIndexada.head == "vetor") {
 
       if(posid.head.isInstanceOf[ID_Valor])
         posid.pop
@@ -647,7 +694,7 @@ class SemanticoScala extends Constants {
 
   def act37(token: Token) {
     if(numIndices == 2) {
-      if(tipoVarIndexada == "cadeia") {
+      if(tipoVarIndexada.head == "cadeia") {
         throw new SemanticError("Cadeia so pode ter 1 indice", token.getPosition)
       } else if(numDim != 2) {
         throw new SemanticError("Vetor eh unidimensional", token.getPosition)
@@ -659,6 +706,7 @@ class SemanticoScala extends Constants {
     } else if(numDim == 2) {
       throw new SemanticError("Vetor eh bi-dimensional", token.getPosition)
     }
+    tipoVarIndexada.pop
   }
 
   def act38(token: Token) {
@@ -853,7 +901,7 @@ class SemanticoScala extends Constants {
     if(operador=="+" || operador == "-") {
       if(!(tipoExpSimpLocal=="inteiro" || tipoExpSimpLocal=="real" || tipoExpSimpLocal=="cadeia" ||
         tipoExpSimpLocal=="literal" || tipoExpSimpLocal=="caracter"  ))
-        throw new SemanticError("Operador e operando incompativeis", token.getPosition)
+        throw new SemanticError("Operador e operando incompativeis, tipoExpSimples = " + tipoExpSimpLocal, token.getPosition)
     } else {
       if(operador == "ou") {
         if(tipoExpSimpLocal != "booleano")
@@ -868,7 +916,8 @@ class SemanticoScala extends Constants {
     val tipoTermoLocal = tipoTermo.head
     if(tipoTermoLocal == "real" || tipoTermoLocal == "inteiro") {
       if(tipoExpSimpLocal != "real" && tipoExpSimpLocal != "inteiro")
-        throw new SemanticError("Operandos incomp., o Termo = real e TipoExpSimple = " + tipoExpSimpLocal, token.getPosition)
+        throw new SemanticError("Operandos incomp., o Termo = " + tipoTermoLocal +
+        " e TipoExpSimple = " + tipoExpSimpLocal, token.getPosition)
       else {
         if (operador == "/")
           tipoResultadoOperacao = "real"
@@ -1069,7 +1118,7 @@ class SemanticoScala extends Constants {
 
   def act77(token: Token) {
     numIndices = 1
-    if(tipoVarIndexada == "vetor") {
+    if(tipoVarIndexada.head == "vetor") {
 
       if(posid.head.isInstanceOf[ID_Valor])
         posid.pop
@@ -1082,6 +1131,7 @@ class SemanticoScala extends Constants {
         } else {
           tipoElementos = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].tipoElem
           tipoVar = tipoElementos
+          posid.pop
         }
       }
     } else if(tipoExpr != "inteiro") {
@@ -1093,7 +1143,7 @@ class SemanticoScala extends Constants {
 
   def act78(token: Token) {
     if(numIndices==2) {
-      if(tipoVarIndexada == "cadeia") {
+      if(tipoVarIndexada.head == "cadeia") {
         throw new SemanticError("Cadeia so pode ter 1 indice", token.getPosition)
       } else if(numDim!=2) {
         throw new SemanticError("Vetor eh uni-dimensional", token.getPosition)
@@ -1105,6 +1155,7 @@ class SemanticoScala extends Constants {
     } else if(numDim == 2) {
       throw new SemanticError("Vetor eh bi-dimensional", token.getPosition)
     }
+    tipoVarIndexada.pop
   }
 
   def act79(token: Token) {

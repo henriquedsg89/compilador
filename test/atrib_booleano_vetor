@@ -1,0 +1,7 @@
+programa asdf;
+var a: booleano;
+var vetBooleano: vetor[0 .. 10] de booleano;
+var vetCar: vetor[0 .. 10] de caracter;
+{
+  a:= vetBooleano[1] ou (vetCar[1] > 7);
+}.

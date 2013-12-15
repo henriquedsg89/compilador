@@ -1,0 +1,7 @@
+programa asdf;
+var a: cadeia[255];
+var b: cadeia[255];
+var vet: vetor[0 .. 10] de inteiro;
+{
+  a:= b[vet[1]];
+}.
