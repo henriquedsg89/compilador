@@ -14,7 +14,7 @@ class SemanticoScala extends Constants {
   var listTabSim = new ArrayBuffer[HashMap[String, ID_Abstract]]()
 
   var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr, valConst,
-    tipoExpSimples, tipoTermo, tipoFator, opRel, operador, tipoResultadoOperacao,
+    tipoTermo, tipoFator, opRel, operador, tipoResultadoOperacao,
     mpp, tipoAtual, tipoLadoEsq, tipoVarIndexada, tipoConstVetorLimSup, tipoConstVetorLimInf, contextoEXPR,
     tipoIndiceDim2, tipoElementos: String = null
   var opNega, opUnario: Boolean = false
@@ -23,6 +23,7 @@ class SemanticoScala extends Constants {
 
 
   var posid: Stack[ID_Abstract] = new Stack[ID_Abstract]()
+  var tipoExpSimples: Stack[String] = new Stack[String]();
 
 
   var dimensao1, dimensao2: Dimensao = null
@@ -801,7 +802,7 @@ class SemanticoScala extends Constants {
       }
     }
     if(contextoEXPR == "impressao") {
-      if(tipoExpr != "inteiro" && tipoExpr != "real" && tipoExpr != "caracter" && tipoExpr != "cadeia")
+      if(tipoExpr != "inteiro" && tipoExpr != "real" && tipoExpr != "caracter" && tipoExpr != "cadeia" && tipoExpr != "literal")
         throw new SemanticError("Tipo invalido para impressao", token.getPosition)
       else
         System.out.println("token: "+token.getLexeme+"\n cteExplicita :"+valConst)//FIXME: printa expressao
@@ -809,24 +810,29 @@ class SemanticoScala extends Constants {
   }
 
   def act44(token: Token) {
-    tipoExpr = tipoExpSimples
+    tipoExpr = tipoExpSimples.pop
   }
 
   def act45(token: Token) {
+    val tipoExpSimpLocal = tipoExpSimples.pop
     if(tipoExpr == "real" || tipoExpr == "inteiro") {
-      if(tipoExpSimples != "real" && tipoExpSimples != "inteiro")
-        throw new SemanticError("Operandos incompativeis", token.getPosition)
-      else {
+      if(tipoExpSimpLocal != "real" && tipoExpSimpLocal != "inteiro")
+        throw new SemanticError("Operandos incompativeis, real e inteiro, tipoExpr = " +
+          tipoExpr + ", tipoExpSimples =" + tipoExpSimples, token.getPosition)
+      else
         tipoExpr = "booleano"
-      }
     }
-    else if(opRel == "<>" || opRel == "=") {
-      if(tipoExpr == "cadeia" || tipoExpr == "literal") {
-        if(tipoExpSimples != "cadeia" && tipoExpSimples != "literal")
-          throw new SemanticError("Operandos incompativeis", token.getPosition)
-      } else {
+    else if(tipoExpr == "cadeia" || tipoExpr == "literal") {
+      if(tipoExpSimpLocal != "cadeia" && tipoExpSimpLocal != "literal")
+        throw new SemanticError("Operandos incompativeis, tipoExpr = " + tipoExpr + ", tipoExpSimples =" +
+          tipoExpSimples, token.getPosition)
+      else
         tipoExpr = "booleano"
-      }
+    }
+    else if (tipoExpr == "booleano") {
+      if(tipoExpSimpLocal != "booleano" && tipoExpSimpLocal != "booleano")
+        throw new SemanticError("Operandos incompativeis, booleano deve comparar com booleano, tipoExpr = " +
+          tipoExpr + ", tipoExpSimples =" + tipoExpSimples, token.getPosition)
     }
   }
 
@@ -835,43 +841,45 @@ class SemanticoScala extends Constants {
   }
 
   def act52(token: Token) {
-    tipoExpSimples = tipoTermo
+    tipoExpSimples.push(tipoTermo)
   }
 
   def act53(token: Token) {
+    val tipoExpSimpLocal = tipoExpSimples.head
     if(operador=="+" || operador == "-") {
-      if(!(tipoExpSimples=="inteiro" || tipoExpSimples=="real"))
+      if(!(tipoExpSimpLocal=="inteiro" || tipoExpSimpLocal=="real"))
         throw new SemanticError("Operador e operando incompativeis", token.getPosition)
     } else {
       if(operador == "ou") {
-        if(tipoExpSimples != "booleano")
+        if(tipoExpSimpLocal != "booleano")
           throw new SemanticError("Operador e operando incomaptiveis", token.getPosition)
       }
     }
   }
 
   def act54(token: Token) {
+    val tipoExpSimpLocal = tipoExpSimples.pop
     if(tipoTermo == "real" || tipoTermo == "inteiro") {
-      if(tipoExpSimples != "real" && tipoExpSimples != "inteiro")
-        throw new SemanticError("Operandos incomp., o Termo = real e TipoExpSimple = " + tipoExpSimples, token.getPosition)
+      if(tipoExpSimpLocal != "real" && tipoExpSimpLocal != "inteiro")
+        throw new SemanticError("Operandos incomp., o Termo = real e TipoExpSimple = " + tipoExpSimpLocal, token.getPosition)
       else {
         if (operador == "/")
           tipoResultadoOperacao = "real"
-        else if(tipoTermo == "real" || tipoExpSimples == "real") {
+        else if(tipoTermo == "real" || tipoExpSimpLocal == "real") {
           tipoResultadoOperacao = "real"
         }
         else {
           tipoResultadoOperacao = "inteiro"
         }
 
-        tipoExpSimples = tipoResultadoOperacao
+        tipoExpSimples.push(tipoResultadoOperacao)
 
         val id = posid.pop
         if (id.isInstanceOf[ID_Variavel]) {
           if (id.asInstanceOf[ID_Variavel].tipo == "inteiro") {
             if (tipoTermo != "inteiro" || tipoFator != "inteiro" || forcaReal) {
               forcaReal = false
-              throw new SemanticError("Operandos incomp., o Termo = " + tipoTermo + " e TipoExpSimple = " + tipoExpSimples +
+              throw new SemanticError("Operandos incomp., o Termo = " + tipoTermo + " e TipoExpSimple = " + tipoExpSimpLocal +
                 ", Tipo POSID = " + id.asInstanceOf[ID_Variavel].tipo, token.getPosition)
             }
           }
@@ -879,18 +887,18 @@ class SemanticoScala extends Constants {
           if (id.asInstanceOf[ID_Funcao].tipo_resultado == "inteiro") {
             if (tipoTermo != "inteiro" || tipoFator != "inteiro" || forcaReal) {
               forcaReal = false
-              throw new SemanticError("Operandos incomp., o Termo = " + tipoTermo + " e TipoExpSimple = " + tipoExpSimples +
+              throw new SemanticError("Operandos incomp., o Termo = " + tipoTermo + " e TipoExpSimple = " + tipoExpSimpLocal +
                 ", Tipo POSID = " + id.asInstanceOf[ID_Funcao].tipo_resultado, token.getPosition)
             }
           }
         }
       }
     } else if(tipoTermo == "booleano") {
-      if(tipoExpSimples != "booleano")
-        throw new SemanticError("Operandos incomp., o Termo = booleano e TipoExpSimple = " + tipoExpSimples, token.getPosition)
+      if(tipoExpSimpLocal != "booleano")
+        throw new SemanticError("Operandos incomp., o Termo = booleano e TipoExpSimple = " + tipoExpSimpLocal, token.getPosition)
       else {
         tipoResultadoOperacao = "booleano"
-        tipoExpSimples = tipoResultadoOperacao
+        tipoExpSimples.push(tipoResultadoOperacao)
       }
     }
   }
@@ -920,7 +928,7 @@ class SemanticoScala extends Constants {
   def act60(token: Token) {
     if(tipoTermo == "real" || tipoTermo == "inteiro") {
       if(tipoFator != "real" && tipoFator != "inteiro")
-        throw new SemanticError("Operandos incompativeis, tipo fator e termo", token.getPosition)
+        throw new SemanticError("Operandos incompativeis, tipo fator = " + tipoFator + " e termo =" + tipoTermo, token.getPosition)
       else {
         if (operador == "/")
           tipoResultadoOperacao = "real"
