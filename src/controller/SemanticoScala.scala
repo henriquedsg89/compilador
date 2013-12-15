@@ -847,7 +847,8 @@ class SemanticoScala extends Constants {
   def act53(token: Token) {
     val tipoExpSimpLocal = tipoExpSimples.head
     if(operador=="+" || operador == "-") {
-      if(!(tipoExpSimpLocal=="inteiro" || tipoExpSimpLocal=="real"))
+      if(!(tipoExpSimpLocal=="inteiro" || tipoExpSimpLocal=="real" || tipoExpSimpLocal=="cadeia" ||
+        tipoExpSimpLocal=="literal" || tipoExpSimpLocal=="caracter"  ))
         throw new SemanticError("Operador e operando incompativeis", token.getPosition)
     } else {
       if(operador == "ou") {
@@ -1023,7 +1024,7 @@ class SemanticoScala extends Constants {
 
   def act74(token: Token) {
     tipoFator = tipoConst
-    posid.pop
+    //posid.pop comentado, esta explodindo varias coisas isso aqui
     mpp = "valor"
   }
 
