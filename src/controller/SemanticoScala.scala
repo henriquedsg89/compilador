@@ -830,9 +830,9 @@ class SemanticoScala extends Constants {
         tipoExpr = "booleano"
     }
     else if (tipoExpr == "booleano") {
-      if(tipoExpSimpLocal != "booleano" && tipoExpSimpLocal != "booleano")
+      if(tipoExpSimpLocal != "booleano")
         throw new SemanticError("Operandos incompativeis, booleano deve comparar com booleano, tipoExpr = " +
-          tipoExpr + ", tipoExpSimples =" + tipoExpSimples, token.getPosition)
+          tipoExpr + ", tipoExpSimples =" + tipoExpSimpLocal, token.getPosition)
     }
   }
 
