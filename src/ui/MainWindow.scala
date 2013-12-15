@@ -96,7 +96,7 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
   /* acao invocada pelo menu lexico */
   val lexAction = new ActionListener {
     def actionPerformed(e: ActionEvent) {
-      errorArea.setText("")
+      errorArea.setText("Xiii acho que deu null pointer")
       // chama o controller para validar
       val error = controller.validateLexical(editor.textArea.getText)
 
@@ -110,7 +110,7 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
 
   val sinAction = new ActionListener {
     def actionPerformed(e: ActionEvent) {
-      errorArea.setText("")
+      errorArea.setText("Xiii acho que deu null pointer")
       val error = controller.validateSyntatic(editor.textArea.getText)
       errorArea.setText(error._1)
       editor.textArea.requestFocus()

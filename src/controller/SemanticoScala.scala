@@ -15,17 +15,20 @@ class SemanticoScala extends Constants {
 
   var tipoConst, tipoVar, tipoResultadoFuncao, contextoLID, tipoExpr, valConst,
     tipoFator, opRel, operador, tipoResultadoOperacao,
-    mpp, tipoAtual, tipoLadoEsq, tipoConstVetorLimSup, tipoConstVetorLimInf, contextoEXPR,
+    mpp, tipoAtual, tipoConstVetorLimSup, tipoConstVetorLimInf, contextoEXPR,
     tipoIndiceDim2, tipoElementos: String = null
   var opNega, opUnario: Boolean = false
   var valVar : Object = null
-  var na, desloc, npf, npa, limInfVetor, limSupVetor, numIndices, numDim : Int = 0
+  var na, desloc, npf, npa, limInfVetor, limSupVetor : Int = 0
 
 
   var posid: Stack[ID_Abstract] = new Stack[ID_Abstract]()
   var tipoExpSimples: Stack[String] = new Stack[String]()
   var tipoTermo: Stack[String] = new Stack[String]()
   var tipoVarIndexada: Stack[String] = new Stack[String]()
+  var numDim: Stack[Int] = new Stack[Int]()
+  var numIndices: Stack[Int] = new Stack[Int]()
+  var tipoLadoEsq: Stack[String] = new Stack[String]()
 
   var dimensao1, dimensao2: Dimensao = null
   var vetor_temp: Vetor = null
@@ -181,6 +184,9 @@ class SemanticoScala extends Constants {
     tipoTermo = new Stack[String]()
     posid = new Stack[ID_Abstract]()
     tipoVarIndexada = new Stack[String]()
+    numDim = new Stack[Int]()
+    numIndices = new Stack[Int]()
+    tipoLadoEsq = new Stack[String]()
 
     tipoConst = null
     tipoVar = null
@@ -194,7 +200,6 @@ class SemanticoScala extends Constants {
     tipoResultadoOperacao = null
     mpp = null
     tipoAtual = null
-    tipoLadoEsq = null
 
     tipoConstVetorLimSup = null
     tipoConstVetorLimInf = null
@@ -208,8 +213,6 @@ class SemanticoScala extends Constants {
     npa = 0
     limInfVetor = 0
     limSupVetor = 0
-    numIndices = 0
-    numDim = 0
 
     opNega = false
     opUnario = false
@@ -505,32 +508,36 @@ class SemanticoScala extends Constants {
       intValConst = Integer.parseInt(token.getLexeme)
     if (tipoConst != tipoConstVetorLimInf) {
       throw new SemanticError("Ctes do interv devem ser do mesmo tipo", token.getPosition)
-    } else if (intValConst <= limInfVetor) {
+    }
+    if (intValConst <= limInfVetor) {
       throw new SemanticError("Lim Sup Deve ser >  que L. Inf.", token.getPosition)
     } else {
       tipoConstVetorLimSup = tipoConst
       limSupVetor = intValConst
     }
-    dimensao2 = new Dimensao(tipoIndiceDim2, limInfVetor, limSupVetor)//TODO:tipoindiceDim2 esta null
+    if (!numDim.isEmpty && numDim.head == 2)
+      dimensao2 = new Dimensao(tipoConstVetorLimSup, limInfVetor, limSupVetor)//TODO:tipoindiceDim2 esta null
   }
 
   def act21(token: Token) {
     tipoElementos = tipoAtual//FIXME:salvar o tipoAtual no tipo do tabsim
     tipoAtual = "vetor"
-    if (numDim == 2)
-      tipoIndiceDim2 = tipoConst//FIXME:verificar se esta ok, dimensao 2 com tipoIndice
-    vetor_temp = new Vetor(numDim, tipoElementos, dimensao1, dimensao2)
+    if (numDim.head == 2)
+      tipoIndiceDim2 = tipoConst
+    vetor_temp = new Vetor(numDim.head, tipoElementos, dimensao1, dimensao2)
+
+    numDim.pop
   }
 
   def act22(token: Token) {
     dimensao1 = new Dimensao(tipoConstVetorLimSup, limInfVetor, limSupVetor)
-    numDim = 2
+    numDim.push(2)
   }
 
 
   def act23(token: Token) {
     dimensao1 = new Dimensao(tipoConstVetorLimSup, limInfVetor, limSupVetor)
-    numDim = 1
+    numDim.push(1)
   }
 
   def act24(token: Token) {
@@ -606,17 +613,17 @@ class SemanticoScala extends Constants {
       if(id.asInstanceOf[ID_Variavel].tipo == "vetor") {
         throw new SemanticError(id.absNome + " deveria ser indexado", token.getPosition)
       } else {
-        tipoLadoEsq = id.asInstanceOf[ID_Variavel].tipo
+        tipoLadoEsq.push(id.asInstanceOf[ID_Variavel].tipo)
       }
     } else if (id.isInstanceOf[ID_Parametro]) {
       if(id.asInstanceOf[ID_Parametro].tipo == "vetor") {
         throw new SemanticError(id.absNome + " deveria ser indexado", token.getPosition)
       } else {
-        tipoLadoEsq = id.asInstanceOf[ID_Parametro].tipo
+        tipoLadoEsq.push(id.asInstanceOf[ID_Parametro].tipo)
       }
     } else if(id.isInstanceOf[ID_Funcao]) { //TODO:fragilidade, possivel declarar nome da funcao fora da funcao
       if(na >= id.asInstanceOf[ID_Funcao].nivel + 1) {
-        tipoLadoEsq = id.asInstanceOf[ID_Funcao].tipo_resultado
+        tipoLadoEsq.push(id.asInstanceOf[ID_Funcao].tipo_resultado)
       } else {
         throw new SemanticError("fora do escopo da funcao", token.getPosition)
       }
@@ -626,27 +633,28 @@ class SemanticoScala extends Constants {
   }
 
   def act34(token: Token) {
-    if(tipoLadoEsq=="real") {
+    val tipoEsqLocal = tipoLadoEsq.pop
+    if(tipoEsqLocal =="real") {
       if(tipoExpr!="real" && tipoExpr!="inteiro") {
         throw new SemanticError("Tipos Incomp. Tipo Lado Esq = real e TipoExpr = " + tipoExpr, token.getPosition)
       }
-    } else if(tipoLadoEsq=="inteiro") {
+    } else if(tipoEsqLocal=="inteiro") {
       if(tipoExpr!="inteiro") {
         throw new SemanticError("Tipos Incomp. Tipo Lado Esq = inteiro e TipoExpr = " + tipoExpr, token.getPosition)
       }
-    } else if(tipoLadoEsq=="cadeia") {
+    } else if(tipoEsqLocal=="cadeia") {
       if(tipoExpr!="cadeia" && tipoExpr!="literal" && tipoExpr != "caracter") {
         throw new SemanticError("Tipos Incomp. Tipo Lado Esq = cadeia e TipoExpr = " + tipoExpr, token.getPosition)
       }
-    } else if(tipoLadoEsq=="caracter") {
+    } else if(tipoEsqLocal=="caracter") {
       if(tipoExpr != "caracter") {
         throw new SemanticError("Tipos Incomp. Tipo Lado Esq = caracter e TipoExpr = " + tipoExpr, token.getPosition)
       }
-    } else if(tipoLadoEsq=="booleano") {
+    } else if(tipoEsqLocal=="booleano") {
       if(tipoExpr!="booleano") {
         throw new SemanticError("Tipos Incomp. Tipo Lado Esq = booleano e TipoExpr = " + tipoExpr, token.getPosition)
       }
-    } else if(tipoLadoEsq == "vetor") {
+    } else if(tipoEsqLocal == "vetor") {
       if(tipoExpr!="vetor") {
         throw new SemanticError("Tipos Incomp. Tipo Lado Esq = vetor e TipoExpr = " + tipoExpr, token.getPosition)
       }
@@ -666,7 +674,7 @@ class SemanticoScala extends Constants {
   }
 
   def act36(token: Token) {
-    numIndices = 1
+    numIndices.push(1)
     if (tipoVarIndexada.head == "vetor") {
 
       if(posid.head.isInstanceOf[ID_Valor])
@@ -674,43 +682,65 @@ class SemanticoScala extends Constants {
 
       val id = posid.head
       if (id.isInstanceOf[ID_Variavel]) {
-        val tipoIndiceDim1 = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice
-        if (tipoExpr != tipoIndiceDim1)//FIXME: declarando vetores com indices de tipo diferente dah pau
-          throw new SemanticError("Tipo indice inválido", token.getPosition)
-        else {
-          tipoElementos = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].tipoElem
-          tipoLadoEsq = tipoElementos
-        }
+        if (id.asInstanceOf[ID_Variavel].subCategoria != null &&  id.asInstanceOf[ID_Variavel].subCategoria.isInstanceOf[Vetor]) {
+          val tipoIndiceDim1 = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice
+          if (tipoExpr != tipoIndiceDim1)//FIXME: declarando vetores com indices de tipo diferente dah pau
+            throw new SemanticError("Tipo indice inválido", token.getPosition)
+          else {
+            tipoElementos = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].tipoElem
+            tipoLadoEsq.push(tipoElementos)
+          }
 
-        val tipoIndiceDim2 = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim2.tipoIndice
-        numDim = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].numDim
+          val nDim = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].numDim
+          if (nDim == 2) {
+            tipoIndiceDim2 = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim2.tipoIndice
+          }
+          numDim.push(nDim)
+
+        } else if (id.asInstanceOf[ID_Variavel].subCategoria == null && id.asInstanceOf[ID_Variavel].tipo == "cadeia") {
+          val tipoIndiceDim1 = "inteiro"
+          if (tipoExpr != tipoIndiceDim1)
+            throw new SemanticError("Tipo indice inválido, tipoExp =" + tipoExpr + " tipoIndice1 = " + tipoIndiceDim1, token.getPosition)
+          else {
+            tipoElementos = "caracter"
+            tipoLadoEsq.push(tipoElementos)
+            numDim.push(1)
+          }
+        }
       }
     } else {//cadeia
       if (tipoExpr != "inteiro")
         throw new SemanticError("Indice deveria ser inteiro", token.getPosition)
-      else
-        tipoLadoEsq = "caracter"
+
+      tipoLadoEsq.push("caracter")
+      numDim.push(1)
     }
   }
 
   def act37(token: Token) {
-    if(numIndices == 2) {
+    if(numIndices.head == 2) {
       if(tipoVarIndexada.head == "cadeia") {
         throw new SemanticError("Cadeia so pode ter 1 indice", token.getPosition)
       }
 
-      if(numDim != 2) {
+      if(numDim.head != 2) {
         throw new SemanticError("Vetor eh unidimensional", token.getPosition)
       } else if(tipoExpr != tipoIndiceDim2) {
-        throw new SemanticError("Tipo de indice invalido", token.getPosition)
+        throw new SemanticError("Tipo de indice invalido, tipoExpr =" + tipoExpr + " - tipoIndiceDim2 = " + tipoIndiceDim2, token.getPosition)
       } else {
-        tipoLadoEsq = tipoElementos
+        tipoLadoEsq.push(tipoElementos)
       }
-    } else if(numDim == 2) {
+    } else if(numDim.head == 2) {
       throw new SemanticError("Vetor eh bi-dimensional", token.getPosition)
     }
     tipoVarIndexada.pop
     posid.pop
+
+    if (!numDim.isEmpty)
+      numDim.pop
+
+    if (!numIndices.isEmpty)
+      numIndices.pop
   }
 
   def act38(token: Token) {
@@ -793,7 +823,10 @@ class SemanticoScala extends Constants {
   }
 
   def act42(token: Token) {
-    numIndices = 2
+    if(!numIndices.isEmpty)
+      numIndices.pop
+
+    numIndices.push(2)
   }
 
   def act43(token: Token) {
@@ -1093,6 +1126,8 @@ class SemanticoScala extends Constants {
 
   def act73(token: Token) {
     tipoFator = tipoVar
+    //if (!tipoLadoEsq.isEmpty)
+    //  tipoLadoEsq.pop
   }
 
   def act74(token: Token) {
@@ -1121,7 +1156,7 @@ class SemanticoScala extends Constants {
   }
 
   def act77(token: Token) {
-    numIndices = 1
+    numIndices.push(1)
     if(tipoVarIndexada.head == "vetor") {
 
       if(posid.head.isInstanceOf[ID_Valor])
@@ -1129,42 +1164,64 @@ class SemanticoScala extends Constants {
 
       val id = posid.head
       if (id.isInstanceOf[ID_Variavel]){
-        val tipoIndiceDim1 = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice
-        if(tipoExpr != tipoIndiceDim1) {//TODO:abrir tipo dimensao1 da tabsim
-          throw new SemanticError("Tipo do indice invalido", token.getPosition)
-        } else {
-          tipoElementos = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].tipoElem
-          tipoVar = tipoElementos
-        }
+        if ( id.asInstanceOf[ID_Variavel].subCategoria != null &&  id.asInstanceOf[ID_Variavel].subCategoria.isInstanceOf[Vetor]) {
+          val tipoIndiceDim1 = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim1.tipoIndice
+          if(tipoExpr != tipoIndiceDim1) {//TODO:abrir ipto dimensao1 da tabsim
+            throw new SemanticError("Tipo do indice invalido", token.getPosition)
+          } else {
+            tipoElementos = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].tipoElem
+            tipoVar = tipoElementos
+          }
 
-        val tipoIndiceDim2 = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim2.tipoIndice
-        numDim = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].numDim
+          val nDim = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].numDim
+          if (nDim == 2) {
+            tipoIndiceDim2 = id.asInstanceOf[ID_Variavel].subCategoria.asInstanceOf[Vetor].dim2.tipoIndice
+          }
+          numDim.push(nDim)
+
+        } else if (id.asInstanceOf[ID_Variavel].subCategoria == null && id.asInstanceOf[ID_Variavel].tipo == "cadeia") {
+          val tipoIndiceDim1 = "inteiro"
+          if (tipoExpr != tipoIndiceDim1)
+            throw new SemanticError("Tipo indice inválido, tipoExp =" + tipoExpr + " tipoIndice1 = " + tipoIndiceDim1, token.getPosition)
+          else {
+            tipoElementos = "caracter"
+            tipoVar = tipoElementos
+            numDim.push(1)
+          }
+        }
       }
+
     } else if(tipoExpr != "inteiro") {
       throw new SemanticError("Indice deveria ser inteiro", token.getPosition)
     } else {
       tipoVar = "caracter"
+      numDim.push(1)
     }
   }
 
   def act78(token: Token) {
-    if(numIndices==2) {
+    if(numIndices.head ==2) {
       if(tipoVarIndexada.head == "cadeia") {
         throw new SemanticError("Cadeia so pode ter 1 indice", token.getPosition)
       }
 
-      if(numDim != 2) {
+      if(numDim.head != 2) {
         throw new SemanticError("Vetor eh uni-dimensional", token.getPosition)
       } else if(tipoExpr != tipoIndiceDim2) {
         throw new SemanticError("Tipo do indice invalido", token.getPosition)
       } else {
         tipoVar = tipoElementos
       }
-    } else if(numDim == 2) {
+    } else if(numDim.head == 2) {
       throw new SemanticError("Vetor eh bi-dimensional", token.getPosition)
     }
     tipoVarIndexada.pop
     posid.pop
+    if (!numDim.isEmpty)
+      numDim.pop
+
+    if (!numIndices.isEmpty)
+      numIndices.pop
   }
 
   def act79(token: Token) {
