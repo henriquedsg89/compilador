@@ -1089,6 +1089,7 @@ class SemanticoScala extends Constants {
 
   def act73(token: Token) {
     tipoFator = tipoVar
+    posid.pop()
   }
 
   def act74(token: Token) {
@@ -1180,7 +1181,6 @@ class SemanticoScala extends Constants {
     } else {
       throw new SemanticError("Esperava-se var, id-funcao ou constante", token.getPosition)
     }
-    posid.pop
   }
 
   def act80(token: Token) {
