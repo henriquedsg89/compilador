@@ -1020,6 +1020,7 @@ class SemanticoScala extends Constants {
 
   def act74(token: Token) {
     tipoFator = tipoConst
+    posid.pop
     mpp = "valor"
   }
 
