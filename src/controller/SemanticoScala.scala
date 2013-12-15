@@ -805,7 +805,9 @@ class SemanticoScala extends Constants {
   }
 
   def act40(token: Token) {
-    if(npa!=npf)
+    if(!posid.head.isInstanceOf[ID_Procedimento])
+      throw new SemanticError(posid.head + " nao eh procedimento")
+    if(npa!=posid.head.asInstanceOf[ID_Procedimento].num_parms)
       throw new SemanticError("Erro na quantidade de parametros", token.getPosition)
     contextoEXPR = null
     posid.pop
