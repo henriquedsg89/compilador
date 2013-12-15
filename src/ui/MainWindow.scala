@@ -56,7 +56,7 @@ class MainWindow(name: String, controller: Controller) extends JFrame {
     lex.setActionCommand("Analize Lex")
     lex.addActionListener(lexAction)
 
-    sin.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK))
+    sin.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK))
     sin.setActionCommand("Parse")
     sin.addActionListener(sinAction)
 
