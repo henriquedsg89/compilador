@@ -591,6 +591,10 @@ class SemanticoScala extends Constants {
       if(tipoExpr!="cadeia" && tipoExpr!="literal" && tipoExpr != "caracter") {
         throw new SemanticError("Tipos Incomp. Tipo Lado Esq = cadeia e TipoExpr = " + tipoExpr, token.getPosition)
       }
+    } else if(tipoLadoEsq=="caracter") {
+      if(tipoExpr != "caracter") {
+        throw new SemanticError("Tipos Incomp. Tipo Lado Esq = caracter e TipoExpr = " + tipoExpr, token.getPosition)
+      }
     } else if(tipoLadoEsq=="booleano") {
       if(tipoExpr!="booleano") {
         throw new SemanticError("Tipos Incomp. Tipo Lado Esq = booleano e TipoExpr = " + tipoExpr, token.getPosition)
@@ -818,14 +822,14 @@ class SemanticoScala extends Constants {
     if(tipoExpr == "real" || tipoExpr == "inteiro") {
       if(tipoExpSimpLocal != "real" && tipoExpSimpLocal != "inteiro")
         throw new SemanticError("Operandos incompativeis, real e inteiro, tipoExpr = " +
-          tipoExpr + ", tipoExpSimples =" + tipoExpSimples, token.getPosition)
+          tipoExpr + ", tipoExpSimples =" + tipoExpSimpLocal, token.getPosition)
       else
         tipoExpr = "booleano"
     }
-    else if(tipoExpr == "cadeia" || tipoExpr == "literal") {
-      if(tipoExpSimpLocal != "cadeia" && tipoExpSimpLocal != "literal")
+    else if(tipoExpr == "cadeia" || tipoExpr == "literal" || tipoExpr == "caracter") {
+      if(tipoExpSimpLocal != "cadeia" && tipoExpSimpLocal != "literal" && tipoExpr != "caracter")
         throw new SemanticError("Operandos incompativeis, tipoExpr = " + tipoExpr + ", tipoExpSimples =" +
-          tipoExpSimples, token.getPosition)
+          tipoExpSimpLocal, token.getPosition)
       else
         tipoExpr = "booleano"
     }
@@ -900,6 +904,20 @@ class SemanticoScala extends Constants {
         throw new SemanticError("Operandos incomp., o Termo = booleano e TipoExpSimple = " + tipoExpSimpLocal, token.getPosition)
       else {
         tipoResultadoOperacao = "booleano"
+        tipoExpSimples.push(tipoResultadoOperacao)
+      }
+    } else if(tipoTermoLocal == "caracter" || tipoTermoLocal == "literal" || tipoTermoLocal == "cadeia") {
+      if(tipoExpSimpLocal != "caracter" && tipoExpSimpLocal != "cadeia" && tipoExpSimpLocal != "literal")
+        throw new SemanticError("Operandos incomp., o Termo = real e TipoExpSimple = " + tipoExpSimpLocal, token.getPosition)
+      else {
+        if(tipoTermoLocal == "cadeia" || tipoExpSimpLocal == "cadeia" ||
+          tipoTermoLocal == "literal" || tipoExpSimpLocal == "literal") {
+          tipoResultadoOperacao = "cadeia"
+        }
+        else {
+          tipoResultadoOperacao = "caracter"
+        }
+
         tipoExpSimples.push(tipoResultadoOperacao)
       }
     }
