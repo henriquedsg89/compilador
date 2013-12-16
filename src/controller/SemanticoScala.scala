@@ -753,9 +753,15 @@ class SemanticoScala extends Constants {
   def act39(token: Token) {
     npa = 1
     contextoEXPR = "par-atual"
-    val id = posid.pop
-    if (!id.isInstanceOf[ID_Valor]) {//se nao for valor fixo
+
+    if (!posid.isEmpty && posid.head.isInstanceOf[ID_Valor])
+      posid.pop
+
+    if (!posid.isEmpty) {
+
+      val id = posid.head
       val funcOrProc = pegaTabSim(id.absNome).get(id.absNome).get
+
       if(funcOrProc.isInstanceOf[ID_Funcao]) {
         val par = funcOrProc.asInstanceOf[ID_Funcao].list_params(npa-1)
         if(par == null)
@@ -808,7 +814,9 @@ class SemanticoScala extends Constants {
     if(npa!=npf)
       throw new SemanticError("Erro na quantidade de parametros", token.getPosition)
     contextoEXPR = null
-    posid.pop
+
+    if (!posid.isEmpty)
+      posid.pop
   }
 
   def act41(token: Token) {
