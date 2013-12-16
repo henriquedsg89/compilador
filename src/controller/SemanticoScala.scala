@@ -745,9 +745,9 @@ class SemanticoScala extends Constants {
 
   def act38(token: Token) {
     val id = posid.head
-    if(!(id.isInstanceOf[ID_Procedimento] || id.isInstanceOf[ID_Funcao]))
+    if(!(id.isInstanceOf[ID_Procedimento]))
       throw new SemanticError(posid.head.absNome + " deveria ser uma procedure", token.getPosition)
-    contextoEXPR = "par-atual"
+    contextoEXPR = "par-atual"// bit: por que isso ta aqui?
   }
 
   def act39(token: Token) {
@@ -811,7 +811,9 @@ class SemanticoScala extends Constants {
   }
 
   def act40(token: Token) {
-    if(npa!=npf)
+    if(!posid.head.isInstanceOf[ID_Procedimento])
+      throw new SemanticError(posid.head + " nao eh procedimento")
+    if(npa!=posid.head.asInstanceOf[ID_Procedimento].num_parms)
       throw new SemanticError("Erro na quantidade de parametros", token.getPosition)
     contextoEXPR = null
 
@@ -1147,8 +1149,8 @@ class SemanticoScala extends Constants {
   def act75(token: Token) {
     contextoEXPR = "par-atual"
     val id = pegaTabSim(posid.head.absNome).get(posid.head.absNome).get
-    if (!id.isInstanceOf[ID_Funcao] && !id.isInstanceOf[ID_Procedimento])
-      throw new SemanticError("Id deveria ser de uma função ou procedimento: " + id.absNome, posid.head.pos)
+    if (!id.isInstanceOf[ID_Funcao])
+      throw new SemanticError("Id deveria ser de uma função: " + id.absNome, token.getPosition)
   }
 
   def act76(token: Token) {
