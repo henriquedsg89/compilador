@@ -589,6 +589,10 @@ class SemanticoScala extends Constants {
       npf = id.asInstanceOf[ID_Procedimento].num_parms
     }
     mpp = "referencia"
+    if(id.isInstanceOf[ID_Procedimento])
+      mpp = id.asInstanceOf[ID_Procedimento].list_params(0).mecanismo_passagem
+    if(id.isInstanceOf[ID_Funcao])
+      mpp = "valor"
   }
 
   def act30(token: Token) {
