@@ -1,0 +1,6 @@
+programa asdf;
+var a: caracter;
+proc b(val c,d: inteiro; ref as: caracter);{};
+{
+  b(1, 5, 7);
+}.

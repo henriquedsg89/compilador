@@ -747,7 +747,6 @@ class SemanticoScala extends Constants {
     val id = posid.head
     if(!(id.isInstanceOf[ID_Procedimento]))
       throw new SemanticError(posid.head.absNome + " deveria ser uma procedure", token.getPosition)
-    contextoEXPR = "par-atual"// bit: por que isso ta aqui?
   }
 
   def act39(token: Token) {
@@ -811,9 +810,7 @@ class SemanticoScala extends Constants {
   }
 
   def act40(token: Token) {
-    if(!posid.head.isInstanceOf[ID_Procedimento])
-      throw new SemanticError(posid.head + " nao eh procedimento")
-    if(npa!=posid.head.asInstanceOf[ID_Procedimento].num_parms)
+    if(npa!=npf)
       throw new SemanticError("Erro na quantidade de parametros", token.getPosition)
     contextoEXPR = null
 
@@ -842,14 +839,15 @@ class SemanticoScala extends Constants {
   def act43(token: Token) {
     if(contextoEXPR == "par-atual") {
       npa += 1
-      val id = posid.pop
-      if (!id.isInstanceOf[ID_Valor]) {
+
+      if (!posid.isEmpty && posid.head.isInstanceOf[ID_Valor])
+        posid.pop
+
+      if (!posid.isEmpty) {
+
+        val id = posid.head
         val funcOrProc = pegaTabSim(id.absNome).get(id.absNome).get
-        if(funcOrProc.isInstanceOf[ID_Funcao]) {
-          if (npa != funcOrProc.asInstanceOf[ID_Funcao].num_parms) {
-            throw new SemanticError("Num de param diferentes, num param atuais = " + npa +
-              " - num params da func/proc = " + funcOrProc.asInstanceOf[ID_Funcao].num_parms, token.getPosition)
-          }
+        if(funcOrProc.isInstanceOf[ID_Funcao] && npa <= funcOrProc.asInstanceOf[ID_Funcao].num_parms) {
 
           val par = funcOrProc.asInstanceOf[ID_Funcao].list_params(npa-1)
           if(par == null)
@@ -871,12 +869,7 @@ class SemanticoScala extends Constants {
                 throw new SemanticError("Tipo do parametro incompativel com tipo do argumento", token.getPosition)
             }
           }
-        } else if(funcOrProc.isInstanceOf[ID_Procedimento]) {
-          if (npa != funcOrProc.asInstanceOf[ID_Procedimento].num_parms) {
-            throw new SemanticError("Num de param diferentes, num param atuais = " + npa +
-              " - num params da func/proc = " + funcOrProc.asInstanceOf[ID_Procedimento].num_parms, token.getPosition)
-          }
-
+        } else if(funcOrProc.isInstanceOf[ID_Procedimento] && npa <= funcOrProc.asInstanceOf[ID_Procedimento].num_parms ) {
           val par = funcOrProc.asInstanceOf[ID_Procedimento].list_params(npa-1)
           if(par == null)
             throw new SemanticError("Parametro nao encontrado", token.getPosition)

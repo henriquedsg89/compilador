@@ -1,0 +1,6 @@
+programa prog;
+var a: vetor[0 .. 10] de inteiro;
+var b: vetor[0 .. 10, 'a' .. 'z'] de caracter;
+{
+   b[7, 'b'] := b[0, b[1, 'a']];
+}.
