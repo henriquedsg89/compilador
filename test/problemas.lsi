@@ -13,6 +13,14 @@ var d : real;
 funcao soma(val x,y : inteiro) : inteiro;
   {soma := x + y;};
 
+funcao somaRef(ref x,y : inteiro) : inteiro;
+  {somaRef := x + y;};
+
+funcao numX : inteiro;
+  var z : inteiro;
+  funcao aux : inteiro; {aux:= z;};
+  {numX := 2;};
+
 funcao carA : caracter;
   {carA := 'a';};
 
@@ -20,6 +28,8 @@ proc pref(ref x:real);{};
 proc pval(val x:real);{};
 
 {
+    d := array[soma(numX, 2)]
+    //d := array[somaRef(numX,i)]
     //c := array2[string[1]];
     //array2[string[1]] := 'a';
     //d := array[soma(3,matriz[2,carA])]
