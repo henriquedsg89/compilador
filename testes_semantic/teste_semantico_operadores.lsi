@@ -27,12 +27,12 @@ funcao resto (val x, y : inteiro) : inteiro;
 //    se nao nao (i <> N) entao {
     se nao (i = N) entao {
         se resto(i, N) entao
-            escreva(i, ' não é divisível por ', N);
+            escreva(i, ' nÃ£o Ã© divisÃ­vel por ', N);
 
         se i > N entao
-            escreva(i, ' é maior que ', N)
+            escreva(i, ' Ã© maior que ', N)
         senao
-            escreva(N, ' é maior que ', i);
+            escreva(N, ' Ã© maior que ', i);
     };
 
     i := 1 + 1;
@@ -70,11 +70,11 @@ funcao resto (val x, y : inteiro) : inteiro;
 
     leia(i);
     leia(valor);
-//    se d entao escreva(i, ' é diferente de zero.');    
-    se i entao escreva(i, ' é diferente de zero.');
-    se i e valor entao escreva(i, ' e ', valor, ' são diferentes de zero.');
-    se (i >= 0) e (i < 10) entao escreva(i, ' é um algarismo');
-    se i <> 5 entao escreva (i, ' é diferente de cinco');
+//    se d entao escreva(i, ' Ã© diferente de zero.');    
+    se i entao escreva(i, ' Ã© diferente de zero.');
+    se i e valor entao escreva(i, ' e ', valor, ' sÃ£o diferentes de zero.');
+    se (i >= 0) e (i < 10) entao escreva(i, ' Ã© um algarismo');
+    se i <> 5 entao escreva (i, ' Ã© diferente de cinco');
 
     valor := -1;
     valor := -i;
